@@ -20,7 +20,7 @@ import (
 	"github.com/cybergarage/go-sasl/sasl"
 )
 
-func TestClinet(t *testing.T) {
+func TestClient(t *testing.T) {
 	client := sasl.NewClient()
 	if client == nil {
 		t.Error("client is nil")
