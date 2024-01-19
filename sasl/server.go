@@ -26,3 +26,8 @@ func NewServer() *Server {
 	}
 	return server
 }
+
+// AddMechanism adds a mechanism to the server.
+func (server *Server) AddMechanism(mech *Mechanism) {
+	server.Mechanisms = append(server.Mechanisms, mech)
+}
