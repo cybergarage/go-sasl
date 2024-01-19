@@ -17,7 +17,7 @@ package sasltest
 import (
 	"testing"
 
-	"github.com/cybergarage/go-sasl"
+	"github.com/cybergarage/go-sasl/sasl"
 )
 
 func TestClinet(t *testing.T) {
