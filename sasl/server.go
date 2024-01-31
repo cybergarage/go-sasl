@@ -16,18 +16,18 @@ package sasl
 
 // Server represents a SASL server.
 type Server struct {
-	Mechanisms []*Mechanism
+	Mechanisms []Mechanism
 }
 
 // NewServer returns a new SASL server.
 func NewServer() *Server {
 	server := &Server{
-		Mechanisms: []*Mechanism{},
+		Mechanisms: []Mechanism{},
 	}
 	return server
 }
 
 // AddMechanism adds a mechanism to the server.
-func (server *Server) AddMechanism(mech *Mechanism) {
+func (server *Server) AddMechanism(mech Mechanism) {
 	server.Mechanisms = append(server.Mechanisms, mech)
 }
