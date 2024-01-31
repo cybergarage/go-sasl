@@ -16,7 +16,7 @@ package sasl
 
 // Context represents a SASL context.
 type Context struct {
-	*Mechanism
+	Mechanism
 }
 
 // NewContext returns a new context.
