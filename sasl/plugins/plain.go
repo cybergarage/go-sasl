@@ -19,7 +19,7 @@ type Plain struct {
 }
 
 // NewPlain returns a new PLAIN mechanism.
-func NewPlain() *Plain {
+func NewPlain() Mechanism {
 	return &Plain{}
 }
 
