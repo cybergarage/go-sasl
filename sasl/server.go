@@ -14,6 +14,10 @@
 
 package sasl
 
+import (
+	"github.com/cybergarage/go-sasl/sasl/plugins"
+)
+
 // Server represents a SASL server.
 type Server struct {
 	Mechanisms []Mechanism
@@ -24,10 +28,15 @@ func NewServer() *Server {
 	server := &Server{
 		Mechanisms: []Mechanism{},
 	}
+	server.loadDefaultPlugins()
 	return server
 }
 
 // AddMechanism adds a mechanism to the server.
 func (server *Server) AddMechanism(mech Mechanism) {
 	server.Mechanisms = append(server.Mechanisms, mech)
+}
+
+func (server *Server) loadDefaultPlugins() {
+	server.AddMechanism(plugins.NewPlain())
 }
