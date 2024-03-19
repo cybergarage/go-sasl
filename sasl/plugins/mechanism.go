@@ -14,26 +14,12 @@
 
 package plugins
 
-// Plain represents a PLAIN mechanism.
-type Plain struct {
-}
-
-// NewPlain returns a new PLAIN mechanism.
-func NewPlain() Mechanism {
-	return &Plain{}
-}
-
-// Name returns the mechanism name.
-func (m *Plain) Name() string {
-	return "PLAIN"
-}
-
-// Start returns the initial response.
-func (m *Plain) Start() ([]byte, error) {
-	return nil, nil
-}
-
-// Next returns the next response.
-func (m *Plain) Next(challenge []byte) ([]byte, error) {
-	return nil, nil
+// Mechanism represents a SASL mechanism.
+type Mechanism interface {
+	// Name returns the mechanism name.
+	Name() string
+	// Start returns the initial response.
+	Start() ([]byte, error)
+	// Next returns the next response.
+	Next(challenge []byte) ([]byte, error)
 }
