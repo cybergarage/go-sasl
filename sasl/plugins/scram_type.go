@@ -22,3 +22,16 @@ const (
 	SCRAMTypeSHA256
 	SCRAMTypeSHA512
 )
+
+// SCRAMType returns the SCRAM type.
+func (t SCRAMType) String() string {
+	switch t {
+	case SCRAMTypeSHA1:
+		return "SHA-1"
+	case SCRAMTypeSHA256:
+		return "SHA-256"
+	case SCRAMTypeSHA512:
+		return "SHA-512"
+	}
+	return ""
+}
