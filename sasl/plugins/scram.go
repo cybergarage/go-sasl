@@ -16,16 +16,24 @@ package plugins
 
 // SCRAM represents a PLAIN mechanism.
 type SCRAM struct {
+	typ SCRAMType
 }
 
 // NewSCRAM returns a new PLAIN mechanism.
-func NewSCRAM() Mechanism {
-	return &SCRAM{}
+func NewSCRAMWithType(t SCRAMType) Mechanism {
+	return &SCRAM{
+		typ: t,
+	}
 }
 
 // Name returns the mechanism name.
 func (m *SCRAM) Name() string {
-	return "SCRAM"
+	return "SCRAM-" + m.typ.String()
+}
+
+// Type returns the SCRAM type.
+func (m *SCRAM) Type() SCRAMType {
+	return m.typ
 }
 
 // Start returns the initial response.
