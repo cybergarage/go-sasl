@@ -14,14 +14,28 @@
 
 package sasl
 
-// Server represents a SASL server.
-type Server struct {
-	*Provider
+import (
+	"github.com/cybergarage/go-sasl/sasl/plugins"
+)
+
+type Provider struct {
+	Mechanisms []Mechanism
 }
 
-// NewServer returns a new SASL server.
-func NewServer() *Server {
-	return &Server{
-		Provider: NewProvider(),
+// NewProvider returns a new SASL server.
+func NewProvider() *Provider {
+	provider := &Provider{
+		Mechanisms: []Mechanism{},
 	}
+	provider.loadDefaultPlugins()
+	return provider
+}
+
+// AddMechanism adds a mechanism to the server.
+func (provider *Provider) AddMechanism(mech Mechanism) {
+	provider.Mechanisms = append(provider.Mechanisms, mech)
+}
+
+func (provider *Provider) loadDefaultPlugins() {
+	provider.AddMechanism(plugins.NewPlain())
 }
