@@ -12,14 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package sasl
+package scram
 
 const (
-	SCRAMUserName      = "n"
-	SCRAMDifferentUser = "a"
-	MessageY           = "y"
-	MessageP           = "p"
-	MessageS           = "s"
-	MessageC           = "c"
-	MessageV           = "v"
+	UserName            = "n"
+	FutureExtensibility = "m"
+	RandomSequence      = "r"
+	ChannelBindingData  = "c"
+	Salt                = "s"
+	IterationCount      = "i"
+	ClientProof         = "p"
+	ServerSignature     = "v"
+	Error               = "e"
 )
