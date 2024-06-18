@@ -43,6 +43,7 @@ func TestHeader(t *testing.T) {
 		header, err := NewHeaderFromString(test.headerStr)
 		if err != nil {
 			t.Error(err)
+			continue
 		}
 
 		if header.NonStdFlag() != test.expected.nonStdFlag {
