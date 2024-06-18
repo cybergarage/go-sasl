@@ -12,29 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package sasl
+package common
 
-// property represents a SASL property.
-type property struct {
-	name  string
-	value string
+// PropertyMap represents a SASL property map.
+type PropertyMap map[string]Property
+
+// NewPropertyMap returns a new SASL property map.
+func NewPropertyMap() PropertyMap {
+	return PropertyMap{}
 }
 
-// NewProperty returns a new SASL property.
-func NewProperty(name, value string) Property {
-	prop := &property{
-		name:  name,
-		value: value,
-	}
-	return prop
+// AddProperty adds a property to the map.
+func (m PropertyMap) AddProperty(prop Property) {
+	m[prop.Name()] = prop
 }
 
-// Name returns the property name.
-func (prop *property) Name() string {
-	return prop.name
-}
-
-// Value returns the property value.
-func (prop *property) Value() string {
-	return prop.value
+// Property returns a property from the map.
+func (m PropertyMap) Property(name string) Property {
+	return m[name]
 }
