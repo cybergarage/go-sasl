@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package scram
+package sasl
 
-// Property represents a SCRAM property.
+// Property represents a SASL property.
 type Property interface {
 	// Name returns the property name.
 	Name() string
