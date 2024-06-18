@@ -62,6 +62,13 @@ func (header *Header) CBFlag() CBFlag {
 	return CBFlag(header.props[1][0])
 }
 
+func (header *Header) CBName() string {
+	if len(header.props[1]) < 2 {
+		return ""
+	}
+	return header.props[1][2:]
+}
+
 // AuthID returns the authorization identity.
 func (header *Header) AuthID() string {
 	return header.props[2]
