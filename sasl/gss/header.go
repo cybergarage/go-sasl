@@ -41,10 +41,10 @@ func (header *Header) Parse(props []string) error {
 		return ErrInvalidHeader
 	}
 	if props[0] != GS2NonStdFlag {
-		header.props = append(header.props, GS2NonStdFlag)
-		header.props = append(header.props, props[:1]...)
-	} else {
+		header.props = append(header.props, "")
 		header.props = append(header.props, props[:2]...)
+	} else {
+		header.props = append(header.props, props[:3]...)
 	}
 	return nil
 }
