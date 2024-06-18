@@ -15,19 +15,58 @@
 package scram
 
 // PropertyMap represents a SCRAM property map.
-type PropertyMap map[string]*Property
+type PropertyMap map[string]Property
 
 // NewPropertyMap returns a new SCRAM property map.
 func NewPropertyMap() PropertyMap {
 	return PropertyMap{}
 }
 
-// AddProperty adds a property to the map.
-func (propMap PropertyMap) AddProperty(prop *Property) {
-	propMap[prop.Name] = prop
+// Property returns a property from the map.
+func (m PropertyMap) Property(name string) (string, bool) {
+	prop := m[name]
+	if prop == nil {
+		return "", false
+	}
+	return prop.Value(), true
 }
 
-// Property returns a property from the map.
-func (propMap PropertyMap) Property(name string) *Property {
-	return propMap[name]
+// UserName returns the user name property from the map.
+func (m PropertyMap) UserName() (string, bool) {
+	return m.Property(UserName)
+}
+
+// FutureExtensions returns the future extensibility property from the map.
+func (m PropertyMap) FutureFutureExtensibility() (string, bool) {
+	return m.Property(FutureExtensibility)
+}
+
+// RandomSequence returns the random sequence property from the map.
+func (m PropertyMap) RandomSequence() (string, bool) {
+	return m.Property(RandomSequence)
+}
+
+// Salt returns the salt property from the map.
+func (m PropertyMap) Salt() (string, bool) {
+	return m.Property(Salt)
+}
+
+// IterationCount returns the iteration count property from the map.
+func (m PropertyMap) IterationCount() (string, bool) {
+	return m.Property(IterationCount)
+}
+
+// ClientProof returns the client proof property from the map.
+func (m PropertyMap) ClientProof() (string, bool) {
+	return m.Property(ClientProof)
+}
+
+// ServerSignature returns the server signature property from the map.
+func (m PropertyMap) ServerSignature() (string, bool) {
+	return m.Property(ServerSignature)
+}
+
+// Error returns the error property from the map.
+func (m PropertyMap) Error() (string, bool) {
+	return m.Property(Error)
 }
