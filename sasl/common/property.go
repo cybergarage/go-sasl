@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package sasl
+package common
 
-import (
-	"github.com/cybergarage/go-sasl/sasl/common"
-)
-
-// PropertyMap represents a SASL property map.
-type PropertyMap = common.PropertyMap
+// Property represents a SASL property.
+type Property interface {
+	// Name returns the property name.
+	Name() string
+	// Value returns the property value.
+	Value() string
+}
