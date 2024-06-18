@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package sasl
+package scram
 
-// Property represents a SASL property.
+// Property represents a SCRAM property.
 type Property struct {
 	Name  string
 	Value string
 }
 
-// NewProperty returns a new SASL property.
+// NewProperty returns a new SCRAM property.
 func NewProperty(name, value string) *Property {
 	prop := &Property{
 		Name:  name,

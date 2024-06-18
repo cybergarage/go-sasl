@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package sasl
+package scram
 
-// PropertyMap represents a SASL property map.
+// PropertyMap represents a SCRAM property map.
 type PropertyMap map[string]*Property
 
-// NewPropertyMap returns a new SASL property map.
+// NewPropertyMap returns a new SCRAM property map.
 func NewPropertyMap() PropertyMap {
 	return PropertyMap{}
 }
