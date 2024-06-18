@@ -14,20 +14,9 @@
 
 package sasl
 
+import (
+	"github.com/cybergarage/go-sasl/sasl/common"
+)
+
 // PropertyMap represents a SASL property map.
-type PropertyMap map[string]Property
-
-// NewPropertyMap returns a new SASL property map.
-func NewPropertyMap() PropertyMap {
-	return PropertyMap{}
-}
-
-// AddProperty adds a property to the map.
-func (m PropertyMap) AddProperty(prop Property) {
-	m[prop.Name()] = prop
-}
-
-// Property returns a property from the map.
-func (m PropertyMap) Property(name string) Property {
-	return m[name]
-}
+type PropertyMap = common.PropertyMap

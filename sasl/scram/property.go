@@ -14,10 +14,9 @@
 
 package scram
 
-// Property represents a SCRAM property.
-type Property interface {
-	// Name returns the property name.
-	Name() string
-	// Value returns the property value.
-	Value() string
-}
+import (
+	"github.com/cybergarage/go-sasl/sasl/common"
+)
+
+// Property represents a GSS property.
+type Property = common.Property
