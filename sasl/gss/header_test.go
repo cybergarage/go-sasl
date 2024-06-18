@@ -22,6 +22,7 @@ func TestHeader(t *testing.T) {
 	type expected struct {
 		nonStdFlag bool
 		cbFlag     CBFlag
+		cbName     string
 		authID     string
 	}
 
@@ -30,11 +31,39 @@ func TestHeader(t *testing.T) {
 		expected  expected
 	}{
 		{
+			headerStr: "p=test,,n=test,r=bDDLMhuQScihx0zXVXnizTplEBlE2ErT",
+			expected: expected{
+				nonStdFlag: false,
+				cbFlag:     GS2ClientSupportsUsedCBSFlag,
+				cbName:     "test",
+				authID:     "",
+			},
+		},
+		{
 			headerStr: "n,,n=test,r=bDDLMhuQScihx0zXVXnizTplEBlE2ErT",
 			expected: expected{
 				nonStdFlag: false,
 				cbFlag:     GS2ClientDoesNotSupportCBSFlag,
+				cbName:     "",
 				authID:     "",
+			},
+		},
+		{
+			headerStr: "F,y,,n=test,r=bDDLMhuQScihx0zXVXnizTplEBlE2ErT",
+			expected: expected{
+				nonStdFlag: true,
+				cbFlag:     GS2ClientSupportsCBSFlag,
+				cbName:     "",
+				authID:     "",
+			},
+		},
+		{
+			headerStr: "F,y,auth,n=test,r=bDDLMhuQScihx0zXVXnizTplEBlE2ErT",
+			expected: expected{
+				nonStdFlag: true,
+				cbFlag:     GS2ClientSupportsCBSFlag,
+				cbName:     "",
+				authID:     "auth",
 			},
 		},
 	}
@@ -52,6 +81,10 @@ func TestHeader(t *testing.T) {
 
 		if header.CBFlag() != test.expected.cbFlag {
 			t.Errorf("expected %v, got %v", test.expected.cbFlag, header.CBFlag())
+		}
+
+		if header.CBName() != test.expected.cbName {
+			t.Errorf("expected %v, got %v", test.expected.cbName, header.CBName())
 		}
 
 		if header.AuthID() != test.expected.authID {
