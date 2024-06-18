@@ -15,10 +15,10 @@
 package gss
 
 // CBFlag represents a channel binding flag.
-type CBFlag string
+type CBFlag rune
 
 const (
-	GS2ClientSupportsUsedCBSFlag   = "p"
-	GS2ClientDoesNotSupportCBSFlag = "n"
-	GS2ClientSupportsCBSFlag       = "y"
+	GS2ClientSupportsUsedCBSFlag   = CBFlag('p')
+	GS2ClientDoesNotSupportCBSFlag = CBFlag('n')
+	GS2ClientSupportsCBSFlag       = CBFlag('y')
 )
