@@ -5,6 +5,7 @@
 ## References
 
 - [RFC 4422 - Simple Authentication and Security Layer (SASL)](https://datatracker.ietf.org/doc/html/rfc4422)
+  - [RFC 5801: Using Generic Security Service Application Program Interface (GSS-API) Mechanisms in Simple Authentication and Security Layer (SASL): The GS2 Mechanism Family](https://www.rfc-editor.org/rfc/rfc5801)
   - [RFC 5802 - Salted Challenge Response Authentication Mechanism (SCRAM) SASL and GSS-API Mechanisms](https://datatracker.ietf.org/doc/html/rfc5802)
 
 - [Java SASL API](https://docs.oracle.com/javase/jp/8/docs/technotes/guides/security/sasl/sasl-refguide.html)
