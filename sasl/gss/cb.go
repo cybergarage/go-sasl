@@ -14,6 +14,11 @@
 
 package gss
 
+// CBFlag represents a channel binding flag.
+type CBFlag string
+
 const (
-	GS2NonStdFlag = "F"
+	GS2ClientSupportsUsedCBSFlag   = "p"
+	GS2ClientDoesNotSupportCBSFlag = "n"
+	GS2ClientSupportsCBSFlag       = "y"
 )
