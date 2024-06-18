@@ -56,7 +56,10 @@ func (header *Header) NonStdFlag() bool {
 
 // CBFlag returns the channel binding flag.
 func (header *Header) CBFlag() CBFlag {
-	return CBFlag(header.props[1])
+	if len(header.props[1]) < 1 {
+		return CBFlag(' ')
+	}
+	return CBFlag(header.props[1][0])
 }
 
 // AuthID returns the authorization identity.
