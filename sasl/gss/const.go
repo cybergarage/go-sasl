@@ -15,5 +15,6 @@
 package gss
 
 const (
-	GS2NonStdFlag = "F"
+	GS2NonStdFlag    = "F"
+	GS2AuthzidPrefix = "a="
 )
