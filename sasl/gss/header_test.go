@@ -87,8 +87,8 @@ func TestHeader(t *testing.T) {
 			t.Errorf("expected %v, got %v", test.expected.cbName, header.CBName())
 		}
 
-		if header.AuthID() != test.expected.authID {
-			t.Errorf("expected %v, got %v", test.expected.authID, header.AuthID())
+		if header.AuthzID() != test.expected.authID {
+			t.Errorf("expected %v, got %v", test.expected.authID, header.AuthzID())
 		}
 	}
 }

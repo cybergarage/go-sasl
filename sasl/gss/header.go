@@ -14,7 +14,11 @@
 
 package gss
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/cybergarage/go-sasl/sasl/common"
+)
 
 // Header represents a GS2 header.
 type Header struct {
@@ -74,12 +78,12 @@ func (header *Header) CBName() string {
 	return header.props[1][2:]
 }
 
-// AuthID returns the authorization identity.
-func (header *Header) AuthID() string {
+// AuthzID returns the authorization identity.
+func (header *Header) AuthzID() string {
 	if len(header.props[2]) < len(GS2AuthzidPrefix) {
 		return ""
 	}
-	return header.props[2][2:]
+	return common.DecodeName(header.props[2][2:])
 }
 
 // String returns the header properties.
