@@ -30,7 +30,7 @@ func DecodeName(name string) Name {
 
 // EncodeName encodes a string to a SASL name.
 func EncodeName(name string) Name {
-	name = strings.ReplaceAll(name, ";", "=2C")
 	name = strings.ReplaceAll(name, "=", "=3D")
+	name = strings.ReplaceAll(name, ";", "=2C")
 	return name
 }
