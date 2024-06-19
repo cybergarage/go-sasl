@@ -66,6 +66,15 @@ func TestHeader(t *testing.T) {
 				authID:     "auth",
 			},
 		},
+		{
+			headerStr: "F,y,a=auth=2C,n=test,r=bDDLMhuQScihx0zXVXnizTplEBlE2ErT",
+			expected: expected{
+				nonStdFlag: true,
+				cbFlag:     GS2ClientSupportsCBSFlag,
+				cbName:     "",
+				authID:     "auth;",
+			},
+		},
 	}
 
 	for _, test := range tests {
