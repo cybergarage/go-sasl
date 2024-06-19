@@ -58,7 +58,7 @@ func TestHeader(t *testing.T) {
 			},
 		},
 		{
-			headerStr: "F,y,auth,n=test,r=bDDLMhuQScihx0zXVXnizTplEBlE2ErT",
+			headerStr: "F,y,a=auth,n=test,r=bDDLMhuQScihx0zXVXnizTplEBlE2ErT",
 			expected: expected{
 				nonStdFlag: true,
 				cbFlag:     GS2ClientSupportsCBSFlag,
