@@ -46,6 +46,11 @@ func (header *Header) Parse(props []string) error {
 	} else {
 		header.props = append(header.props, props[:3]...)
 	}
+	if 0 < len(header.props[2]) {
+		if !strings.HasPrefix(header.props[2], GS2AuthzidPrefix) {
+			return ErrInvalidHeader
+		}
+	}
 	return nil
 }
 
@@ -71,7 +76,10 @@ func (header *Header) CBName() string {
 
 // AuthID returns the authorization identity.
 func (header *Header) AuthID() string {
-	return header.props[2]
+	if len(header.props[2]) < len(GS2AuthzidPrefix) {
+		return ""
+	}
+	return header.props[2][2:]
 }
 
 // String returns the header properties.
