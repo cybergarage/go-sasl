@@ -23,3 +23,8 @@ func NewMessage() *Message {
 	msg := &Message{}
 	return msg
 }
+
+// ParseString parses the specified data.
+func (msg *Message) ParseString(data string) error {
+	return nil
+}
