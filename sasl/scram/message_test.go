@@ -19,8 +19,30 @@ import (
 )
 
 func TestSCRAMMessage(t *testing.T) {
-	msg := NewMessage()
-	if msg == nil {
-		t.Error("msg is nil")
+	type expected struct {
+		userName       string
+		randomSequence string
+	}
+
+	tests := []struct {
+		messageStr string
+		expected   expected
+	}{
+
+		{
+			messageStr: "n,,n=user,r=fyko+d2lbbFgONRv9qkxdawL",
+			expected: expected{
+				userName:       "user",
+				randomSequence: "fyko+d2lbbFgONRv9qkxdawL",
+			},
+		},
+	}
+
+	for _, test := range tests {
+		msg := NewMessage()
+		if err := msg.ParseString(test.messageStr); err != nil {
+			t.Error(err)
+			continue
+		}
 	}
 }
