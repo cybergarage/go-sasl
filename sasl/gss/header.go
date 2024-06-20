@@ -69,6 +69,11 @@ func (header *Header) ParseStrings(props []string) error {
 	return nil
 }
 
+// HasStdFlag returns true if the header has a standard flag.
+func (header *Header) HasStdFlag() bool {
+	return 0 < len(header.props[0])
+}
+
 // NonStdFlag returns true if the header has a non-standard flag.
 func (header *Header) NonStdFlag() bool {
 	return header.props[0] == GS2NonStdFlag
