@@ -18,4 +18,5 @@ import (
 	"errors"
 )
 
+// ErrInvalidHeader is returned when the header is invalid.
 var ErrInvalidHeader = errors.New("invalid header")
