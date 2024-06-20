@@ -30,7 +30,7 @@ func NewHeaderFromStrings(props []string) (*Header, error) {
 	header := &Header{
 		props: []string{},
 	}
-	return header, header.Parse(props)
+	return header, header.ParseStrings(props)
 }
 
 // NewHeaderFromString creates a new header from the properties string.
@@ -38,8 +38,8 @@ func NewHeaderFromString(props string) (*Header, error) {
 	return NewHeaderFromStrings(strings.Split(props, ","))
 }
 
-// Parse parses the header properties.
-func (header *Header) Parse(props []string) error {
+// ParseStrings parses the header properties.
+func (header *Header) ParseStrings(props []string) error {
 	header.props = []string{}
 	if len(props) < 2 {
 		return ErrInvalidHeader
