@@ -26,6 +26,7 @@ func TestSCRAMMessage(t *testing.T) {
 		iterationCount     string
 		channelBindingData string
 		clientProof        string
+		serverSignature    string
 	}
 
 	tests := []struct {
@@ -45,6 +46,7 @@ func TestSCRAMMessage(t *testing.T) {
 				iterationCount:     "",
 				channelBindingData: "",
 				clientProof:        "",
+				serverSignature:    "",
 			},
 		},
 		{
@@ -57,6 +59,7 @@ func TestSCRAMMessage(t *testing.T) {
 				iterationCount:     "4096",
 				channelBindingData: "",
 				clientProof:        "",
+				serverSignature:    "",
 			},
 		},
 		{
@@ -69,6 +72,20 @@ func TestSCRAMMessage(t *testing.T) {
 				iterationCount:     "",
 				channelBindingData: "biws",
 				clientProof:        "v0X8v3Bz2T0CJGbJQyF0X+HI4Ts=",
+				serverSignature:    "",
+			},
+		},
+		{
+			messageStr: "v=rmF9pqV8S7suAoZWja4dJRkFsKQ=",
+			hasHeader:  false,
+			expected: expected{
+				userName:           "",
+				randomSequence:     "",
+				salt:               "",
+				iterationCount:     "",
+				channelBindingData: "",
+				clientProof:        "",
+				serverSignature:    "rmF9pqV8S7suAoZWja4dJRkFsKQ=",
 			},
 		},
 	}
@@ -126,6 +143,13 @@ func TestSCRAMMessage(t *testing.T) {
 			v, ok := msg.ClientProof()
 			if !ok || v != test.expected.clientProof {
 				t.Errorf("clientProof = %s, want %s", v, test.expected.clientProof)
+			}
+		}
+
+		if 0 < len(test.expected.serverSignature) {
+			v, ok := msg.ServerSignature()
+			if !ok || v != test.expected.serverSignature {
+				t.Errorf("serverSignature = %s, want %s", v, test.expected.serverSignature)
 			}
 		}
 	}
