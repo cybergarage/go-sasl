@@ -18,10 +18,10 @@ import (
 	"github.com/cybergarage/go-sasl/sasl/common"
 )
 
-// Property represents a GSS property.
-type Property = common.Property
+// Attribute represents a GSS property.
+type Attribute = common.Property
 
-// NewProperty creates a new property.
-func NewProperty(name, value string) Property {
+// NewAttribute creates a new attribute.
+func NewAttribute(name, value string) Attribute {
 	return common.NewProperty(name, value)
 }
