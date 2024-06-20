@@ -61,6 +61,11 @@ func (m AttributeMap) ClientProof() (string, bool) {
 	return m.Attribute(ClientProof)
 }
 
+// ChannelBindingData returns the channel binding data attribute from the map.
+func (m AttributeMap) ChannelBindingData() (string, bool) {
+	return m.Attribute(ChannelBindingData)
+}
+
 // ServerSignature returns the server signature attribute from the map.
 func (m AttributeMap) ServerSignature() (string, bool) {
 	return m.Attribute(ServerSignature)
