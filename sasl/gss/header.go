@@ -25,17 +25,28 @@ type Header struct {
 	props []string
 }
 
-// NewHeaderFromStrings creates a new header from the properties.
-func NewHeaderFromStrings(props []string) (*Header, error) {
-	header := &Header{
+// NewHeader creates a new header.
+func NewHeader() *Header {
+	return &Header{
 		props: []string{},
 	}
-	return header, header.ParseStrings(props)
 }
 
 // NewHeaderFromString creates a new header from the properties string.
-func NewHeaderFromString(props string) (*Header, error) {
-	return NewHeaderFromStrings(strings.Split(props, ","))
+func NewHeaderFromString(str string) (*Header, error) {
+	header := NewHeader()
+	return header, header.ParseString(str)
+}
+
+// NewHeaderFromString creates a new header from the properties strings.
+func NewHeaderFromStrings(props []string) (*Header, error) {
+	header := NewHeader()
+	return header, header.ParseStrings(props)
+}
+
+// ParseString parses the header properties.
+func (header *Header) ParseString(str string) error {
+	return header.ParseStrings(strings.Split(str, ","))
 }
 
 // ParseStrings parses the header properties.
