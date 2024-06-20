@@ -62,12 +62,12 @@ func (msg *Message) ParseString(str string) error {
 // ParseStringsWithHeader parses the specified property strings.
 func (msg *Message) ParseStrings(props []string) error {
 	for _, scramProp := range props {
-		scramProps := strings.Split(scramProp, "=")
-		if len(scramProps) < 2 {
+		if len(scramProp) < 2 || scramProp[1] != '=' {
 			return newErrInvalidAttribute(scramProp)
 		}
-		attrName := scramProps[0]
-		switch scramProps[0] {
+		attrName := scramProp[:1]
+		attrValue := scramProp[2:]
+		switch attrName {
 		case UserName,
 			FutureExtensibility,
 			RandomSequence,
@@ -77,7 +77,7 @@ func (msg *Message) ParseStrings(props []string) error {
 			ClientProof,
 			ServerSignature,
 			Error:
-			prop := NewAttribute(attrName, scramProps[1])
+			prop := NewAttribute(attrName, attrValue)
 			msg.AttributeMap[attrName] = prop
 		default:
 			return newErrInvalidAttribute(scramProp)
