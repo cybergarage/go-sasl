@@ -15,6 +15,7 @@
 package gss
 
 const (
-	GS2NonStdFlag    = "F"
-	GS2AuthzidPrefix = "a="
+	GS2PropertyMaxCount = 3
+	GS2NonStdFlag       = "F"
+	GS2AuthzidPrefix    = "a="
 )
