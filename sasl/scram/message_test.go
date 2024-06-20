@@ -42,7 +42,7 @@ func TestSCRAMMessage(t *testing.T) {
 
 	for _, test := range tests {
 		msg := NewMessage()
-		if err := msg.ParseString(test.messageStr); err != nil {
+		if err := msg.ParseStringWithHeader(test.messageStr); err != nil {
 			t.Error(err)
 			continue
 		}
