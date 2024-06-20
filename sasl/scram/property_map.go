@@ -15,7 +15,7 @@
 package scram
 
 // PropertyMap represents a SCRAM property map.
-type PropertyMap map[string]Property
+type PropertyMap map[string]Attribute
 
 // NewPropertyMap returns a new SCRAM property map.
 func NewPropertyMap() PropertyMap {
