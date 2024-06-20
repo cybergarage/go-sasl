@@ -20,3 +20,8 @@ import (
 
 // Property represents a GSS property.
 type Property = common.Property
+
+// NewProperty creates a new property.
+func NewProperty(name, value string) Property {
+	return common.NewProperty(name, value)
+}
