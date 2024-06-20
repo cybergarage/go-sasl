@@ -51,7 +51,17 @@ func (msg *Message) ParseStringsWithHeader(props []string) error {
 	if !msg.Header.HasStdFlag() {
 		scramProps = props[(gss.GS2PropertyMaxCount - 1):]
 	}
-	for _, scramProp := range scramProps {
+	return msg.ParseStrings(scramProps)
+}
+
+// ParseStringWithHeader parses the specified string.
+func (msg *Message) ParseString(str string) error {
+	return msg.ParseStrings(strings.Split(str, ","))
+}
+
+// ParseStringsWithHeader parses the specified property strings.
+func (msg *Message) ParseStrings(props []string) error {
+	for _, scramProp := range props {
 		scramProps := strings.Split(scramProp, "=")
 		if len(scramProps) < 2 {
 			return newErrInvalidAttribute(scramProp)
