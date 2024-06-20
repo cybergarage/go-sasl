@@ -30,6 +30,8 @@ func TestSCRAMMessage(t *testing.T) {
 	}{
 
 		{
+			// RFC 5802 - Salted Challenge Response Authentication Mechanism (SCRAM) SASL and GSS-API Mechanisms
+			// 5. SCRAM Authentication Exchange
 			messageStr: "n,,n=user,r=fyko+d2lbbFgONRv9qkxdawL",
 			expected: expected{
 				userName:       "user",
@@ -43,6 +45,20 @@ func TestSCRAMMessage(t *testing.T) {
 		if err := msg.ParseString(test.messageStr); err != nil {
 			t.Error(err)
 			continue
+		}
+
+		if 0 < len(test.expected.userName) {
+			v, ok := msg.UserName()
+			if !ok || v != test.expected.userName {
+				t.Errorf("userName = %s, want %s", v, test.expected.userName)
+			}
+		}
+
+		if 0 < len(test.expected.randomSequence) {
+			v, ok := msg.RandomSequence()
+			if !ok || v != test.expected.randomSequence {
+				t.Errorf("randomSequence = %s, want %s", v, test.expected.randomSequence)
+			}
 		}
 	}
 }
