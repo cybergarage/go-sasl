@@ -32,24 +32,24 @@ func NewHeader() *Header {
 	}
 }
 
-// NewHeaderFromString creates a new header from the properties string.
+// NewHeaderFromString creates a new header from the string.
 func NewHeaderFromString(str string) (*Header, error) {
 	header := NewHeader()
 	return header, header.ParseString(str)
 }
 
-// NewHeaderFromString creates a new header from the properties strings.
+// NewHeaderFromString creates a new header from the property strings.
 func NewHeaderFromStrings(props []string) (*Header, error) {
 	header := NewHeader()
 	return header, header.ParseStrings(props)
 }
 
-// ParseString parses the header properties.
+// ParseString parses the header string.
 func (header *Header) ParseString(str string) error {
 	return header.ParseStrings(strings.Split(str, ","))
 }
 
-// ParseStrings parses the header properties.
+// ParseStrings parses the header property strings.
 func (header *Header) ParseStrings(props []string) error {
 	header.props = []string{}
 	if len(props) < 2 {
