@@ -35,13 +35,13 @@ func NewMessage() *Message {
 	return msg
 }
 
-// ParseString parses the specified string.
-func (msg *Message) ParseString(str string) error {
-	return msg.ParseStrings(strings.Split(str, ","))
+// ParseStringWithHeader parses the specified string　with the GS2 header.
+func (msg *Message) ParseStringWithHeader(str string) error {
+	return msg.ParseStringsWithHeader(strings.Split(str, ","))
 }
 
-// ParseStrings parses the specified property strings.
-func (msg *Message) ParseStrings(props []string) error {
+// ParseStringsWithHeader parses the specified property strings with the GS2 header.
+func (msg *Message) ParseStringsWithHeader(props []string) error {
 	var err error
 	msg.Header, err = gss.NewHeaderFromStrings(props)
 	if err != nil {
