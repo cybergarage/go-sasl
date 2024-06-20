@@ -26,6 +26,7 @@ func TestSCRAMMessage(t *testing.T) {
 
 	tests := []struct {
 		messageStr string
+		hasHeader  bool
 		expected   expected
 	}{
 
@@ -33,6 +34,7 @@ func TestSCRAMMessage(t *testing.T) {
 			// RFC 5802 - Salted Challenge Response Authentication Mechanism (SCRAM) SASL and GSS-API Mechanisms
 			// 5. SCRAM Authentication Exchange
 			messageStr: "n,,n=user,r=fyko+d2lbbFgONRv9qkxdawL",
+			hasHeader:  true,
 			expected: expected{
 				userName:       "user",
 				randomSequence: "fyko+d2lbbFgONRv9qkxdawL",
@@ -42,9 +44,16 @@ func TestSCRAMMessage(t *testing.T) {
 
 	for _, test := range tests {
 		msg := NewMessage()
-		if err := msg.ParseStringWithHeader(test.messageStr); err != nil {
-			t.Error(err)
-			continue
+		if test.hasHeader {
+			if err := msg.ParseStringWithHeader(test.messageStr); err != nil {
+				t.Error(err)
+				continue
+			}
+		} else {
+			if err := msg.ParseString(test.messageStr); err != nil {
+				t.Error(err)
+				continue
+			}
 		}
 
 		if 0 < len(test.expected.userName) {
