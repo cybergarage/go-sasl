@@ -91,6 +91,17 @@ func (msg *Message) ParseStrings(props []string) error {
 	return nil
 }
 
+// Equals returns true if the message equals the specified message.
+func (msg *Message) Equals(other *Message) bool {
+	if msg.HasHeader() != other.HasHeader() {
+		return false
+	}
+	if msg.HasHeader() && !msg.Header.Equals(other.Header) {
+		return false
+	}
+	return msg.AttributeMap.Equals(other.AttributeMap)
+}
+
 // String returns the string representation of the message.
 func (msg *Message) String() string {
 	if !msg.HasHeader() {
