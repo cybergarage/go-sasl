@@ -102,6 +102,23 @@ func (header *Header) AuthzID() string {
 	return common.DecodeName(header.props[2][2:])
 }
 
+// Equals returns true if the header is equal to the other header.
+func (header *Header) Equals(other *Header) bool {
+	if header.NonStdFlag() != other.NonStdFlag() {
+		return false
+	}
+	if header.CBFlag() != other.CBFlag() {
+		return false
+	}
+	if header.CBName() != other.CBName() {
+		return false
+	}
+	if header.AuthzID() != other.AuthzID() {
+		return false
+	}
+	return true
+}
+
 // String returns the header properties.
 func (header *Header) String() string {
 	var str string

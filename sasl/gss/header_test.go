@@ -109,5 +109,15 @@ func TestHeader(t *testing.T) {
 		if header.AuthzID() != test.expected.authID {
 			t.Errorf("expected %v, got %v", test.expected.authID, header.AuthzID())
 		}
+
+		strHeader, err := NewHeaderFromString(header.String())
+		if err != nil {
+			t.Error(err)
+			continue
+		}
+
+		if !header.Equals(strHeader) {
+			t.Errorf("expected %v, got %v", header, strHeader)
+		}
 	}
 }
