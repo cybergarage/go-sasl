@@ -84,6 +84,10 @@ func TestHeader(t *testing.T) {
 			continue
 		}
 
+		if header.String() != test.headerStr {
+			t.Errorf("expected %v, got %v", test.headerStr, header.String())
+		}
+
 		if header.NonStdFlag() != test.expected.nonStdFlag {
 			t.Errorf("expected %v, got %v", test.expected.nonStdFlag, header.NonStdFlag())
 		}
