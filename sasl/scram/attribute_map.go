@@ -128,6 +128,23 @@ func (m AttributeMap) SetError(value string) {
 	m.SetAttribute(Error, value)
 }
 
+// Equals returns true if the map is equal to the other map.
+func (m AttributeMap) Equals(other AttributeMap) bool {
+	if len(m) != len(other) {
+		return false
+	}
+	for name, prop := range m {
+		otherProp, ok := other[name]
+		if !ok {
+			return false
+		}
+		if prop.Value() != otherProp.Value() {
+			return false
+		}
+	}
+	return true
+}
+
 // String returns the string representation of the map.
 func (m AttributeMap) String() string {
 	props := []string{}
