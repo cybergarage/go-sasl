@@ -35,6 +35,11 @@ func NewMessage() *Message {
 	return msg
 }
 
+// HasHeader returns true if the message has a GS2 header.
+func (msg *Message) HasHeader() bool {
+	return msg.Header != nil
+}
+
 // ParseStringWithHeader parses the specified string　with the GS2 header.
 func (msg *Message) ParseStringWithHeader(str string) error {
 	return msg.ParseStringsWithHeader(strings.Split(str, ","))
@@ -84,4 +89,12 @@ func (msg *Message) ParseStrings(props []string) error {
 		}
 	}
 	return nil
+}
+
+// String returns the string representation of the message.
+func (msg *Message) String() string {
+	if !msg.HasHeader() {
+		return msg.AttributeMap.String()
+	}
+	return msg.Header.String() + "," + msg.AttributeMap.String()
 }
