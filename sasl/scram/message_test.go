@@ -152,5 +152,22 @@ func TestSCRAMMessage(t *testing.T) {
 				t.Errorf("serverSignature = %s, want %s", v, test.expected.serverSignature)
 			}
 		}
+
+		reMsg := NewMessage()
+		if msg.HasHeader() {
+			if err := reMsg.ParseStringWithHeader(msg.String()); err != nil {
+				t.Error(err)
+				continue
+			}
+		} else {
+			if err := reMsg.ParseString(msg.String()); err != nil {
+				t.Error(err)
+				continue
+			}
+		}
+
+		if !msg.Equals(reMsg) {
+			t.Errorf("expected %v, got %v", msg, reMsg)
+		}
 	}
 }
