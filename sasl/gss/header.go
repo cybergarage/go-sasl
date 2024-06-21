@@ -104,5 +104,18 @@ func (header *Header) AuthzID() string {
 
 // String returns the header properties.
 func (header *Header) String() string {
-	return strings.Join(header.props, ",")
+	var str string
+	for n, prop := range header.props {
+		switch n {
+		case 0:
+			if 0 < len(prop) {
+				str += prop + ","
+			}
+		case 2:
+			str += prop
+		default:
+			str += prop + ","
+		}
+	}
+	return str
 }
