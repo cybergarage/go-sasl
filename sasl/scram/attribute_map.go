@@ -14,6 +14,8 @@
 
 package scram
 
+import "strings"
+
 // AttributeMap represents a SCRAM attribute map.
 type AttributeMap map[string]Attribute
 
@@ -124,4 +126,13 @@ func (m AttributeMap) SetServerSignature(value string) {
 // SetError sets the error attribute to the map.
 func (m AttributeMap) SetError(value string) {
 	m.SetAttribute(Error, value)
+}
+
+// String returns the string representation of the map.
+func (m AttributeMap) String() string {
+	props := []string{}
+	for name, prop := range m {
+		props = append(props, name+"="+prop.Value())
+	}
+	return strings.Join(props, ",")
 }
