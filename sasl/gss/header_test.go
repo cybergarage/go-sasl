@@ -24,6 +24,7 @@ func TestHeader(t *testing.T) {
 		cbFlag     CBFlag
 		cbName     string
 		authID     string
+		headerStr  string
 	}
 
 	tests := []struct {
@@ -37,6 +38,7 @@ func TestHeader(t *testing.T) {
 				cbFlag:     GS2ClientSupportsUsedCBSFlag,
 				cbName:     "test",
 				authID:     "",
+				headerStr:  "p=test,",
 			},
 		},
 		{
@@ -46,6 +48,7 @@ func TestHeader(t *testing.T) {
 				cbFlag:     GS2ClientDoesNotSupportCBSFlag,
 				cbName:     "",
 				authID:     "",
+				headerStr:  "n,",
 			},
 		},
 		{
@@ -55,6 +58,7 @@ func TestHeader(t *testing.T) {
 				cbFlag:     GS2ClientSupportsCBSFlag,
 				cbName:     "",
 				authID:     "",
+				headerStr:  "F,y,",
 			},
 		},
 		{
@@ -64,6 +68,7 @@ func TestHeader(t *testing.T) {
 				cbFlag:     GS2ClientSupportsCBSFlag,
 				cbName:     "",
 				authID:     "auth",
+				headerStr:  "F,y,a=auth",
 			},
 		},
 		{
@@ -73,6 +78,7 @@ func TestHeader(t *testing.T) {
 				cbFlag:     GS2ClientSupportsCBSFlag,
 				cbName:     "",
 				authID:     "auth;",
+				headerStr:  "F,y,a=auth=2C",
 			},
 		},
 	}
@@ -84,7 +90,7 @@ func TestHeader(t *testing.T) {
 			continue
 		}
 
-		if header.String() != test.headerStr {
+		if header.String() != test.expected.headerStr {
 			t.Errorf("expected %v, got %v", test.headerStr, header.String())
 		}
 
