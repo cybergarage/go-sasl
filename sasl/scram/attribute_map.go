@@ -75,3 +75,53 @@ func (m AttributeMap) ServerSignature() (string, bool) {
 func (m AttributeMap) Error() (string, bool) {
 	return m.Attribute(Error)
 }
+
+// SetAttribute sets an attribute to the map.
+func (m AttributeMap) SetAttribute(name, value string) {
+	m[name] = NewAttribute(name, value)
+}
+
+// SetUserName sets the user name attribute to the map.
+func (m AttributeMap) SetUserName(value string) {
+	m.SetAttribute(UserName, value)
+}
+
+// SetFutureExtensibility sets the future extensibility attribute to the map.
+func (m AttributeMap) SetFutureExtensibility(value string) {
+	m.SetAttribute(FutureExtensibility, value)
+}
+
+// SetRandomSequence sets the random sequence attribute to the map.
+func (m AttributeMap) SetRandomSequence(value string) {
+	m.SetAttribute(RandomSequence, value)
+}
+
+// SetSalt sets the salt attribute to the map.
+func (m AttributeMap) SetSalt(value string) {
+	m.SetAttribute(Salt, value)
+}
+
+// SetIterationCount sets the iteration count attribute to the map.
+func (m AttributeMap) SetIterationCount(value string) {
+	m.SetAttribute(IterationCount, value)
+}
+
+// SetClientProof sets the client proof attribute to the map.
+func (m AttributeMap) SetClientProof(value string) {
+	m.SetAttribute(ClientProof, value)
+}
+
+// SetChannelBindingData sets the channel binding data attribute to the map.
+func (m AttributeMap) SetChannelBindingData(value string) {
+	m.SetAttribute(ChannelBindingData, value)
+}
+
+// SetServerSignature sets the server signature attribute to the map.
+func (m AttributeMap) SetServerSignature(value string) {
+	m.SetAttribute(ServerSignature, value)
+}
+
+// SetError sets the error attribute to the map.
+func (m AttributeMap) SetError(value string) {
+	m.SetAttribute(Error, value)
+}
