@@ -15,13 +15,13 @@
 package scram
 
 const (
-	UserName            = "n"
-	FutureExtensibility = "m"
-	RandomSequence      = "r"
-	ChannelBindingData  = "c"
-	Salt                = "s"
-	IterationCount      = "i"
-	ClientProof         = "p"
-	ServerSignature     = "v"
-	Error               = "e"
+	UserNameAttr            = "n"
+	FutureExtensibilityAttr = "m"
+	RandomSequenceAttr      = "r"
+	ChannelBindingDataAttr  = "c"
+	SaltAttr                = "s"
+	IterationCountAttr      = "i"
+	ClientProofAttr         = "p"
+	ServerSignatureAttr     = "v"
+	ErrorAttr               = "e"
 )
