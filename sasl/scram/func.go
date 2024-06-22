@@ -57,7 +57,15 @@ func H(data string) string {
 // XOR(a, b) is defined as:.
 // 2.2. Notation.
 func XOR(a, b string) string {
-	return ""
+	minLength := len(a)
+	if len(b) < minLength {
+		minLength = len(b)
+	}
+	result := make([]byte, minLength)
+	for i := 0; i < minLength; i++ {
+		result[i] = a[i] ^ b[i]
+	}
+	return string(result)
 }
 
 // Normalize(str) is defined as:.
@@ -82,25 +90,29 @@ func StoredKey(clientKey string) string {
 }
 
 // AuthMessage     := client-first-message-bare + "," +
-// 				   server-first-message + "," +
-// 				   client-final-message-without-proof
+//
+//	server-first-message + "," +
+//	client-final-message-without-proof
+func AuthMessage(clientFirstMessageBare, serverFirstMessage, clientFinalMessageWithoutProof string) string {
+	return clientFirstMessageBare + "," + serverFirstMessage + "," + clientFinalMessageWithoutProof
+}
 
 // ClientSignature := HMAC(StoredKey, AuthMessage).
 func ClientSignature(storedKey, authMessage string) string {
 	return HMAC(storedKey, authMessage)
 }
 
-// ClientProof     := ClientKey XOR ClientSignature
-// func ClientProof(clientKey, clientSignature string) string {
-// 	return XOR(clientKey, clientSignature)
-// }
+// ClientProof     := ClientKey XOR ClientSignature.
+func ClientProof(clientKey, clientSignature string) string {
+	return XOR(clientKey, clientSignature)
+}
 
 // ServerKey       := HMAC(SaltedPassword, "Server Key").
 func ServerKey(saltedPassword string) string {
 	return HMAC(saltedPassword, "Server Key")
 }
 
-// ServerSignature := HMAC(ServerKey, AuthMessage)
-// func ServerSignature(serverKey, authMessage string) string {
-// 	return HMAC(serverKey, authMessage)
-// }
+// ServerSignature := HMAC(ServerKey, AuthMessage).
+func ServerSignature(serverKey, authMessage string) string {
+	return HMAC(serverKey, authMessage)
+}
