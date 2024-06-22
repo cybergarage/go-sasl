@@ -20,23 +20,87 @@ import (
 
 // RFC 5802 - Salted Challenge Response Authentication Mechanism (SCRAM) SASL and GSS-API Mechanisms
 // https://datatracker.ietf.org/doc/html/rfc5802
-// 2.2. Notation.
+
 // Hi(str, salt, i) is defined as:.
+// 2.2. Notation.
 func Hi(str string, salt string, i int) string {
-	var u string
-	u = HMAC(str, salt+strconv.Itoa(1))
-	for n := 1; n < i; n++ {
-		u = HMAC(str, u)
+	if i <= 1 {
+		return ""
 	}
-	return u
+	u := make([]string, i)
+	u[0] = HMAC(str, salt+strconv.Itoa(1))
+	for n := 1; n < i; n++ {
+		u[n] = HMAC(str, u[n-1])
+	}
+	var hi string
+	hi = u[0]
+	for n := 1; n < i; n++ {
+		hi = XOR(hi, u[n])
+	}
+	return hi
 }
 
-// RFC 5802 - Salted Challenge Response Authentication Mechanism (SCRAM) SASL and GSS-API Mechanisms
-// https://datatracker.ietf.org/doc/html/rfc5802
+// HMAC(key, data) is defined as:.
 // 2.2. Notation
 // RFC - HMAC: Keyed-Hashing for Message Authentication
 // https://datatracker.ietf.org/doc/html/rfc2104
-// HMAC(key, data) is defined as:.
 func HMAC(key, data string) string {
 	return ""
 }
+
+// H(data) is defined as:.
+// 2.2. Notation.
+func H(data string) string {
+	return data
+}
+
+// XOR(a, b) is defined as:.
+// 2.2. Notation.
+func XOR(a, b string) string {
+	return ""
+}
+
+// Normalize(str) is defined as:.
+// 2.2. Notation.
+func Normalize(str string) string {
+	return str
+}
+
+// SaltedPassword  := Hi(Normalize(password), salt, i).
+func SaltedPassword(password, salt string, i int) string {
+	return Hi(Normalize(password), salt, i)
+}
+
+// ClientKey       := HMAC(SaltedPassword, "Client Key").
+func ClientKey(saltedPassword string) string {
+	return HMAC(saltedPassword, "Client Key")
+}
+
+// StoredKey       := H(ClientKey).
+func StoredKey(clientKey string) string {
+	return H(clientKey)
+}
+
+// AuthMessage     := client-first-message-bare + "," +
+// 				   server-first-message + "," +
+// 				   client-final-message-without-proof
+
+// ClientSignature := HMAC(StoredKey, AuthMessage).
+func ClientSignature(storedKey, authMessage string) string {
+	return HMAC(storedKey, authMessage)
+}
+
+// ClientProof     := ClientKey XOR ClientSignature
+// func ClientProof(clientKey, clientSignature string) string {
+// 	return XOR(clientKey, clientSignature)
+// }
+
+// ServerKey       := HMAC(SaltedPassword, "Server Key").
+func ServerKey(saltedPassword string) string {
+	return HMAC(saltedPassword, "Server Key")
+}
+
+// ServerSignature := HMAC(ServerKey, AuthMessage)
+// func ServerSignature(serverKey, authMessage string) string {
+// 	return HMAC(serverKey, authMessage)
+// }
