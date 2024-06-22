@@ -73,15 +73,15 @@ func (msg *Message) ParseStrings(props []string) error {
 		attrName := scramProp[:1]
 		attrValue := scramProp[2:]
 		switch attrName {
-		case UserName,
-			FutureExtensibility,
-			RandomSequence,
-			ChannelBindingData,
-			Salt,
-			IterationCount,
-			ClientProof,
-			ServerSignature,
-			Error:
+		case UserNameAttr,
+			FutureExtensibilityAttr,
+			RandomSequenceAttr,
+			ChannelBindingDataAttr,
+			SaltAttr,
+			IterationCountAttr,
+			ClientProofAttr,
+			ServerSignatureAttr,
+			ErrorAttr:
 			prop := NewAttribute(attrName, attrValue)
 			msg.AttributeMap[attrName] = prop
 		default:
