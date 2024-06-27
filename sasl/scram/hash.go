@@ -22,6 +22,7 @@ import (
 // HashFunc is a function that returns a hash.Hash.
 type HashFunc = func() hash.Hash
 
+// HashSHA256 returns a new SHA-256 hash function.
 func HashSHA256() HashFunc {
 	return sha256.New
 }
