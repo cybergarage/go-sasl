@@ -16,18 +16,9 @@ package scram
 
 import (
 	"crypto/hmac"
-	"crypto/sha256"
 	"encoding/hex"
-	"hash"
 	"strconv"
 )
-
-// HashFunc is a function that returns a hash.Hash.
-type HashFunc = func() hash.Hash
-
-func HashSHA256() HashFunc {
-	return sha256.New
-}
 
 // RFC 5802 - Salted Challenge Response Authentication Mechanism (SCRAM) SASL and GSS-API Mechanisms
 // https://datatracker.ietf.org/doc/html/rfc5802
