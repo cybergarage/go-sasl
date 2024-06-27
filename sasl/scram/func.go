@@ -15,6 +15,9 @@
 package scram
 
 import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
 	"strconv"
 )
 
@@ -42,10 +45,13 @@ func Hi(str string, salt string, i int) string {
 
 // HMAC(key, data) is defined as:.
 // 2.2. Notation
-// RFC - HMAC: Keyed-Hashing for Message Authentication
+// RFC 2104　- HMAC: Keyed-Hashing for Message Authentication
 // https://datatracker.ietf.org/doc/html/rfc2104
 func HMAC(key, data string) string {
-	return ""
+	mac := hmac.New(sha256.New, []byte(key))
+	mac.Write([]byte(data))
+	signByte := mac.Sum(nil)
+	return hex.EncodeToString(signByte)
 }
 
 // H(data) is defined as:.
