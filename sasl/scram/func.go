@@ -18,22 +18,30 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
+	"hash"
 	"strconv"
 )
+
+// HashFunc is a function that returns a hash.Hash.
+type HashFunc = func() hash.Hash
+
+func HashSHA256() HashFunc {
+	return sha256.New
+}
 
 // RFC 5802 - Salted Challenge Response Authentication Mechanism (SCRAM) SASL and GSS-API Mechanisms
 // https://datatracker.ietf.org/doc/html/rfc5802
 
 // Hi(str, salt, i) is defined as:.
 // 2.2. Notation.
-func Hi(str string, salt string, i int) string {
+func Hi(h HashFunc, str string, salt string, i int) string {
 	if i <= 1 {
 		return ""
 	}
 	u := make([]string, i)
-	u[0] = HMAC(str, salt+strconv.Itoa(1))
+	u[0] = HMAC(h, str, salt+strconv.Itoa(1))
 	for n := 1; n < i; n++ {
-		u[n] = HMAC(str, u[n-1])
+		u[n] = HMAC(h, str, u[n-1])
 	}
 	var hi string
 	hi = u[0]
@@ -47,11 +55,11 @@ func Hi(str string, salt string, i int) string {
 // 2.2. Notation
 // RFC 2104　- HMAC: Keyed-Hashing for Message Authentication
 // https://datatracker.ietf.org/doc/html/rfc2104
-func HMAC(key, data string) string {
-	mac := hmac.New(sha256.New, []byte(key))
+func HMAC(h HashFunc, key string, data string) string {
+	mac := hmac.New(h, []byte(key))
 	mac.Write([]byte(data))
-	signByte := mac.Sum(nil)
-	return hex.EncodeToString(signByte)
+	signedByte := mac.Sum(nil)
+	return hex.EncodeToString(signedByte)
 }
 
 // H(data) is defined as:.
@@ -81,13 +89,13 @@ func Normalize(str string) string {
 }
 
 // SaltedPassword  := Hi(Normalize(password), salt, i).
-func SaltedPassword(password, salt string, i int) string {
-	return Hi(Normalize(password), salt, i)
+func SaltedPassword(h HashFunc, password string, salt string, i int) string {
+	return Hi(h, Normalize(password), salt, i)
 }
 
 // ClientKey       := HMAC(SaltedPassword, "Client Key").
-func ClientKey(saltedPassword string) string {
-	return HMAC(saltedPassword, "Client Key")
+func ClientKey(h HashFunc, saltedPassword string) string {
+	return HMAC(h, saltedPassword, "Client Key")
 }
 
 // StoredKey       := H(ClientKey).
@@ -104,8 +112,8 @@ func AuthMessage(clientFirstMessageBare, serverFirstMessage, clientFinalMessageW
 }
 
 // ClientSignature := HMAC(StoredKey, AuthMessage).
-func ClientSignature(storedKey, authMessage string) string {
-	return HMAC(storedKey, authMessage)
+func ClientSignature(h HashFunc, storedKey, authMessage string) string {
+	return HMAC(h, storedKey, authMessage)
 }
 
 // ClientProof     := ClientKey XOR ClientSignature.
@@ -114,11 +122,11 @@ func ClientProof(clientKey, clientSignature string) string {
 }
 
 // ServerKey       := HMAC(SaltedPassword, "Server Key").
-func ServerKey(saltedPassword string) string {
-	return HMAC(saltedPassword, "Server Key")
+func ServerKey(h HashFunc, saltedPassword string) string {
+	return HMAC(h, saltedPassword, "Server Key")
 }
 
 // ServerSignature := HMAC(ServerKey, AuthMessage).
-func ServerSignature(serverKey, authMessage string) string {
-	return HMAC(serverKey, authMessage)
+func ServerSignature(h HashFunc, serverKey, authMessage string) string {
+	return HMAC(h, serverKey, authMessage)
 }
