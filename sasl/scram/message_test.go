@@ -171,3 +171,6 @@ func TestSCRAMMessage(t *testing.T) {
 		}
 	}
 }
+
+func TestSCRAMExchange(t *testing.T) {
+}
