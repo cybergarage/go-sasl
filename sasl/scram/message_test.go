@@ -187,7 +187,7 @@ func TestSCRAMExchange(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		firstClientMsg, err := NewClientFirstMessageFromString(test.firstClientMsgStr)
+		firstClientMsg, err := NewClientFirstMessageFrom(test.firstClientMsgStr)
 		if err != nil {
 			t.Error(err)
 			continue
