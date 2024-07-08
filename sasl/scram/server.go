@@ -15,7 +15,7 @@
 package scram
 
 // NewServerFirstMessageFrom returns a new server first message from the specified client message.
-func NewServerFirstMessageFrom(clientMsg *Message) *Message {
+func NewServerFirstMessageFrom(clientMsg *Message) (*Message, error) {
 	msg := NewMessage()
-	return msg
+	return msg, nil
 }
