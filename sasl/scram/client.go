@@ -19,3 +19,13 @@ func NewClientFirstMessage() *Message {
 	msg := NewMessage()
 	return msg
 }
+
+// NewClientFirstMessageFromString returns a new client first message from the specified string.
+func NewClientFirstMessageFromString(msg string) (*Message, error) {
+	if len(msg) == 0 {
+		return NewClientFirstMessage(), nil
+	}
+	scramMsg := NewClientFirstMessage()
+	err := scramMsg.ParseString(msg)
+	return scramMsg, err
+}
