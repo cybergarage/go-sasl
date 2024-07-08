@@ -173,4 +173,30 @@ func TestSCRAMMessage(t *testing.T) {
 }
 
 func TestSCRAMExchange(t *testing.T) {
+	tests := []struct {
+		firstClientMsgStr string
+	}{
+		// RFC 5802 - Salted Challenge Response Authentication Mechanism (SCRAM) SASL and GSS-API Mechanisms
+		// 5. SCRAM Authentication Exchange
+		{
+			firstClientMsgStr: "",
+		},
+		{
+			firstClientMsgStr: "n,,n=user,r=fyko+d2lbbFgONRv9qkxdawL",
+		},
+	}
+
+	for _, test := range tests {
+		firstClientMsg, err := NewClientFirstMessageFromString(test.firstClientMsgStr)
+		if err != nil {
+			t.Error(err)
+			continue
+		}
+
+		_, err = NewServerFirstMessageFrom(firstClientMsg)
+		if err != nil {
+			t.Error(err)
+			continue
+		}
+	}
 }
