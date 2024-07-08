@@ -35,6 +35,13 @@ func NewMessage() *Message {
 	return msg
 }
 
+// NewMessageFromString returns a new Message from the specified string.
+func NewMessageFromString(msg string) (*Message, error) {
+	scramMsg := NewMessage()
+	err := scramMsg.ParseString(msg)
+	return scramMsg, err
+}
+
 // HasHeader returns true if the message has a GS2 header.
 func (msg *Message) HasHeader() bool {
 	return msg.Header != nil
