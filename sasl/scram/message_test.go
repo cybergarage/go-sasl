@@ -193,7 +193,19 @@ func TestSCRAMExchange(t *testing.T) {
 			continue
 		}
 
-		_, err = NewServerFirstMessageFrom(firstClientMsg)
+		firstServerMsg, err := NewServerFirstMessageFrom(firstClientMsg)
+		if err != nil {
+			t.Error(err)
+			continue
+		}
+
+		finalClientMsg, err := NewClientFinalMessageFrom(firstServerMsg)
+		if err != nil {
+			t.Error(err)
+			continue
+		}
+
+		_, err = NewServerFinalMessageFrom(finalClientMsg)
 		if err != nil {
 			t.Error(err)
 			continue
