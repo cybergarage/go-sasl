@@ -14,14 +14,10 @@
 
 package scram
 
-import (
-	"github.com/cybergarage/go-sasl/sasl/common"
-)
-
-// Attribute represents a GSS property.
-type Attribute = common.Property
-
-// NewAttribute creates a new attribute.
-func NewAttribute(name, value string) Attribute {
-	return common.NewProperty(name, value)
+// Attribute represents a message property.
+type Attribute interface {
+	// Name returns the property name.
+	Name() string
+	// Value returns the property value.
+	Value() string
 }
