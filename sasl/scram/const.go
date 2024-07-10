@@ -15,6 +15,7 @@
 package scram
 
 const (
+	AuthorizationIDAttr     = "a"
 	UserNameAttr            = "n"
 	FutureExtensibilityAttr = "m"
 	RandomSequenceAttr      = "r"
