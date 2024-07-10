@@ -33,6 +33,11 @@ func (m AttributeMap) Attribute(name string) (string, bool) {
 	return prop.Value(), true
 }
 
+// AuthorizationID returns the authorization ID attribute from the map.
+func (m AttributeMap) AuthorizationID() (string, bool) {
+	return m.Attribute(AuthorizationIDAttr)
+}
+
 // UserName returns the user name attribute from the map.
 func (m AttributeMap) UserName() (string, bool) {
 	return m.Attribute(UserNameAttr)
