@@ -27,5 +27,18 @@ func NewClientFirstMessageFrom(msg string) (*Message, error) {
 	}
 	scramMsg := NewClientFirstMessage()
 	err := scramMsg.ParseStringWithHeader(msg)
+	if err != nil {
+		return nil, err
+	}
+
+	// RFC 5802 - Salted Challenge Response Authentication Mechanism (SCRAM) SASL and GSS-API Mechanisms
+	// 5. SCRAM Authentication Exchange
+	// Note that the client's first message will always start with "n", "y", or "p";
+	// otherwise, the message is invalid and authentication MUST fail.
+	cbFlag := scramMsg.CBFlag()
+	if !cbFlag.IsValid() {
+		return nil, newErrInvalidMessage(cbFlag.String())
+	}
+
 	return scramMsg, err
 }
