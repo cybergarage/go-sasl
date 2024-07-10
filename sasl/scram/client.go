@@ -42,3 +42,9 @@ func NewClientFirstMessageFrom(msg string) (*Message, error) {
 
 	return scramMsg, err
 }
+
+// NewClientFinalMessage returns a new client final message from the specified server message.
+func NewClientFinalMessageFrom(serverMsg *Message) (*Message, error) {
+	msg := NewMessage()
+	return msg, nil
+}
