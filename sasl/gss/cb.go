@@ -22,3 +22,17 @@ const (
 	GS2ClientDoesNotSupportCBSFlag = CBFlag('n')
 	GS2ClientSupportsCBSFlag       = CBFlag('y')
 )
+
+// IsValid returns true if the flag is valid.
+func (flag CBFlag) IsValid() bool {
+	switch flag {
+	case GS2ClientSupportsUsedCBSFlag, GS2ClientDoesNotSupportCBSFlag, GS2ClientSupportsCBSFlag:
+		return true
+	}
+	return false
+}
+
+// String returns a string representation of the flag.
+func (flag CBFlag) String() string {
+	return string(flag)
+}
