@@ -37,7 +37,7 @@ func NewClientFirstMessageFrom(msg string) (*Message, error) {
 	// otherwise, the message is invalid and authentication MUST fail.
 	cbFlag := scramMsg.CBFlag()
 	if !cbFlag.IsValid() {
-		return nil, newErrInvalidMessage(cbFlag.String())
+		return nil, newErrInvalidMessage(msg)
 	}
 
 	return scramMsg, err

@@ -12,22 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package common
+package scram
 
-// PropertyMap represents a SASL property map.
-type PropertyMap map[string]Property
-
-// NewPropertyMap returns a new SASL property map.
-func NewPropertyMap() PropertyMap {
-	return PropertyMap{}
+// attribute represents a SCRAM attribute.
+type attribute struct {
+	name  string
+	value string
 }
 
-// AddProperty adds a property to the map.
-func (m PropertyMap) AddProperty(prop Property) {
-	m[prop.Name()] = prop
+// NewAttribute returns a new SASL attribute.
+func NewAttribute(name, value string) Attribute {
+	attr := &attribute{
+		name:  name,
+		value: value,
+	}
+	return attr
 }
 
-// Property returns a property from the map.
-func (m PropertyMap) Property(name string) Property {
-	return m[name]
+// Name returns the attribute name.
+func (attr *attribute) Name() string {
+	return attr.name
+}
+
+// Value returns the attribute value.
+func (attr *attribute) Value() string {
+	return attr.value
 }

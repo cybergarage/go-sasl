@@ -14,9 +14,10 @@
 
 package sasl
 
-import (
-	"github.com/cybergarage/go-sasl/sasl/common"
-)
-
 // Property represents a SASL property.
-type Property = common.Property
+type Property interface {
+	// Name returns the property name.
+	Name() string
+	// Value returns the property value.
+	Value() string
+}
