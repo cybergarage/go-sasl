@@ -17,7 +17,7 @@ package gss
 import (
 	"strings"
 
-	"github.com/cybergarage/go-sasl/sasl/common"
+	"github.com/cybergarage/go-sasl/sasl/util"
 )
 
 // Header represents a GS2 header.
@@ -99,7 +99,7 @@ func (header *Header) AuthzID() string {
 	if len(header.props[2]) < len(GS2AuthzidPrefix) {
 		return ""
 	}
-	return common.DecodeName(header.props[2][2:])
+	return util.DecodeName(header.props[2][2:])
 }
 
 // Equals returns true if the header is equal to the other header.
