@@ -19,3 +19,9 @@ func NewServerFirstMessageFrom(clientMsg *Message) (*Message, error) {
 	msg := NewMessage()
 	return msg, nil
 }
+
+// NewServerFinalMessageFrom returns a new server final message from the specified client message.
+func NewServerFinalMessageFrom(clientMsg *Message) (*Message, error) {
+	msg := NewMessage()
+	return msg, nil
+}
