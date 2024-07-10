@@ -21,6 +21,13 @@ import (
 // ErrInvalidMessage is returned when the message is invalid.
 var ErrInvalidAttribute = errors.New("invalid attribute")
 
+// ErrInvalidMessage is returned when the message is invalid.
+var ErrInvalidMessage = errors.New("invalid message")
+
 func newErrInvalidAttribute(attr string) error {
 	return errors.New("invalid attribute : " + attr)
+}
+
+func newErrInvalidMessage(msg string) error {
+	return errors.New("invalid message : " + msg)
 }
