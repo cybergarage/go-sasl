@@ -16,7 +16,6 @@ package rand
 
 import (
 	"crypto/rand"
-	"encoding/base64"
 )
 
 // RandomSequence represents a random sequence.
@@ -24,12 +23,20 @@ type RandomSequence string
 
 // NewRandomSequence creates a new random sequence.
 func NewRandomSequence(length int) (RandomSequence, error) {
+	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	randomBytes := make([]byte, length)
+
 	_, err := rand.Read(randomBytes)
 	if err != nil {
 		return "", err
 	}
-	return RandomSequence(base64.StdEncoding.EncodeToString(randomBytes)), nil
+
+	result := make([]byte, length)
+	for i, b := range randomBytes {
+		result[i] = charset[b%byte(len(charset))]
+	}
+
+	return RandomSequence(result), nil
 }
 
 // String returns the string of the random sequence.
