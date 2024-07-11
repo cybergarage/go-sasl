@@ -31,4 +31,5 @@ const (
 	initialRandomSequenceLength    = 24
 	additionalRandomSequenceLength = 16
 	defaultIterationCount          = 4096
+	defaultSaltLength              = 16
 )
