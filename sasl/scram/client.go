@@ -14,21 +14,37 @@
 
 package scram
 
-import "github.com/cybergarage/go-sasl/sasl/util"
+import (
+	"strings"
+
+	"github.com/cybergarage/go-sasl/sasl/util"
+	"github.com/cybergarage/go-sasl/sasl/util/rand"
+)
 
 // NewClientFirstMessage returns a new client first message.
-func NewClientFirstMessage() *Message {
+func NewClientFirstMessage() (*Message, error) {
 	msg := NewMessage()
-	return msg
+
+	seq, err := rand.NewRandomSequence(initialRandomSequenceLength)
+	if err != nil {
+		return nil, err
+	}
+	msg.SetRandomSequence(string(seq))
+
+	return msg, nil
 }
 
 // NewClientFirstMessageFrom returns a new client first message from the specified string.
 func NewClientFirstMessageFrom(msg string) (*Message, error) {
 	if len(msg) == 0 {
-		return NewClientFirstMessage(), nil
+		return NewClientFirstMessage()
 	}
-	scramMsg := NewClientFirstMessage()
-	err := scramMsg.ParseStringWithHeader(msg)
+
+	scramMsg, err := NewClientFirstMessage()
+	if err != nil {
+		return nil, err
+	}
+	err = scramMsg.ParseStringWithHeader(msg)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +71,21 @@ func NewClientFirstMessageFrom(msg string) (*Message, error) {
 }
 
 // NewClientFinalMessage returns a new client final message from the specified server message.
-func NewClientFinalMessageFrom(serverMsg *Message) (*Message, error) {
+func NewClientFinalMessageFrom(clientFirsttMsg *Message, serverFirsttMsg *Message) (*Message, error) {
+	// RFC 5802 - Salted Challenge Response Authentication Mechanism (SCRAM) SASL and GSS-API Mechanisms
+	// 5.1. SCRAM Attributes
+	clientRS, ok := clientFirsttMsg.RandomSequence()
+	if !ok {
+		return nil, newErrInvalidMessage(clientFirsttMsg.String())
+	}
+	serverRS, ok := serverFirsttMsg.RandomSequence()
+	if !ok {
+		return nil, newErrInvalidMessage(serverFirsttMsg.String())
+	}
+	if !strings.HasPrefix(serverRS, clientRS) {
+		return nil, newErrInvalidMessage(clientFirsttMsg.String())
+	}
+
 	msg := NewMessage()
 	return msg, nil
 }
