@@ -14,14 +14,34 @@
 
 package scram
 
+import (
+	"github.com/cybergarage/go-sasl/sasl/util/rand"
+)
+
 // NewServerFirstMessageFrom returns a new server first message from the specified client message.
 func NewServerFirstMessageFrom(clientMsg *Message) (*Message, error) {
 	msg := NewMessage()
+
+	cr, ok := clientMsg.RandomSequence()
+	if !ok {
+		return nil, newErrInvalidMessage(clientMsg.String())
+	}
+
+	r, err := rand.NewRandomSequence(additionalRandomSequenceLength)
+	if err != nil {
+		return nil, err
+	}
+
+	sr := string(cr) + string(r)
+	msg.SetRandomSequence(sr)
+
+	msg.SetIterationCount(defaultIterationCount)
+
 	return msg, nil
 }
 
 // NewServerFinalMessageFrom returns a new server final message from the specified client message.
-func NewServerFinalMessageFrom(clientMsg *Message) (*Message, error) {
+func NewServerFinalMessageFrom(serverFirstMsg *Message, clientFinaltMsg *Message) (*Message, error) {
 	msg := NewMessage()
 	return msg, nil
 }
