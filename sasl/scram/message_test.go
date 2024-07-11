@@ -199,13 +199,13 @@ func TestSCRAMExchange(t *testing.T) {
 			continue
 		}
 
-		finalClientMsg, err := NewClientFinalMessageFrom(firstServerMsg)
+		finalClientMsg, err := NewClientFinalMessageFrom(firstClientMsg, firstServerMsg)
 		if err != nil {
 			t.Error(err)
 			continue
 		}
 
-		_, err = NewServerFinalMessageFrom(finalClientMsg)
+		_, err = NewServerFinalMessageFrom(firstServerMsg, finalClientMsg)
 		if err != nil {
 			t.Error(err)
 			continue
