@@ -14,6 +14,8 @@
 
 package scram
 
+import "github.com/cybergarage/go-sasl/sasl/util"
+
 // NewClientFirstMessage returns a new client first message.
 func NewClientFirstMessage() *Message {
 	msg := NewMessage()
@@ -33,13 +35,22 @@ func NewClientFirstMessageFrom(msg string) (*Message, error) {
 
 	// RFC 5802 - Salted Challenge Response Authentication Mechanism (SCRAM) SASL and GSS-API Mechanisms
 	// 5. SCRAM Authentication Exchange
-	// Note that the client's first message will always start with "n", "y", or "p";
-	// otherwise, the message is invalid and authentication MUST fail.
 	cbFlag := scramMsg.CBFlag()
 	if !cbFlag.IsValid() {
 		return nil, newErrInvalidMessage(msg)
 	}
-
+	// 5.1. SCRAM Attributes
+	user, ok := scramMsg.AuthorizationID()
+	if !ok {
+		user, ok = scramMsg.UserName()
+		if !ok {
+			return nil, newErrInvalidMessage(msg)
+		}
+	}
+	user = util.DecodeName(user)
+	if len(user) == 0 {
+		return nil, newErrInvalidMessage(msg)
+	}
 	return scramMsg, err
 }
 
