@@ -30,4 +30,5 @@ const (
 const (
 	initialRandomSequenceLength    = 24
 	additionalRandomSequenceLength = 16
+	defaultIterationCount          = 4096
 )
