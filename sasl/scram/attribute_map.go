@@ -14,7 +14,10 @@
 
 package scram
 
-import "strings"
+import (
+	"strconv"
+	"strings"
+)
 
 // AttributeMap represents a SCRAM attribute map.
 type AttributeMap map[string]Attribute
@@ -109,8 +112,8 @@ func (m AttributeMap) SetSalt(value string) {
 }
 
 // SetIterationCount sets the iteration count attribute to the map.
-func (m AttributeMap) SetIterationCount(value string) {
-	m.SetAttribute(IterationCountAttr, value)
+func (m AttributeMap) SetIterationCount(value int) {
+	m.SetAttribute(IterationCountAttr, strconv.Itoa(value))
 }
 
 // SetClientProof sets the client proof attribute to the map.
