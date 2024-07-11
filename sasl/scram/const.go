@@ -26,3 +26,8 @@ const (
 	ServerSignatureAttr     = "v"
 	ErrorAttr               = "e"
 )
+
+const (
+	initialRandomSequenceLength    = 24
+	additionalRandomSequenceLength = 16
+)
