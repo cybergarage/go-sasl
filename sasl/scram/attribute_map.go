@@ -62,8 +62,16 @@ func (m AttributeMap) Salt() (string, bool) {
 }
 
 // IterationCount returns the iteration count attribute from the map.
-func (m AttributeMap) IterationCount() (string, bool) {
-	return m.Attribute(IterationCountAttr)
+func (m AttributeMap) IterationCount() (int, bool) {
+	v, ok := m.Attribute(IterationCountAttr)
+	if !ok {
+		return 0, false
+	}
+	cnt, err := strconv.Atoi(v)
+	if err != nil {
+		return 0, false
+	}
+	return cnt, true
 }
 
 // ClientProof returns the client proof attribute from the map.
