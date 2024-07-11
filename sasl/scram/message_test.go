@@ -23,7 +23,7 @@ func TestSCRAMMessage(t *testing.T) {
 		userName           string
 		randomSequence     string
 		salt               string
-		iterationCount     string
+		iterationCount     int
 		channelBindingData string
 		clientProof        string
 		serverSignature    string
@@ -43,7 +43,7 @@ func TestSCRAMMessage(t *testing.T) {
 				userName:           "user",
 				randomSequence:     "fyko+d2lbbFgONRv9qkxdawL",
 				salt:               "",
-				iterationCount:     "",
+				iterationCount:     0,
 				channelBindingData: "",
 				clientProof:        "",
 				serverSignature:    "",
@@ -56,7 +56,7 @@ func TestSCRAMMessage(t *testing.T) {
 				userName:           "",
 				randomSequence:     "fyko+d2lbbFgONRv9qkxdawL3rfcNHYJY1ZVvWVs7j",
 				salt:               "QSXCR+Q6sek8bf92",
-				iterationCount:     "4096",
+				iterationCount:     4096,
 				channelBindingData: "",
 				clientProof:        "",
 				serverSignature:    "",
@@ -69,7 +69,7 @@ func TestSCRAMMessage(t *testing.T) {
 				userName:           "",
 				randomSequence:     "fyko+d2lbbFgONRv9qkxdawL3rfcNHYJY1ZVvWVs7j",
 				salt:               "",
-				iterationCount:     "",
+				iterationCount:     0,
 				channelBindingData: "biws",
 				clientProof:        "v0X8v3Bz2T0CJGbJQyF0X+HI4Ts=",
 				serverSignature:    "",
@@ -82,7 +82,7 @@ func TestSCRAMMessage(t *testing.T) {
 				userName:           "",
 				randomSequence:     "",
 				salt:               "",
-				iterationCount:     "",
+				iterationCount:     0,
 				channelBindingData: "",
 				clientProof:        "",
 				serverSignature:    "rmF9pqV8S7suAoZWja4dJRkFsKQ=",
@@ -125,10 +125,10 @@ func TestSCRAMMessage(t *testing.T) {
 			}
 		}
 
-		if 0 < len(test.expected.iterationCount) {
+		if 0 < test.expected.iterationCount {
 			v, ok := msg.IterationCount()
 			if !ok || v != test.expected.iterationCount {
-				t.Errorf("iterationCount = %s, want %s", v, test.expected.iterationCount)
+				t.Errorf("iterationCount = %d, want %d", v, test.expected.iterationCount)
 			}
 		}
 
