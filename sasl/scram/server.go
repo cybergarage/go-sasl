@@ -26,14 +26,18 @@ func NewServerFirstMessageFrom(clientMsg *Message) (*Message, error) {
 	if !ok {
 		return nil, newErrInvalidMessage(clientMsg.String())
 	}
-
 	r, err := rand.NewRandomSequence(additionalRandomSequenceLength)
 	if err != nil {
 		return nil, err
 	}
-
 	sr := string(cr) + string(r)
 	msg.SetRandomSequence(sr)
+
+	salt, err := rand.NewSalt(defaultSaltLength)
+	if err != nil {
+		return nil, err
+	}
+	msg.SetSalt(salt)
 
 	msg.SetIterationCount(defaultIterationCount)
 
