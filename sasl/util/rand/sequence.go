@@ -14,13 +14,25 @@
 
 package rand
 
+import (
+	"crypto/rand"
+	"encoding/base64"
+)
+
+// RandomSequence represents a random sequence.
 type RandomSequence string
 
 // NewRandomSequence creates a new random sequence.
-func NewRandomSequence() RandomSequence {
-	return RandomSequence("123")
+func NewRandomSequence(length int) (RandomSequence, error) {
+	randomBytes := make([]byte, length)
+	_, err := rand.Read(randomBytes)
+	if err != nil {
+		return "", err
+	}
+	return RandomSequence(base64.StdEncoding.EncodeToString(randomBytes)), nil
 }
 
+// String returns the string of the random sequence.
 func (seq RandomSequence) String() string {
 	return string(seq)
 }
