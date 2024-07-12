@@ -73,15 +73,9 @@ func XOR(a, b string) string {
 	return string(result)
 }
 
-// Normalize(str) is defined as:.
-// 2.2. Notation.
-func Normalize(str string) string {
-	return str
-}
-
 // SaltedPassword  := Hi(Normalize(password), salt, i).
 func SaltedPassword(h HashFunc, password string, salt string, i int) string {
-	return Hi(h, Normalize(password), salt, i)
+	return Hi(h, password, salt, i)
 }
 
 // ClientKey       := HMAC(SaltedPassword, "Client Key").
