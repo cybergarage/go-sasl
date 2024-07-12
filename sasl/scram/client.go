@@ -71,9 +71,12 @@ func NewClientFirstMessageFrom(msg string) (*Message, error) {
 }
 
 // NewClientFinalMessage returns a new client final message from the specified server message.
-func NewClientFinalMessageFrom(clientFirsttMsg *Message, serverFirsttMsg *Message) (*Message, error) {
+func NewClientFinalMessageFrom(hashFunc HashFunc, password string, clientFirsttMsg *Message, serverFirsttMsg *Message) (*Message, error) {
+	msg := NewMessage()
+
 	// RFC 5802 - Salted Challenge Response Authentication Mechanism (SCRAM) SASL and GSS-API Mechanisms
 	// 5.1. SCRAM Attributes
+
 	clientRS, ok := clientFirsttMsg.RandomSequence()
 	if !ok {
 		return nil, newErrInvalidMessage(clientFirsttMsg.String())
@@ -85,7 +88,25 @@ func NewClientFinalMessageFrom(clientFirsttMsg *Message, serverFirsttMsg *Messag
 	if !strings.HasPrefix(serverRS, clientRS) {
 		return nil, newErrInvalidMessage(clientFirsttMsg.String())
 	}
+	msg.SetRandomSequence(serverRS)
 
-	msg := NewMessage()
+	// SaltedPassword
+
+	salt, ok := serverFirsttMsg.Salt()
+	if !ok {
+		return nil, newErrInvalidMessage(serverFirsttMsg.String())
+	}
+
+	ic, ok := serverFirsttMsg.IterationCount()
+	if !ok {
+		return nil, newErrInvalidMessage(serverFirsttMsg.String())
+	}
+
+	saltedPassword := SaltedPassword(hashFunc, password, salt, ic)
+
+	// ClientKey
+
+	HMAC(hashFunc, saltedPassword, "Client Key")
+
 	return msg, nil
 }

@@ -173,6 +173,9 @@ func TestSCRAMMessage(t *testing.T) {
 }
 
 func TestSCRAMExchange(t *testing.T) {
+	hashFunc := HashSHA256()
+	passwd := "password"
+
 	tests := []struct {
 		firstClientMsgStr string
 	}{
@@ -199,7 +202,7 @@ func TestSCRAMExchange(t *testing.T) {
 			continue
 		}
 
-		finalClientMsg, err := NewClientFinalMessageFrom(firstClientMsg, firstServerMsg)
+		finalClientMsg, err := NewClientFinalMessageFrom(hashFunc, passwd, firstClientMsg, firstServerMsg)
 		if err != nil {
 			t.Error(err)
 			continue
