@@ -23,7 +23,13 @@ type RandomSequence string
 
 // NewRandomSequence creates a new random sequence.
 func NewRandomSequence(length int) (RandomSequence, error) {
-	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	// RFC 5802 - Salted Challenge Response Authentication Mechanism (SCRAM) SASL and GSS-API Mechanisms
+	// https://datatracker.ietf.org/doc/html/rfc5802
+	// 5.1. SCRAM Attributes
+	// RFC 4086 - Randomness Requirements for Security
+	// https://datatracker.ietf.org/doc/html/rfc4086
+
+	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+{}[]|:;<>.?~"
 	randomBytes := make([]byte, length)
 
 	_, err := rand.Read(randomBytes)
