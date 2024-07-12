@@ -9,6 +9,7 @@
   - [RFC 5801: Using Generic Security Service Application Program Interface (GSS-API) Mechanisms in Simple Authentication and Security Layer (SASL): The GS2 Mechanism Family](https://www.rfc-editor.org/rfc/rfc5801)
   - [RFC 5802 - Salted Challenge Response Authentication Mechanism (SCRAM) SASL and GSS-API Mechanisms](https://datatracker.ietf.org/doc/html/rfc5802)
   - [RFC 4013 - SASLprep: Stringprep Profile for User Names and Passwords](https://datatracker.ietf.org/doc/html/rfc4013)
+   - [RFC 4086 - Randomness Requirements for Security](https://datatracker.ietf.org/doc/html/rfc4086)
   - [RFC 7677 - SCRAM-SHA-256 and SCRAM-SHA-256-PLUS Simple Authentication and Security Layer (SASL) Mechanisms](https://datatracker.ietf.org/doc/html/rfc7677)
 - [Java SASL API](https://docs.oracle.com/javase/jp/8/docs/technotes/guides/security/sasl/sasl-refguide.html)
 - [Cyrus SASL (libsasl)](https://www.cyrusimap.org/sasl/)
