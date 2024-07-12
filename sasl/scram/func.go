@@ -18,6 +18,8 @@ import (
 	"crypto/hmac"
 	"encoding/hex"
 	"strconv"
+
+	"github.com/cybergarage/go-sasl/sasl/prep"
 )
 
 // RFC 5802 - Salted Challenge Response Authentication Mechanism (SCRAM) SASL and GSS-API Mechanisms
@@ -74,8 +76,12 @@ func XOR(a, b string) string {
 }
 
 // SaltedPassword  := Hi(Normalize(password), salt, i).
-func SaltedPassword(h HashFunc, password string, salt string, i int) string {
-	return Hi(h, password, salt, i)
+func SaltedPassword(h HashFunc, password string, salt string, i int) (string, error) {
+	prepPassword, err := prep.Normalize(password)
+	if err != nil {
+		return "", err
+	}
+	return Hi(h, prepPassword, salt, i), nil
 }
 
 // ClientKey       := HMAC(SaltedPassword, "Client Key").

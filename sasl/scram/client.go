@@ -102,7 +102,10 @@ func NewClientFinalMessageFrom(hashFunc HashFunc, password string, clientFirsttM
 		return nil, newErrInvalidMessage(serverFirsttMsg.String())
 	}
 
-	saltedPassword := SaltedPassword(hashFunc, password, salt, ic)
+	saltedPassword, err := SaltedPassword(hashFunc, password, salt, ic)
+	if err != nil {
+		return nil, err
+	}
 
 	// ClientKey
 
