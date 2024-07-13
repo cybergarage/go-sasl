@@ -78,8 +78,8 @@ func WithHashFunc(hashFunc HashFunc) func(*Client) error {
 	}
 }
 
-// NewClientFirstMessage returns a new client first message.
-func NewClientFirstMessage() (*Message, error) {
+// FirstMessage returns the first message.
+func (client *Client) FirstMessage() (*Message, error) {
 	msg := NewMessage()
 
 	seq, err := rand.NewRandomSequence(initialRandomSequenceLength)
