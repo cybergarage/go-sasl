@@ -27,8 +27,8 @@ func NewServer() *Server {
 	return &Server{}
 }
 
-// NewServerFirstMessageFrom returns a new server first message from the specified client message.
-func NewServerFirstMessageFrom(clientMsg *Message) (*Message, error) {
+// FirstMessageFrom returns a new server first message from the specified client message.
+func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
 	msg := NewMessage()
 
 	cr, ok := clientMsg.RandomSequence()
@@ -53,8 +53,8 @@ func NewServerFirstMessageFrom(clientMsg *Message) (*Message, error) {
 	return msg, nil
 }
 
-// NewServerFinalMessageFrom returns a new server final message from the specified client message.
-func NewServerFinalMessageFrom(serverFirstMsg *Message, clientFinaltMsg *Message) (*Message, error) {
+// FinalMessageFrom returns a new server final message from the specified client final message.
+func (server *Server) FinalMessageFrom(clientFinaltMsg *Message) (*Message, error) {
 	msg := NewMessage()
 	return msg, nil
 }
