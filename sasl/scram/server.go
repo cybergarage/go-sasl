@@ -18,6 +18,15 @@ import (
 	"github.com/cybergarage/go-sasl/sasl/util/rand"
 )
 
+// Server represents a SCRAM server.
+type Server struct {
+}
+
+// NewServer returns a new SCRAM server.
+func NewServer() *Server {
+	return &Server{}
+}
+
 // NewServerFirstMessageFrom returns a new server first message from the specified client message.
 func NewServerFirstMessageFrom(clientMsg *Message) (*Message, error) {
 	msg := NewMessage()
