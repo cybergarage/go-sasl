@@ -26,13 +26,26 @@ type Message struct {
 	AttributeMap
 }
 
+// MessageOption represents a message option.
+type MessageOption func(*Message)
+
 // NewMessage returns a new Message.
-func NewMessage() *Message {
+func NewMessage(opts ...MessageOption) *Message {
 	msg := &Message{
 		Header:       nil,
 		AttributeMap: NewAttributeMap(),
 	}
+	for _, opt := range opts {
+		opt(msg)
+	}
 	return msg
+}
+
+// WithHeader returns an option to set the GS2 header.
+func WithHeader(header *gss.Header) MessageOption {
+	return func(msg *Message) {
+		msg.Header = header
+	}
 }
 
 // NewMessageFromString returns a new Message from the specified string.
