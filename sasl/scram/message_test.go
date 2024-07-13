@@ -192,8 +192,15 @@ func TestSCRAMExchange(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		client, err := NewClient(
-			WithAuthzID(authzID), WithUsername(user), WithPassword(passwd), WithHashFunc(hashFunc))
+		var err error
+		var client *Client
+
+		if 0 < len(test.firstClientMsgStr) {
+			client, err = NewClientFromMessage(test.firstClientMsgStr)
+		} else {
+			client, err = NewClient(
+				WithAuthzID(authzID), WithUsername(user), WithPassword(passwd), WithHashFunc(hashFunc))
+		}
 		if err != nil {
 			t.Error(err)
 			continue
@@ -203,12 +210,6 @@ func TestSCRAMExchange(t *testing.T) {
 			t.Error(err)
 			continue
 		}
-		firstClientMsg, err = NewClientFirstMessageFrom(test.firstClientMsgStr)
-		if err != nil {
-			t.Error(err)
-			continue
-		}
-
 		firstServerMsg, err := NewServerFirstMessageFrom(firstClientMsg)
 		if err != nil {
 			t.Error(err)
