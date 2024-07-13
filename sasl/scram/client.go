@@ -112,6 +112,14 @@ func NewClientFromMessage(msgStr string) (*Client, error) {
 func (client *Client) FirstMessage() (*Message, error) {
 	msg := NewMessage()
 
+	if 0 < len(client.authzID) {
+		msg.SetAuthzID(util.EncodeName(client.authzID))
+	}
+
+	if 0 < len(client.username) {
+		msg.SetUserName(util.EncodeName(client.username))
+	}
+
 	seq, err := rand.NewRandomSequence(initialRandomSequenceLength)
 	if err != nil {
 		return nil, err
