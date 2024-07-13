@@ -197,13 +197,17 @@ func TestSCRAMExchange(t *testing.T) {
 
 		if 0 < len(test.firstClientMsgStr) {
 			client, err = NewClientFromMessage(test.firstClientMsgStr)
+			if err != nil {
+				t.Error(err)
+				continue
+			}
 		} else {
 			client, err = NewClient(
 				WithAuthzID(authzID), WithUsername(user), WithPassword(passwd), WithHashFunc(hashFunc))
-		}
-		if err != nil {
-			t.Error(err)
-			continue
+			if err != nil {
+				t.Error(err)
+				continue
+			}
 		}
 		firstClientMsg, err := client.FirstMessage()
 		if err != nil {
