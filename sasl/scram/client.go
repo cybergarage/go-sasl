@@ -24,10 +24,11 @@ import (
 
 // Client is a SCRAM client.
 type Client struct {
-	authzID  string
-	username string
-	password string
-	hashFunc HashFunc
+	authzID   string
+	username  string
+	password  string
+	hashFunc  HashFunc
+	firsttMsg *Message
 }
 
 type ClientOption func(*Client) error
@@ -35,10 +36,11 @@ type ClientOption func(*Client) error
 // NewClient returns a new SCRAM client with options.
 func NewClient(opts ...ClientOption) (*Client, error) {
 	client := &Client{
-		authzID:  "",
-		username: "",
-		password: "",
-		hashFunc: HashSHA256(),
+		authzID:   "",
+		username:  "",
+		password:  "",
+		hashFunc:  HashSHA256(),
+		firsttMsg: nil,
 	}
 	for _, opt := range opts {
 		err := opt(client)
@@ -139,26 +141,32 @@ func (client *Client) FirstMessage() (*Message, error) {
 	}
 	msg.SetRandomSequence(string(seq))
 
+	client.firsttMsg = msg
+
 	return msg, nil
 }
 
-// NewClientFinalMessage returns a new client final message from the specified server message.
-func NewClientFinalMessageFrom(hashFunc HashFunc, password string, clientFirsttMsg *Message, serverFirsttMsg *Message) (*Message, error) {
+// FinalMessageFrom returns the final message from the specified server first message.
+func (client *Client) FinalMessageFrom(serverFirsttMsg *Message) (*Message, error) {
+	if client.firsttMsg == nil {
+		return nil, newErrInvalidMessage("First message is not set")
+	}
+
 	msg := NewMessage()
 
 	// RFC 5802 - Salted Challenge Response Authentication Mechanism (SCRAM) SASL and GSS-API Mechanisms
 	// 5.1. SCRAM Attributes
 
-	clientRS, ok := clientFirsttMsg.RandomSequence()
+	clientRS, ok := client.firsttMsg.RandomSequence()
 	if !ok {
-		return nil, newErrInvalidMessage(clientFirsttMsg.String())
+		return nil, newErrInvalidMessage(client.firsttMsg.String())
 	}
 	serverRS, ok := serverFirsttMsg.RandomSequence()
 	if !ok {
 		return nil, newErrInvalidMessage(serverFirsttMsg.String())
 	}
 	if !strings.HasPrefix(serverRS, clientRS) {
-		return nil, newErrInvalidMessage(clientFirsttMsg.String())
+		return nil, newErrInvalidMessage(client.firsttMsg.String())
 	}
 	msg.SetRandomSequence(serverRS)
 
@@ -174,14 +182,14 @@ func NewClientFinalMessageFrom(hashFunc HashFunc, password string, clientFirsttM
 		return nil, newErrInvalidMessage(serverFirsttMsg.String())
 	}
 
-	saltedPassword, err := SaltedPassword(hashFunc, password, salt, ic)
+	saltedPassword, err := SaltedPassword(client.hashFunc, client.password, salt, ic)
 	if err != nil {
 		return nil, err
 	}
 
 	// ClientKey
 
-	HMAC(hashFunc, saltedPassword, "Client Key")
+	HMAC(client.hashFunc, saltedPassword, "Client Key")
 
 	return msg, nil
 }
