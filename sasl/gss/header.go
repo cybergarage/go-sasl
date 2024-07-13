@@ -28,7 +28,7 @@ type Header struct {
 // NewHeader creates a new header.
 func NewHeader() *Header {
 	return &Header{
-		props: []string{},
+		props: make([]string, 3),
 	}
 }
 
