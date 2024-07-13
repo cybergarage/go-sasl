@@ -79,6 +79,16 @@ func (header *Header) NonStdFlag() bool {
 	return header.props[0] == GS2NonStdFlag
 }
 
+// SetCBFlag sets the channel binding flag.
+func (header *Header) SetCBFlag(flag CBFlag) {
+	header.props[1] = string(flag)
+}
+
+// SetCBFlagWithName sets the channel binding flag with the name.
+func (header *Header) SetCBFlagWithName(flag CBFlag, name string) {
+	header.props[1] = string(flag) + "=" + name
+}
+
 // CBFlag returns the channel binding flag.
 func (header *Header) CBFlag() CBFlag {
 	if len(header.props[1]) < 1 {
@@ -92,6 +102,11 @@ func (header *Header) CBName() string {
 		return ""
 	}
 	return header.props[1][2:]
+}
+
+// SetAuthzID sets the authorization identity.
+func (header *Header) SetAuthzID(authzID string) {
+	header.props[2] = GS2AuthzidPrefix + util.EncodeName(authzID)
 }
 
 // AuthzID returns the authorization identity.
