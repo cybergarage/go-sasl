@@ -221,7 +221,7 @@ func TestSCRAMExchange(t *testing.T) {
 			continue
 		}
 
-		finalClientMsg, err := NewClientFinalMessageFrom(hashFunc, passwd, firstClientMsg, firstServerMsg)
+		finalClientMsg, err := client.FinalMessageFrom(firstServerMsg)
 		if err != nil {
 			t.Error(err)
 			continue
