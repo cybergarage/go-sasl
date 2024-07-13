@@ -174,6 +174,8 @@ func TestSCRAMMessage(t *testing.T) {
 
 func TestSCRAMExchange(t *testing.T) {
 	hashFunc := HashSHA256()
+	authzID := ""
+	user := "user"
 	passwd := "password"
 
 	tests := []struct {
@@ -190,7 +192,18 @@ func TestSCRAMExchange(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		firstClientMsg, err := NewClientFirstMessageFrom(test.firstClientMsgStr)
+		client, err := NewClient(
+			WithAuthzID(authzID), WithUsername(user), WithPassword(passwd), WithHashFunc(hashFunc))
+		if err != nil {
+			t.Error(err)
+			continue
+		}
+		firstClientMsg, err := client.FirstMessage()
+		if err != nil {
+			t.Error(err)
+			continue
+		}
+		firstClientMsg, err = NewClientFirstMessageFrom(test.firstClientMsgStr)
 		if err != nil {
 			t.Error(err)
 			continue
