@@ -83,26 +83,38 @@ func WithHashFunc(hashFunc HashFunc) ClientOption {
 
 // NewClientFromMessage returns a new SCRAM client from the specified message.
 func NewClientFromMessage(msgStr string) (*Client, error) {
-	scramMsg, err := NewMessageFromString(msgStr)
+	msg, err := NewMessageFromString(msgStr)
 	if err != nil {
 		return nil, err
 	}
+	return newClientWithMessage(msg)
+}
 
+// NewClientFromMessageWithHeader returns a new SCRAM client from the specified message with the GS2 header.
+func NewClientFromMessageWithHeader(msgStr string) (*Client, error) {
+	msg, err := NewMessageFromStringWithHeader(msgStr)
+	if err != nil {
+		return nil, err
+	}
+	return newClientWithMessage(msg)
+}
+
+func newClientWithMessage(msg *Message) (*Client, error) {
 	// RFC 5802 - Salted Challenge Response Authentication Mechanism (SCRAM) SASL and GSS-API Mechanisms
 	// 5. SCRAM Authentication Exchange
-	cbFlag := scramMsg.CBFlag()
+	cbFlag := msg.CBFlag()
 	if !cbFlag.IsValid() {
-		return nil, newErrInvalidMessage(msgStr)
+		return nil, newErrInvalidMessage(msg.String())
 	}
 
 	opts := []ClientOption{}
 
 	// 5.1. SCRAM Attributes
-	authzID, ok := scramMsg.AuthorizationID()
+	authzID, ok := msg.AuthorizationID()
 	if ok {
 		opts = append(opts, WithAuthzID(util.DecodeName(authzID)))
 	}
-	user, ok := scramMsg.UserName()
+	user, ok := msg.UserName()
 	if ok {
 		opts = append(opts, WithUsername(util.DecodeName(user)))
 	}
