@@ -17,6 +17,7 @@ package scram
 import (
 	"strings"
 
+	"github.com/cybergarage/go-sasl/sasl/gss"
 	"github.com/cybergarage/go-sasl/sasl/util"
 	"github.com/cybergarage/go-sasl/sasl/util/rand"
 )
@@ -110,7 +111,7 @@ func NewClientFromMessage(msgStr string) (*Client, error) {
 
 // FirstMessage returns the first message.
 func (client *Client) FirstMessage() (*Message, error) {
-	msg := NewMessage()
+	msg := NewMessage(WithHeader(gss.NewHeader()))
 
 	if 0 < len(client.authzID) {
 		msg.SetAuthzID(util.EncodeName(client.authzID))
