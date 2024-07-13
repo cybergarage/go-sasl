@@ -196,7 +196,7 @@ func TestSCRAMExchange(t *testing.T) {
 		var client *Client
 
 		if 0 < len(test.firstClientMsgStr) {
-			client, err = NewClientFromMessage(test.firstClientMsgStr)
+			client, err = NewClientFromMessageWithHeader(test.firstClientMsgStr)
 			if err != nil {
 				t.Error(err)
 				continue
