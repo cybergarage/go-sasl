@@ -1,5 +1,12 @@
 # go-sasl
 
+![](https://img.shields.io/badge/status-Work%20In%20Progress-8A2BE2)
+![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/cybergarage/go-sasl)
+[![test](https://github.com/cybergarage/go-sasl/actions/workflows/make.yml/badge.svg)](https://github.com/cybergarage/go-sasl/actions/workflows/make.yml)
+[![Go Reference](https://pkg.go.dev/badge/github.com/cybergarage/go-sasl.svg)](https://pkg.go.dev/github.com/cybergarage/go-sasl)
+ [![Go Report Card](https://img.shields.io/badge/go%20report-A%2B-brightgreen)](https://goreportcard.com/report/github.com/cybergarage/go-sasl) 
+ [![codecov](https://codecov.io/gh/cybergarage/go-sasl/graph/badge.svg?token=OCU5V0H3OX)](https://codecov.io/gh/cybergarage/go-sasl)
+
 `go-sasl` is a library for implementing [SASL](https://datatracker.ietf.org/doc/html/rfc4422) authentication in Go.
 
 ## References
