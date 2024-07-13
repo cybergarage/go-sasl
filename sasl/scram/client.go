@@ -80,6 +80,34 @@ func WithHashFunc(hashFunc HashFunc) ClientOption {
 	}
 }
 
+// NewClientFromMessage returns a new SCRAM client from the specified message.
+func NewClientFromMessage(msgStr string) (*Client, error) {
+	scramMsg, err := NewMessageFromString(msgStr)
+	if err != nil {
+		return nil, err
+	}
+
+	// RFC 5802 - Salted Challenge Response Authentication Mechanism (SCRAM) SASL and GSS-API Mechanisms
+	// 5. SCRAM Authentication Exchange
+	cbFlag := scramMsg.CBFlag()
+	if !cbFlag.IsValid() {
+		return nil, newErrInvalidMessage(msgStr)
+	}
+
+	opts := []ClientOption{}
+
+	// 5.1. SCRAM Attributes
+	authzID, ok := scramMsg.AuthorizationID()
+	if ok {
+		opts = append(opts, WithAuthzID(util.DecodeName(authzID)))
+	}
+	user, ok := scramMsg.UserName()
+	if ok {
+		opts = append(opts, WithUsername(util.DecodeName(user)))
+	}
+	return NewClient(opts...)
+}
+
 // FirstMessage returns the first message.
 func (client *Client) FirstMessage() (*Message, error) {
 	msg := NewMessage()
@@ -91,42 +119,6 @@ func (client *Client) FirstMessage() (*Message, error) {
 	msg.SetRandomSequence(string(seq))
 
 	return msg, nil
-}
-
-// NewClientFirstMessageFrom returns a new client first message from the specified string.
-func NewClientFirstMessageFrom(msg string) (*Message, error) {
-	if len(msg) == 0 {
-		return NewClientFirstMessage()
-	}
-
-	scramMsg, err := NewClientFirstMessage()
-	if err != nil {
-		return nil, err
-	}
-	err = scramMsg.ParseStringWithHeader(msg)
-	if err != nil {
-		return nil, err
-	}
-
-	// RFC 5802 - Salted Challenge Response Authentication Mechanism (SCRAM) SASL and GSS-API Mechanisms
-	// 5. SCRAM Authentication Exchange
-	cbFlag := scramMsg.CBFlag()
-	if !cbFlag.IsValid() {
-		return nil, newErrInvalidMessage(msg)
-	}
-	// 5.1. SCRAM Attributes
-	user, ok := scramMsg.AuthorizationID()
-	if !ok {
-		user, ok = scramMsg.UserName()
-		if !ok {
-			return nil, newErrInvalidMessage(msg)
-		}
-	}
-	user = util.DecodeName(user)
-	if len(user) == 0 {
-		return nil, newErrInvalidMessage(msg)
-	}
-	return scramMsg, err
 }
 
 // NewClientFinalMessage returns a new client final message from the specified server message.
