@@ -30,7 +30,7 @@ type Client struct {
 }
 
 // NewClient returns a new SCRAM client with options.
-func NewClient(opts ...func(*Client)) *Client {
+func NewClient(opts ...(func(*Client) error)) (*Client, error) {
 	client := &Client{
 		authzID:  "",
 		username: "",
@@ -38,36 +38,43 @@ func NewClient(opts ...func(*Client)) *Client {
 		hashFunc: HashSHA256(),
 	}
 	for _, opt := range opts {
-		opt(client)
+		err := opt(client)
+		if err != nil {
+			return nil, err
+		}
 	}
-	return client
+	return client, nil
 }
 
 // WithAuthzID returns an option to set the authorization ID.
-func WithAuthzID(authzID string) func(*Client) {
-	return func(client *Client) {
+func WithAuthzID(authzID string) func(*Client) error {
+	return func(client *Client) error {
 		client.authzID = authzID
+		return nil
 	}
 }
 
 // WithUsername returns an option to set the username.
-func WithUsername(username string) func(*Client) {
-	return func(client *Client) {
+func WithUsername(username string) func(*Client) error {
+	return func(client *Client) error {
 		client.username = username
+		return nil
 	}
 }
 
 // WithPassword returns an option to set the password.
-func WithPassword(password string) func(*Client) {
-	return func(client *Client) {
+func WithPassword(password string) func(*Client) error {
+	return func(client *Client) error {
 		client.password = password
+		return nil
 	}
 }
 
 // WithHashFunc returns an option to set the hash function.
-func WithHashFunc(hashFunc HashFunc) func(*Client) {
-	return func(client *Client) {
+func WithHashFunc(hashFunc HashFunc) func(*Client) error {
+	return func(client *Client) error {
 		client.hashFunc = hashFunc
+		return nil
 	}
 }
 
