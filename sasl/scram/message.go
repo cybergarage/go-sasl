@@ -55,6 +55,13 @@ func NewMessageFromString(msg string) (*Message, error) {
 	return scramMsg, err
 }
 
+// NewMessageFromStringWithHeader returns a new Message from the specified string with the GS2 header.
+func NewMessageFromStringWithHeader(msg string) (*Message, error) {
+	scramMsg := NewMessage()
+	err := scramMsg.ParseStringWithHeader(msg)
+	return scramMsg, err
+}
+
 // HasHeader returns true if the message has a GS2 header.
 func (msg *Message) HasHeader() bool {
 	return msg.Header != nil
