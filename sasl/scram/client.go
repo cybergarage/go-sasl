@@ -21,6 +21,56 @@ import (
 	"github.com/cybergarage/go-sasl/sasl/util/rand"
 )
 
+// Client is a SCRAM client.
+type Client struct {
+	authzID  string
+	username string
+	password string
+	hashFunc HashFunc
+}
+
+// NewClient returns a new SCRAM client with options.
+func NewClient(opts ...func(*Client)) *Client {
+	client := &Client{
+		authzID:  "",
+		username: "",
+		password: "",
+		hashFunc: HashSHA256(),
+	}
+	for _, opt := range opts {
+		opt(client)
+	}
+	return client
+}
+
+// WithAuthzID returns an option to set the authorization ID.
+func WithAuthzID(authzID string) func(*Client) {
+	return func(client *Client) {
+		client.authzID = authzID
+	}
+}
+
+// WithUsername returns an option to set the username.
+func WithUsername(username string) func(*Client) {
+	return func(client *Client) {
+		client.username = username
+	}
+}
+
+// WithPassword returns an option to set the password.
+func WithPassword(password string) func(*Client) {
+	return func(client *Client) {
+		client.password = password
+	}
+}
+
+// WithHashFunc returns an option to set the hash function.
+func WithHashFunc(hashFunc HashFunc) func(*Client) {
+	return func(client *Client) {
+		client.hashFunc = hashFunc
+	}
+}
+
 // NewClientFirstMessage returns a new client first message.
 func NewClientFirstMessage() (*Message, error) {
 	msg := NewMessage()
