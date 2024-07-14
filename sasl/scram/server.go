@@ -57,7 +57,7 @@ func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
 
 	// u: username
 
-	u, ok := clientMsg.UserName()
+	u, ok := clientMsg.Username()
 	if ok {
 		server.username = string(u)
 	}
