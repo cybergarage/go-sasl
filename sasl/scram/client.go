@@ -127,7 +127,7 @@ func newClientWithMessage(msg *Message) (*Client, error) {
 	if ok {
 		opts = append(opts, WithAuthzID(util.DecodeName(authzID)))
 	}
-	user, ok := msg.UserName()
+	user, ok := msg.Username()
 	if ok {
 		opts = append(opts, WithUsername(util.DecodeName(user)))
 	}
@@ -152,7 +152,7 @@ func (client *Client) FirstMessage() (*Message, error) {
 	// n: username
 
 	if 0 < len(client.username) {
-		msg.SetUserName(util.EncodeName(client.username))
+		msg.SetUsername(util.EncodeName(client.username))
 	}
 
 	// r: random sequence

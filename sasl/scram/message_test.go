@@ -105,7 +105,7 @@ func TestSCRAMMessage(t *testing.T) {
 		}
 
 		if 0 < len(test.expected.userName) {
-			v, ok := msg.UserName()
+			v, ok := msg.Username()
 			if !ok || v != test.expected.userName {
 				t.Errorf("userName = %s, want %s", v, test.expected.userName)
 			}

@@ -43,8 +43,8 @@ func (m AttributeMap) AuthorizationID() (string, bool) {
 	return m.Attribute(AuthorizationIDAttr)
 }
 
-// UserName returns the user name attribute from the map.
-func (m AttributeMap) UserName() (string, bool) {
+// Username returns the user name attribute from the map.
+func (m AttributeMap) Username() (string, bool) {
 	v, ok := m.Attribute(UserNameAttr)
 	if ok {
 		v = util.DecodeName(v)
@@ -105,8 +105,8 @@ func (m AttributeMap) SetAttribute(name, value string) {
 	m[name] = NewAttribute(name, value)
 }
 
-// SetUserName sets the user name attribute to the map.
-func (m AttributeMap) SetUserName(value string) {
+// SetUsername sets the user name attribute to the map.
+func (m AttributeMap) SetUsername(value string) {
 	m.SetAttribute(UserNameAttr, util.EncodeName(value))
 }
 
