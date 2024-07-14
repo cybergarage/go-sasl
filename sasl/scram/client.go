@@ -28,6 +28,7 @@ type Client struct {
 	username  string
 	password  string
 	hashFunc  HashFunc
+	challenge string
 	firsttMsg *Message
 }
 
@@ -40,6 +41,7 @@ func NewClient(opts ...ClientOption) (*Client, error) {
 		username:  "",
 		password:  "",
 		hashFunc:  HashSHA256(),
+		challenge: "",
 		firsttMsg: nil,
 	}
 	for _, opt := range opts {
@@ -79,6 +81,14 @@ func WithPassword(password string) ClientOption {
 func WithHashFunc(hashFunc HashFunc) ClientOption {
 	return func(client *Client) error {
 		client.hashFunc = hashFunc
+		return nil
+	}
+}
+
+// WithChallenge returns an option to set the challenge.
+func WithChallenge(challenge string) ClientOption {
+	return func(client *Client) error {
+		client.challenge = challenge
 		return nil
 	}
 }
