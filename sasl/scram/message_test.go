@@ -214,7 +214,11 @@ func TestSCRAMExchange(t *testing.T) {
 			t.Error(err)
 			continue
 		}
-		server := NewServer()
+		server, err := NewServer()
+		if err != nil {
+			t.Error(err)
+			continue
+		}
 		firstServerMsg, err := server.FirstMessageFrom(firstClientMsg)
 		if err != nil {
 			t.Error(err)

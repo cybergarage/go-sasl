@@ -20,16 +20,49 @@ import (
 
 // Server represents a SCRAM server.
 type Server struct {
+	challenge string
+	authzID   string
+	username  string
 }
 
+// ServerOption represents a server option.
+type ServerOption func(*Server) error
+
 // NewServer returns a new SCRAM server.
-func NewServer() *Server {
-	return &Server{}
+func NewServer(opts ...ServerOption) (*Server, error) {
+	srv := &Server{
+		challenge: "",
+		authzID:   "",
+		username:  "",
+	}
+	for _, opt := range opts {
+		err := opt(srv)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return srv, nil
 }
 
 // FirstMessageFrom returns a new server first message from the specified client message.
 func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
 	msg := NewMessage()
+
+	// authzid: authorization ID
+
+	authzID, ok := clientMsg.AuthorizationID()
+	if ok {
+		server.authzID = string(authzID)
+	}
+
+	// u: username
+
+	u, ok := clientMsg.UserName()
+	if ok {
+		server.username = string(u)
+	}
+
+	// r: random sequence
 
 	cr, ok := clientMsg.RandomSequence()
 	if !ok {
