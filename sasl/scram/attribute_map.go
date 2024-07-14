@@ -17,6 +17,8 @@ package scram
 import (
 	"strconv"
 	"strings"
+
+	"github.com/cybergarage/go-sasl/sasl/util"
 )
 
 // AttributeMap represents a SCRAM attribute map.
@@ -43,7 +45,11 @@ func (m AttributeMap) AuthorizationID() (string, bool) {
 
 // UserName returns the user name attribute from the map.
 func (m AttributeMap) UserName() (string, bool) {
-	return m.Attribute(UserNameAttr)
+	v, ok := m.Attribute(UserNameAttr)
+	if ok {
+		v = util.DecodeName(v)
+	}
+	return v, ok
 }
 
 // FutureExtensions returns the future extensibility attribute from the map.
@@ -101,7 +107,7 @@ func (m AttributeMap) SetAttribute(name, value string) {
 
 // SetUserName sets the user name attribute to the map.
 func (m AttributeMap) SetUserName(value string) {
-	m.SetAttribute(UserNameAttr, value)
+	m.SetAttribute(UserNameAttr, util.EncodeName(value))
 }
 
 // SetFutureExtensibility sets the future extensibility attribute to the map.
