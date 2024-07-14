@@ -32,6 +32,7 @@ type Client struct {
 	firsttMsg *Message
 }
 
+// ClientOption represents a client option function.
 type ClientOption func(*Client) error
 
 // NewClient returns a new SCRAM client with options.
