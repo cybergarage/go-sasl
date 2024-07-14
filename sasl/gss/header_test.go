@@ -35,7 +35,7 @@ func TestHeader(t *testing.T) {
 			headerStr: "p=test,,n=test,r=bDDLMhuQScihx0zXVXnizTplEBlE2ErT",
 			expected: expected{
 				nonStdFlag: false,
-				cbFlag:     GS2ClientSupportsUsedCBSFlag,
+				cbFlag:     ClientSupportsUsedCBSFlag,
 				cbName:     "test",
 				authID:     "",
 				headerStr:  "p=test,",
@@ -45,7 +45,7 @@ func TestHeader(t *testing.T) {
 			headerStr: "n,,n=test,r=bDDLMhuQScihx0zXVXnizTplEBlE2ErT",
 			expected: expected{
 				nonStdFlag: false,
-				cbFlag:     GS2ClientDoesNotSupportCBSFlag,
+				cbFlag:     ClientDoesNotSupportCBSFlag,
 				cbName:     "",
 				authID:     "",
 				headerStr:  "n,",
@@ -55,7 +55,7 @@ func TestHeader(t *testing.T) {
 			headerStr: "F,y,,n=test,r=bDDLMhuQScihx0zXVXnizTplEBlE2ErT",
 			expected: expected{
 				nonStdFlag: true,
-				cbFlag:     GS2ClientSupportsCBSFlag,
+				cbFlag:     ClientSupportsCBSFlag,
 				cbName:     "",
 				authID:     "",
 				headerStr:  "F,y,",
@@ -65,7 +65,7 @@ func TestHeader(t *testing.T) {
 			headerStr: "F,y,a=auth,n=test,r=bDDLMhuQScihx0zXVXnizTplEBlE2ErT",
 			expected: expected{
 				nonStdFlag: true,
-				cbFlag:     GS2ClientSupportsCBSFlag,
+				cbFlag:     ClientSupportsCBSFlag,
 				cbName:     "",
 				authID:     "auth",
 				headerStr:  "F,y,a=auth",
@@ -75,7 +75,7 @@ func TestHeader(t *testing.T) {
 			headerStr: "F,y,a=auth=2C,n=test,r=bDDLMhuQScihx0zXVXnizTplEBlE2ErT",
 			expected: expected{
 				nonStdFlag: true,
-				cbFlag:     GS2ClientSupportsCBSFlag,
+				cbFlag:     ClientSupportsCBSFlag,
 				cbName:     "",
 				authID:     "auth;",
 				headerStr:  "F,y,a=auth=2C",
