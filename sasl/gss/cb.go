@@ -18,15 +18,15 @@ package gss
 type CBFlag rune
 
 const (
-	GS2ClientSupportsUsedCBSFlag   = CBFlag('p')
-	GS2ClientDoesNotSupportCBSFlag = CBFlag('n')
-	GS2ClientSupportsCBSFlag       = CBFlag('y')
+	ClientSupportsUsedCBSFlag   = CBFlag('p')
+	ClientDoesNotSupportCBSFlag = CBFlag('n')
+	ClientSupportsCBSFlag       = CBFlag('y')
 )
 
 // IsValid returns true if the flag is valid.
 func (flag CBFlag) IsValid() bool {
 	switch flag {
-	case GS2ClientSupportsUsedCBSFlag, GS2ClientDoesNotSupportCBSFlag, GS2ClientSupportsCBSFlag:
+	case ClientSupportsUsedCBSFlag, ClientDoesNotSupportCBSFlag, ClientSupportsCBSFlag:
 		return true
 	}
 	return false
