@@ -141,9 +141,20 @@ func (client *Client) FirstMessage() (*Message, error) {
 		msg.SetAuthzID(util.EncodeName(client.authzID))
 	}
 
+	// GS2 Header
+
+	msg.SetCBFlag(gss.ClientDoesNotSupportCBSFlag)
+	if 0 < len(client.authzID) {
+		msg.SetAuthzID(client.authzID)
+	}
+
+	// n: username
+
 	if 0 < len(client.username) {
 		msg.SetUserName(util.EncodeName(client.username))
 	}
+
+	// r: random sequence
 
 	seq, err := rand.NewRandomSequence(initialRandomSequenceLength)
 	if err != nil {
