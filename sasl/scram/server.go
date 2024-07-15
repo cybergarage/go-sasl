@@ -24,7 +24,6 @@ type Server struct {
 	*auth.AuthManager
 	challenge string
 	authzID   string
-	username  string
 }
 
 // ServerOption represents a server option.
@@ -36,7 +35,6 @@ func NewServer(opts ...ServerOption) (*Server, error) {
 		AuthManager: auth.NewAuthManager(),
 		challenge:   "",
 		authzID:     "",
-		username:    "",
 	}
 	for _, opt := range opts {
 		err := opt(srv)
@@ -52,17 +50,31 @@ func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
 	msg := NewMessage()
 
 	// authzid: authorization ID
-
+	//  This is an optional attribute, and is part of the GS2 [RFC5801] bridge between the GSS-API and SASL
 	authzID, ok := clientMsg.AuthorizationID()
 	if ok {
 		server.authzID = string(authzID)
+	} else {
+		// u: username
+		// If the "a" attribute is not specified (which would normally be the case),
+		// this username is also the identity that will be associated with the connection subsequent to
+		// authentication and authorization.
+		u, ok := clientMsg.Username()
+		if ok {
+			server.authzID = string(u)
+		}
 	}
 
-	// u: username
+	//  If the preparation of the username fails or results in an empty string,
+	// the client SHOULD abort the authentication exchange
 
-	u, ok := clientMsg.Username()
-	if ok {
-		server.username = string(u)
+	if len(server.authzID) == 0 {
+		return nil, ErrAuthorization
+	}
+
+	err := server.HasCredential(server.authzID)
+	if err != nil {
+		return nil, ErrAuthorization
 	}
 
 	// r: random sequence
