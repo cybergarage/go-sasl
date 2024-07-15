@@ -213,6 +213,10 @@ func (client *Client) FinalMessageFrom(serverFirstMsg *Message) (*Message, error
 	c := base64.StdEncoding.EncodeToString([]byte(client.firstMsg.Header.String()))
 	msg.SetChannelBindingData(c)
 
+	// AuthMessage
+
+	_ = AuthMessage(client.firstMsg.String(), serverFirstMsg.String(), msg.String())
+
 	// SaltedPassword
 
 	salt, ok := serverFirstMsg.Salt()
@@ -227,7 +231,7 @@ func (client *Client) FinalMessageFrom(serverFirstMsg *Message) (*Message, error
 
 	// ClientKey
 
-	HMAC(client.hashFunc, saltedPassword, "Client Key")
+	_ = HMAC(client.hashFunc, saltedPassword, "Client Key")
 
 	return msg, nil
 }
