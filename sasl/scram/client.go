@@ -215,7 +215,7 @@ func (client *Client) FinalMessageFrom(serverFirstMsg *Message) (*Message, error
 
 	// AuthMessage
 
-	_ = AuthMessage(client.firstMsg.String(), serverFirstMsg.String(), msg.String())
+	authMsg := AuthMessage(client.firstMsg.String(), serverFirstMsg.String(), msg.String())
 
 	// SaltedPassword
 
@@ -231,7 +231,25 @@ func (client *Client) FinalMessageFrom(serverFirstMsg *Message) (*Message, error
 
 	// ClientKey
 
-	_ = HMAC(client.hashFunc, saltedPassword, "Client Key")
+	clientKey := HMAC(client.hashFunc, saltedPassword, "Client Key")
+
+	// StoredKey
+	storedKey := H(client.hashFunc, clientKey)
+
+	// ClientSignature
+
+	clientSignature := HMAC(client.hashFunc, storedKey, authMsg)
+
+	// ClientProof
+
+	clientProof := XOR(clientKey, clientSignature)
+	msg.SetClientProof(clientProof)
+
+	// SeverKey
+	// serverKey := HMAC(client.hashFunc, saltedPassword, "Server Key")
+
+	// ServerSignature
+	// serverSignature := HMAC(client.hashFunc, serverKey, authMsg)
 
 	return msg, nil
 }
