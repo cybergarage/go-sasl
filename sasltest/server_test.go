@@ -21,8 +21,8 @@ import (
 )
 
 func TestServer(t *testing.T) {
-	server := sasl.NewServer()
-	if server == nil {
-		t.Error("server is nil")
+	_, err := sasl.NewServer()
+	if err != nil {
+		t.Error(err)
 	}
 }
