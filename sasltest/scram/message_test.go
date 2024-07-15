@@ -18,14 +18,14 @@ import (
 	"testing"
 
 	"github.com/cybergarage/go-sasl/sasl/scram"
-	test "github.com/cybergarage/go-sasl/sasltest"
+	"github.com/cybergarage/go-sasl/sasltest"
 )
 
 func TestSCRAMExchange(t *testing.T) {
 	hashFunc := scram.HashSHA256()
-	authzID := test.AuthzID
-	user := test.Username
-	passwd := test.Paassword
+	authzID := sasltest.AuthzID
+	user := sasltest.Username
+	passwd := sasltest.Paassword
 
 	tests := []struct {
 		firstClientMsgStr string
@@ -63,7 +63,7 @@ func TestSCRAMExchange(t *testing.T) {
 			t.Error(err)
 			continue
 		}
-		server, err := scram.NewServer()
+		server, err := sasltest.NewServer()
 		if err != nil {
 			t.Error(err)
 			continue
