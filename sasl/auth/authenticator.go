@@ -16,5 +16,6 @@ package auth
 
 // Authenticator represents an authenticator interface.
 type Authenticator interface {
+	// HasCredential returns true if the username has a credential.
 	HasCredential(username string) bool
 }
