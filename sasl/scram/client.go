@@ -15,6 +15,7 @@
 package scram
 
 import (
+	"encoding/base64"
 	"strings"
 
 	"github.com/cybergarage/go-sasl/sasl/gss"
@@ -29,7 +30,7 @@ type Client struct {
 	password  string
 	hashFunc  HashFunc
 	challenge string
-	firsttMsg *Message
+	firstMsg  *Message
 }
 
 // ClientOption represents a client option function.
@@ -43,7 +44,7 @@ func NewClient(opts ...ClientOption) (*Client, error) {
 		password:  "",
 		hashFunc:  HashSHA256(),
 		challenge: "",
-		firsttMsg: nil,
+		firstMsg:  nil,
 	}
 	for _, opt := range opts {
 		err := opt(client)
@@ -163,14 +164,14 @@ func (client *Client) FirstMessage() (*Message, error) {
 	}
 	msg.SetRandomSequence(string(seq))
 
-	client.firsttMsg = msg
+	client.firstMsg = msg
 
 	return msg, nil
 }
 
 // FinalMessageFrom returns the final message from the specified server first message.
-func (client *Client) FinalMessageFrom(serverFirsttMsg *Message) (*Message, error) {
-	if client.firsttMsg == nil {
+func (client *Client) FinalMessageFrom(serverFirstMsg *Message) (*Message, error) {
+	if client.firstMsg == nil {
 		return nil, newErrInvalidMessage("First message is not set")
 	}
 
@@ -179,29 +180,44 @@ func (client *Client) FinalMessageFrom(serverFirsttMsg *Message) (*Message, erro
 	// RFC 5802 - Salted Challenge Response Authentication Mechanism (SCRAM) SASL and GSS-API Mechanisms
 	// 5.1. SCRAM Attributes
 
-	clientRS, ok := client.firsttMsg.RandomSequence()
+	// The client MUST verify that the initial part of the nonce used in
+	// subsequent messages is the same as the nonce it initially specified.
+
+	clientRS, ok := client.firstMsg.RandomSequence()
 	if !ok {
-		return nil, newErrInvalidMessage(client.firsttMsg.String())
+		return nil, newErrInvalidMessage(client.firstMsg.String())
 	}
-	serverRS, ok := serverFirsttMsg.RandomSequence()
+	serverRS, ok := serverFirstMsg.RandomSequence()
 	if !ok {
-		return nil, newErrInvalidMessage(serverFirsttMsg.String())
+		return nil, newErrInvalidMessage(serverFirstMsg.String())
 	}
 	if !strings.HasPrefix(serverRS, clientRS) {
-		return nil, newErrInvalidMessage(client.firsttMsg.String())
+		return nil, newErrInvalidMessage(client.firstMsg.String())
 	}
 	msg.SetRandomSequence(serverRS)
 
-	// SaltedPassword
+	// For the SCRAM-SHA-1/SCRAM-SHA-1-PLUS SASL mechanism,
+	// servers SHOULD announce a hash iteration-count of at least 4096.
 
-	salt, ok := serverFirsttMsg.Salt()
+	ic, ok := serverFirstMsg.IterationCount()
 	if !ok {
-		return nil, newErrInvalidMessage(serverFirsttMsg.String())
+		return nil, newErrInvalidMessage(serverFirstMsg.String())
 	}
 
-	ic, ok := serverFirsttMsg.IterationCount()
+	if ic < minimumIterationCount {
+		return nil, newErrInvalidMessage(serverFirstMsg.String())
+	}
+
+	//  The base64-encoded GS2 header and channel binding data.
+
+	c := base64.StdEncoding.EncodeToString([]byte(client.firstMsg.Header.String()))
+	msg.SetChannelBindingData(c)
+
+	// SaltedPassword
+
+	salt, ok := serverFirstMsg.Salt()
 	if !ok {
-		return nil, newErrInvalidMessage(serverFirsttMsg.String())
+		return nil, newErrInvalidMessage(serverFirstMsg.String())
 	}
 
 	saltedPassword, err := SaltedPassword(client.hashFunc, client.password, salt, ic)
