@@ -22,8 +22,9 @@ import (
 // Server represents a SCRAM server.
 type Server struct {
 	*auth.AuthManager
-	challenge string
-	authzID   string
+	challenge      string
+	authzID        string
+	iterationCount int
 }
 
 // ServerOption represents a server option.
@@ -32,9 +33,10 @@ type ServerOption func(*Server) error
 // NewServer returns a new SCRAM server.
 func NewServer(opts ...ServerOption) (*Server, error) {
 	srv := &Server{
-		AuthManager: auth.NewAuthManager(),
-		challenge:   "",
-		authzID:     "",
+		AuthManager:    auth.NewAuthManager(),
+		challenge:      "",
+		authzID:        "",
+		iterationCount: defaultIterationCount,
 	}
 	for _, opt := range opts {
 		err := opt(srv)
@@ -43,6 +45,14 @@ func NewServer(opts ...ServerOption) (*Server, error) {
 		}
 	}
 	return srv, nil
+}
+
+// WithIterationCount returns an option to set the iteration count.
+func WithIterationCount(iterationCount int) ServerOption {
+	return func(server *Server) error {
+		server.iterationCount = iterationCount
+		return nil
+	}
 }
 
 // FirstMessageFrom returns a new server first message from the specified client message.
@@ -96,7 +106,7 @@ func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
 	}
 	msg.SetSalt(salt)
 
-	msg.SetIterationCount(defaultIterationCount)
+	msg.SetIterationCount(server.iterationCount)
 
 	return msg, nil
 }
