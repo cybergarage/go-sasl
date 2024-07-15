@@ -48,6 +48,12 @@ func WithHeader(header *gss.Header) MessageOption {
 	}
 }
 
+func WithAttribute(name, value string) MessageOption {
+	return func(msg *Message) {
+		msg.AttributeMap.SetAttribute(name, value)
+	}
+}
+
 // NewMessageFromString returns a new Message from the specified string.
 func NewMessageFromString(msg string) (*Message, error) {
 	scramMsg := NewMessage()
