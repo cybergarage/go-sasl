@@ -57,8 +57,10 @@ func HMAC(h HashFunc, key string, data string) string {
 
 // H(data) is defined as:.
 // 2.2. Notation.
-func H(data string) string {
-	return data
+func H(hf HashFunc, data string) string {
+	h := hf()
+	h.Write([]byte(data))
+	return string(h.Sum(nil))
 }
 
 // XOR(a, b) is defined as:.
@@ -90,8 +92,8 @@ func ClientKey(h HashFunc, saltedPassword string) string {
 }
 
 // StoredKey       := H(ClientKey).
-func StoredKey(clientKey string) string {
-	return H(clientKey)
+func StoredKey(h HashFunc, clientKey string) string {
+	return H(h, clientKey)
 }
 
 // AuthMessage     := client-first-message-bare + "," +
