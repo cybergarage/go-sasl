@@ -15,6 +15,7 @@
 package scram
 
 import (
+	"sort"
 	"strconv"
 	"strings"
 
@@ -169,9 +170,16 @@ func (m AttributeMap) Equals(other AttributeMap) bool {
 
 // String returns the string representation of the map.
 func (m AttributeMap) String() string {
-	props := []string{}
-	for name, prop := range m {
-		props = append(props, name+"="+prop.Value())
+	keys := []string{}
+	for k := range m {
+		keys = append(keys, k)
 	}
-	return strings.Join(props, ",")
+	sort.Strings(keys)
+
+	attrs := []string{}
+	for _, key := range keys {
+		attr := m[key]
+		attrs = append(attrs, key+"="+attr.Value())
+	}
+	return strings.Join(attrs, ",")
 }
