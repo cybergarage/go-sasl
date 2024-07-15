@@ -24,6 +24,7 @@ type Server struct {
 	*auth.AuthManager
 	challenge      string
 	authzID        string
+	randomSequence string
 	iterationCount int
 }
 
@@ -36,8 +37,15 @@ func NewServer(opts ...ServerOption) (*Server, error) {
 		AuthManager:    auth.NewAuthManager(),
 		challenge:      "",
 		authzID:        "",
+		randomSequence: "",
 		iterationCount: defaultIterationCount,
 	}
+	rs, err := rand.NewRandomSequence(additionalRandomSequenceLength)
+	if err != nil {
+		return nil, err
+	}
+	srv.randomSequence = string(rs)
+
 	for _, opt := range opts {
 		err := opt(srv)
 		if err != nil {
@@ -51,6 +59,14 @@ func NewServer(opts ...ServerOption) (*Server, error) {
 func WithIterationCount(iterationCount int) ServerOption {
 	return func(server *Server) error {
 		server.iterationCount = iterationCount
+		return nil
+	}
+}
+
+// WithRandomSequence returns an option to set the random sequence.
+func WithRandomSequence(randomSequence string) ServerOption {
+	return func(server *Server) error {
+		server.randomSequence = randomSequence
 		return nil
 	}
 }
@@ -93,11 +109,7 @@ func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
 	if !ok {
 		return nil, newErrInvalidMessage(clientMsg.String())
 	}
-	r, err := rand.NewRandomSequence(additionalRandomSequenceLength)
-	if err != nil {
-		return nil, err
-	}
-	sr := string(cr) + string(r)
+	sr := string(cr) + string(server.randomSequence)
 	msg.SetRandomSequence(sr)
 
 	salt, err := rand.NewSalt(defaultSaltLength)
