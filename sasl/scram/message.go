@@ -41,6 +41,13 @@ func NewMessage(opts ...MessageOption) *Message {
 	return msg
 }
 
+// NewMessageFromError returns a new Message from the specified error.
+func NewMessageFromError(err error) *Message {
+	msg := NewMessage()
+	msg.SetError(err.Error())
+	return msg
+}
+
 // WithHeader returns an option to set the GS2 header.
 func WithHeader(header *gss.Header) MessageOption {
 	return func(msg *Message) {
