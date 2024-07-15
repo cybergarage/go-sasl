@@ -24,6 +24,9 @@ var ErrInvalidAttribute = errors.New("invalid attribute")
 // ErrInvalidMessage is returned when the message is invalid.
 var ErrInvalidMessage = errors.New("invalid message")
 
+// ErrAuthorization is returned when the authorization is invalid.
+var ErrAuthorization = errors.New("authorization error")
+
 func newErrInvalidAttribute(attr string) error {
 	return errors.New("invalid attribute : " + attr)
 }
