@@ -14,14 +14,26 @@
 
 package sasl
 
+import (
+	"github.com/cybergarage/go-sasl/sasl/scram"
+)
+
 // Server represents a SASL server.
 type Server struct {
 	*Provider
+	*scram.Server
 }
 
 // NewServer returns a new SASL server.
-func NewServer() *Server {
-	return &Server{
+func NewServer() (*Server, error) {
+	var err error
+	server := &Server{
 		Provider: NewProvider(),
+		Server:   nil,
 	}
+	server.Server, err = scram.NewServer()
+	if err != nil {
+		return nil, err
+	}
+	return server, nil
 }
