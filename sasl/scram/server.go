@@ -15,11 +15,13 @@
 package scram
 
 import (
+	"github.com/cybergarage/go-sasl/sasl/auth"
 	"github.com/cybergarage/go-sasl/sasl/util/rand"
 )
 
 // Server represents a SCRAM server.
 type Server struct {
+	*auth.AuthManager
 	challenge string
 	authzID   string
 	username  string
@@ -31,9 +33,10 @@ type ServerOption func(*Server) error
 // NewServer returns a new SCRAM server.
 func NewServer(opts ...ServerOption) (*Server, error) {
 	srv := &Server{
-		challenge: "",
-		authzID:   "",
-		username:  "",
+		AuthManager: auth.NewAuthManager(),
+		challenge:   "",
+		authzID:     "",
+		username:    "",
 	}
 	for _, opt := range opts {
 		err := opt(srv)
