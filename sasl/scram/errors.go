@@ -16,6 +16,7 @@ package scram
 
 import (
 	"errors"
+	"fmt"
 )
 
 // ErrInvalidMessage is returned when the message is invalid.
@@ -28,9 +29,13 @@ var ErrInvalidMessage = errors.New("invalid message")
 var ErrAuthorization = errors.New("authorization error")
 
 func newErrInvalidAttribute(attr string) error {
-	return errors.New("invalid attribute : " + attr)
+	return fmt.Errorf("%w : %s", ErrInvalidAttribute, attr)
 }
 
 func newErrInvalidMessage(msg string) error {
-	return errors.New("invalid message : " + msg)
+	return fmt.Errorf("%w : %s", ErrInvalidMessage, msg)
+}
+
+func newErrAuthorization(msg string) error {
+	return fmt.Errorf("%w : %s", ErrAuthorization, msg)
 }
