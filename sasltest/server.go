@@ -16,6 +16,7 @@ package sasltest
 
 import (
 	"github.com/cybergarage/go-sasl/sasl"
+	"github.com/cybergarage/go-sasl/sasl/auth"
 )
 
 type Server struct {
@@ -35,6 +36,7 @@ func NewServer() (*Server, error) {
 	return server, nil
 }
 
-func (server *Server) HasCredential(username string) bool {
-	return true
+func (server *Server) HasCredential(username string) (*auth.Credential, bool) {
+	cred := auth.NewCredential(auth.WithUsername(username))
+	return cred, true
 }
