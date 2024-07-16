@@ -52,7 +52,7 @@ func TestSCRAMExchange(t *testing.T) {
 			}
 		} else {
 			client, err = scram.NewClient(
-				scram.WithAuthzID(authzID), scram.WithUsername(user), scram.WithPassword(passwd), scram.WithHashFunc(hashFunc))
+				scram.WithClientAuthzID(authzID), scram.WithClientUsername(user), scram.WithClientPassword(passwd), scram.WithClientHashFunc(hashFunc))
 			if err != nil {
 				t.Error(err)
 				continue
