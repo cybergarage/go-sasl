@@ -257,11 +257,5 @@ func (client *Client) FinalMessageFrom(serverFirstMsg *Message) (*Message, error
 	clientProof := XOR(clientKey, clientSignature)
 	msg.SetClientProof(clientProof)
 
-	// ServerKey := HMAC(SaltedPassword, "Server Key")
-	// serverKey := HMAC(client.hashFunc, saltedPassword, "Server Key")
-
-	//  ServerSignature := HMAC(ServerKey, AuthMessage)
-	// serverSignature := HMAC(client.hashFunc, serverKey, authMsg)
-
 	return msg, nil
 }
