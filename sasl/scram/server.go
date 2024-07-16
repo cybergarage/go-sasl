@@ -61,18 +61,26 @@ func NewServer(opts ...ServerOption) (*Server, error) {
 	return srv, nil
 }
 
-// WithIterationCount returns an option to set the iteration count.
-func WithIterationCount(iterationCount int) ServerOption {
+// WithServerIterationCount returns a server option to set the iteration count.
+func WithServerIterationCount(iterationCount int) ServerOption {
 	return func(server *Server) error {
 		server.iterationCount = iterationCount
 		return nil
 	}
 }
 
-// WithRandomSequence returns an option to set the random sequence.
-func WithRandomSequence(randomSequence string) ServerOption {
+// WithServerRandomSequence returns a server option to set the random sequence.
+func WithServerRandomSequence(randomSequence string) ServerOption {
 	return func(server *Server) error {
 		server.randomSequence = randomSequence
+		return nil
+	}
+}
+
+// WithServerHashFunc returns a server option to set the hash function.
+func WithServerHashFunc(hashFunc HashFunc) ServerOption {
+	return func(server *Server) error {
+		server.hashFunc = hashFunc
 		return nil
 	}
 }
@@ -82,7 +90,7 @@ func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
 	msg := NewMessage()
 
 	// authzid: authorization ID
-	//  This is an optional attribute, and is part of the GS2 [RFC5801] bridge between the GSS-API and SASL
+	//  This is a server optional attribute, and is part of the GS2 [RFC5801] bridge between the GSS-API and SASL
 	authzID, ok := clientMsg.AuthorizationID()
 	if ok {
 		server.authzID = string(authzID)
@@ -153,6 +161,11 @@ func (server *Server) FinalMessageFrom(clienttMsg *Message) (*Message, error) {
 		return nil, newErrInvalidMessage(server.serverFirstMsg.String())
 	}
 
+	storedCred, err := server.HasCredential(server.authzID)
+	if err != nil {
+		return nil, ErrAuthorization
+	}
+
 	// AuthMessage := client-first-message-bare + "," +
 	//                server-first-message + "," +
 	//                client-final-message-without-proof
@@ -161,8 +174,7 @@ func (server *Server) FinalMessageFrom(clienttMsg *Message) (*Message, error) {
 
 	// ClientSignature := HMAC(StoredKey, AuthMessage)
 
-	storedKey := ""
-	clientSignature := HMAC(server.hashFunc, storedKey, authMsg)
+	clientSignature := HMAC(server.hashFunc, storedCred.Password(), authMsg)
 
 	clientProof, ok := clienttMsg.ClientProof()
 	if !ok {
