@@ -46,11 +46,9 @@ func NewClient(opts ...ClientOption) (*Client, error) {
 		challenge: "",
 		firstMsg:  nil,
 	}
-	for _, opt := range opts {
-		err := opt(client)
-		if err != nil {
-			return nil, err
-		}
+	err := client.SetOption(opts...)
+	if err != nil {
+		return nil, err
 	}
 	return client, nil
 }
@@ -133,6 +131,17 @@ func newClientWithMessage(msg *Message) (*Client, error) {
 		opts = append(opts, WithClientUsername(util.DecodeName(user)))
 	}
 	return NewClient(opts...)
+}
+
+// SetOption sets the client options.
+func (client *Client) SetOption(opts ...ClientOption) error {
+	for _, opt := range opts {
+		err := opt(client)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // FirstMessage returns the first message.
