@@ -58,6 +58,8 @@ func TestSCRAMExchange(t *testing.T) {
 				continue
 			}
 		}
+		client.SetOption(scram.WithClientHashFunc(hashFunc))
+
 		firstClientMsg, err := client.FirstMessage()
 		if err != nil {
 			t.Error(err)
