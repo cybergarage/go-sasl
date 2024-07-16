@@ -12,9 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// nolint: gosec
 package scram
 
 import (
+	"crypto/sha1"
 	"crypto/sha256"
 	"hash"
 )
@@ -25,4 +27,10 @@ type HashFunc = func() hash.Hash
 // HashSHA256 returns a new SHA-256 hash function.
 func HashSHA256() HashFunc {
 	return sha256.New
+}
+
+// HashSHA1 returns a new SHA-1 hash function.
+// Deprecated: Use HashSHA256 instead.
+func HashSHA1() HashFunc {
+	return sha1.New
 }
