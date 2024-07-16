@@ -15,6 +15,8 @@
 package scram
 
 import (
+	"crypto/hmac"
+
 	"github.com/cybergarage/go-sasl/sasl/auth"
 	"github.com/cybergarage/go-sasl/sasl/util/rand"
 )
@@ -26,6 +28,7 @@ type Server struct {
 	authzID        string
 	randomSequence string
 	iterationCount int
+	salt           string
 	hashFunc       HashFunc
 	clientFirstMsg *Message
 	serverFirstMsg *Message
@@ -43,6 +46,7 @@ func NewServer(opts ...ServerOption) (*Server, error) {
 		randomSequence: "",
 		hashFunc:       HashSHA256(),
 		iterationCount: defaultIterationCount,
+		salt:           "",
 		clientFirstMsg: nil,
 		serverFirstMsg: nil,
 	}
@@ -52,12 +56,11 @@ func NewServer(opts ...ServerOption) (*Server, error) {
 	}
 	srv.randomSequence = string(rs)
 
-	for _, opt := range opts {
-		err := opt(srv)
-		if err != nil {
-			return nil, err
-		}
+	err = srv.SetOption(opts...)
+	if err != nil {
+		return nil, err
 	}
+
 	return srv, nil
 }
 
@@ -83,6 +86,17 @@ func WithServerHashFunc(hashFunc HashFunc) ServerOption {
 		server.hashFunc = hashFunc
 		return nil
 	}
+}
+
+// SetOption sets the specified options.
+func (server *Server) SetOption(opts ...ServerOption) error {
+	for _, opt := range opts {
+		err := opt(server)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // FirstMessageFrom returns a new server first message from the specified client message.
@@ -130,6 +144,7 @@ func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
 	if err != nil {
 		return nil, err
 	}
+	server.salt = salt
 	msg.SetSalt(salt)
 
 	msg.SetIterationCount(server.iterationCount)
@@ -182,8 +197,25 @@ func (server *Server) FinalMessageFrom(clienttMsg *Message) (*Message, error) {
 	}
 
 	clientKey := XOR(clientProof, clientSignature)
-	_ = H(server.hashFunc, clientKey)
+	storedKey := H(server.hashFunc, clientKey)
+
+	if !hmac.Equal([]byte(storedKey), []byte(storedCred.Password())) {
+		return nil, ErrAuthorization
+	}
 
 	msg := NewMessage()
+
+	// SaltedPassword := Hi(Normalize(password), salt, i)
+	saltedPassword, err := SaltedPassword(server.hashFunc, storedCred.Password(), server.salt, server.iterationCount)
+	if err != nil {
+		return nil, err
+	}
+
+	// ServerKey := HMAC(SaltedPassword, "Server Key")
+	serverKey := HMAC(server.hashFunc, saltedPassword, "Server Key")
+	//  ServerSignature := HMAC(ServerKey, AuthMessage)
+	serverSignature := HMAC(server.hashFunc, serverKey, authMsg)
+	msg.SetServerSignature(serverSignature)
+
 	return msg, nil
 }
