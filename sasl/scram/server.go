@@ -26,6 +26,9 @@ type Server struct {
 	authzID        string
 	randomSequence string
 	iterationCount int
+	hashFunc       HashFunc
+	clientFirstMsg *Message
+	serverFirstMsg *Message
 }
 
 // ServerOption represents a server option.
@@ -38,7 +41,10 @@ func NewServer(opts ...ServerOption) (*Server, error) {
 		challenge:      "",
 		authzID:        "",
 		randomSequence: "",
+		hashFunc:       HashSHA256(),
 		iterationCount: defaultIterationCount,
+		clientFirstMsg: nil,
+		serverFirstMsg: nil,
 	}
 	rs, err := rand.NewRandomSequence(additionalRandomSequenceLength)
 	if err != nil {
@@ -98,7 +104,7 @@ func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
 		return nil, ErrAuthorization
 	}
 
-	err := server.HasCredential(server.authzID)
+	_, err := server.HasCredential(server.authzID)
 	if err != nil {
 		return nil, ErrAuthorization
 	}
@@ -120,11 +126,52 @@ func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
 
 	msg.SetIterationCount(server.iterationCount)
 
+	server.clientFirstMsg = clientMsg
+	server.serverFirstMsg = msg
+
 	return msg, nil
 }
 
 // FinalMessageFrom returns a new server final message from the specified client final message.
-func (server *Server) FinalMessageFrom(clientFinaltMsg *Message) (*Message, error) {
+func (server *Server) FinalMessageFrom(clienttMsg *Message) (*Message, error) {
+	if server.clientFirstMsg == nil || server.serverFirstMsg == nil {
+		return nil, newErrInvalidMessage("First message is not set")
+	}
+
+	// The server MUST verify that the nonce sent by the client in the second message is
+	// the same as the one sent by the server in its first message.
+
+	clientRS, ok := clienttMsg.RandomSequence()
+	if !ok {
+		return nil, newErrInvalidMessage(clienttMsg.String())
+	}
+	serverRS, ok := server.serverFirstMsg.RandomSequence()
+	if !ok {
+		return nil, newErrInvalidMessage(server.serverFirstMsg.String())
+	}
+	if clientRS != serverRS {
+		return nil, newErrInvalidMessage(server.serverFirstMsg.String())
+	}
+
+	// AuthMessage := client-first-message-bare + "," +
+	//                server-first-message + "," +
+	//                client-final-message-without-proof
+
+	authMsg := AuthMessage(server.clientFirstMsg.String(), server.serverFirstMsg.String(), clienttMsg.String())
+
+	// ClientSignature := HMAC(StoredKey, AuthMessage)
+
+	storedKey := ""
+	clientSignature := HMAC(server.hashFunc, storedKey, authMsg)
+
+	clientProof, ok := clienttMsg.ClientProof()
+	if !ok {
+		return nil, newErrInvalidMessage(clienttMsg.String())
+	}
+
+	clientKey := XOR(clientProof, clientSignature)
+	_ = H(server.hashFunc, clientKey)
+
 	msg := NewMessage()
 	return msg, nil
 }
