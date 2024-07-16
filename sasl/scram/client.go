@@ -213,11 +213,7 @@ func (client *Client) FinalMessageFrom(serverFirstMsg *Message) (*Message, error
 	c := base64.StdEncoding.EncodeToString([]byte(client.firstMsg.Header.String()))
 	msg.SetChannelBindingData(c)
 
-	// AuthMessage
-
-	authMsg := AuthMessage(client.firstMsg.String(), serverFirstMsg.String(), msg.String())
-
-	// SaltedPassword
+	// SaltedPassword := Hi(Normalize(password), salt, i)
 
 	salt, ok := serverFirstMsg.Salt()
 	if !ok {
@@ -229,26 +225,33 @@ func (client *Client) FinalMessageFrom(serverFirstMsg *Message) (*Message, error
 		return nil, err
 	}
 
-	// ClientKey
+	// ClientKey := HMAC(SaltedPassword, "Client Key")
 
 	clientKey := HMAC(client.hashFunc, saltedPassword, "Client Key")
 
-	// StoredKey
+	//  StoredKey := H(ClientKey)
+
 	storedKey := H(client.hashFunc, clientKey)
 
-	// ClientSignature
+	// AuthMessage := client-first-message-bare + "," +
+	//                server-first-message + "," +
+	//                client-final-message-without-proof
+
+	authMsg := AuthMessage(client.firstMsg.String(), serverFirstMsg.String(), msg.String())
+
+	// ClientSignature := HMAC(StoredKey, AuthMessage)
 
 	clientSignature := HMAC(client.hashFunc, storedKey, authMsg)
 
-	// ClientProof
+	// ClientProof := ClientKey XOR ClientSignature
 
 	clientProof := XOR(clientKey, clientSignature)
 	msg.SetClientProof(clientProof)
 
-	// SeverKey
+	// ServerKey := HMAC(SaltedPassword, "Server Key")
 	// serverKey := HMAC(client.hashFunc, saltedPassword, "Server Key")
 
-	// ServerSignature
+	//  ServerSignature := HMAC(ServerKey, AuthMessage)
 	// serverSignature := HMAC(client.hashFunc, serverKey, authMsg)
 
 	return msg, nil
