@@ -55,40 +55,40 @@ func NewClient(opts ...ClientOption) (*Client, error) {
 	return client, nil
 }
 
-// WithAuthzID returns an option to set the authorization ID.
-func WithAuthzID(authzID string) ClientOption {
+// WithClientAuthzID returns a client option to set the authorization ID.
+func WithClientAuthzID(authzID string) ClientOption {
 	return func(client *Client) error {
 		client.authzID = authzID
 		return nil
 	}
 }
 
-// WithUsername returns an option to set the username.
-func WithUsername(username string) ClientOption {
+// WithClientUsername returns a client option to set the username.
+func WithClientUsername(username string) ClientOption {
 	return func(client *Client) error {
 		client.username = username
 		return nil
 	}
 }
 
-// WithPassword returns an option to set the password.
-func WithPassword(password string) ClientOption {
+// WithClientPassword returns a client option to set the password.
+func WithClientPassword(password string) ClientOption {
 	return func(client *Client) error {
 		client.password = password
 		return nil
 	}
 }
 
-// WithHashFunc returns an option to set the hash function.
-func WithHashFunc(hashFunc HashFunc) ClientOption {
+// WithClientHashFunc returns a client option to set the hash function.
+func WithClientHashFunc(hashFunc HashFunc) ClientOption {
 	return func(client *Client) error {
 		client.hashFunc = hashFunc
 		return nil
 	}
 }
 
-// WithChallenge returns an option to set the challenge.
-func WithChallenge(challenge string) ClientOption {
+// WithClientChallenge returns a client option to set the challenge.
+func WithClientChallenge(challenge string) ClientOption {
 	return func(client *Client) error {
 		client.challenge = challenge
 		return nil
@@ -126,11 +126,11 @@ func newClientWithMessage(msg *Message) (*Client, error) {
 	// 5.1. SCRAM Attributes
 	authzID, ok := msg.AuthorizationID()
 	if ok {
-		opts = append(opts, WithAuthzID(util.DecodeName(authzID)))
+		opts = append(opts, WithClientAuthzID(util.DecodeName(authzID)))
 	}
 	user, ok := msg.Username()
 	if ok {
-		opts = append(opts, WithUsername(util.DecodeName(user)))
+		opts = append(opts, WithClientUsername(util.DecodeName(user)))
 	}
 	return NewClient(opts...)
 }
