@@ -40,6 +40,19 @@ func (m AttributeMap) Attribute(name string) (string, bool) {
 	return prop.Value(), true
 }
 
+// DecodeAttribute returns a base64 decoded attribute from the map.
+func (m AttributeMap) DecodeAttribute(name string) ([]byte, bool) {
+	v, ok := m.Attribute(name)
+	if !ok {
+		return nil, false
+	}
+	dv, err := base64.StdEncoding.DecodeString(v)
+	if err != nil {
+		return nil, false
+	}
+	return dv, true
+}
+
 // AuthorizationID returns the authorization ID attribute from the map.
 func (m AttributeMap) AuthorizationID() (string, bool) {
 	return m.Attribute(AuthorizationIDAttr)
@@ -84,15 +97,7 @@ func (m AttributeMap) IterationCount() (int, bool) {
 
 // ClientProof returns the client proof attribute from the map.
 func (m AttributeMap) ClientProof() ([]byte, bool) {
-	v, ok := m.Attribute(ClientProofAttr)
-	if !ok {
-		return nil, false
-	}
-	dv, err := base64.StdEncoding.DecodeString(v)
-	if err != nil {
-		return nil, false
-	}
-	return dv, true
+	return m.DecodeAttribute(ClientProofAttr)
 }
 
 // ChannelBindingData returns the channel binding data attribute from the map.
@@ -101,8 +106,8 @@ func (m AttributeMap) ChannelBindingData() (string, bool) {
 }
 
 // ServerSignature returns the server signature attribute from the map.
-func (m AttributeMap) ServerSignature() (string, bool) {
-	return m.Attribute(ServerSignatureAttr)
+func (m AttributeMap) ServerSignature() ([]byte, bool) {
+	return m.DecodeAttribute(ServerSignatureAttr)
 }
 
 // Error returns the error attribute from the map.
@@ -113,6 +118,11 @@ func (m AttributeMap) Error() (string, bool) {
 // SetAttribute sets an attribute to the map.
 func (m AttributeMap) SetAttribute(name, value string) {
 	m[name] = NewAttribute(name, value)
+}
+
+// EncodeAttribute sets a base64 encoded attribute to the map.
+func (m AttributeMap) EncodeAttribute(name string, value []byte) {
+	m.SetAttribute(name, base64.StdEncoding.EncodeToString(value))
 }
 
 // SetUsername sets the user name attribute to the map.
@@ -142,7 +152,7 @@ func (m AttributeMap) SetIterationCount(value int) {
 
 // SetClientProof sets the client proof attribute to the map.
 func (m AttributeMap) SetClientProof(value []byte) {
-	m.SetAttribute(ClientProofAttr, base64.StdEncoding.EncodeToString(value))
+	m.EncodeAttribute(ClientProofAttr, value)
 }
 
 // SetChannelBindingData sets the channel binding data attribute to the map.
@@ -151,8 +161,8 @@ func (m AttributeMap) SetChannelBindingData(value string) {
 }
 
 // SetServerSignature sets the server signature attribute to the map.
-func (m AttributeMap) SetServerSignature(value string) {
-	m.SetAttribute(ServerSignatureAttr, value)
+func (m AttributeMap) SetServerSignature(value []byte) {
+	m.EncodeAttribute(ServerSignatureAttr, value)
 }
 
 // SetError sets the error attribute to the map.

@@ -16,7 +16,7 @@ package pkcs
 
 // RFC 2898 - PKCS #5: Password-Based Cryptography Specification Version 2.0
 // https://datatracker.ietf.org/doc/html/rfc2898
-// 5.2 PBKDF2
+// 5.2 PBKDF2.
 func PBKDF2(P []byte, S []byte, c int, dkLen int) []byte {
 	// 5.2 PBKDF2
 	// https://datatracker.ietf.org/doc/html/rfc2898#section-5.2

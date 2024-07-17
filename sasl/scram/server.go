@@ -197,7 +197,7 @@ func (server *Server) FinalMessageFrom(clienttMsg *Message) (*Message, error) {
 
 	// ClientSignature := HMAC(StoredKey, AuthMessage)
 
-	clientSignature := HMAC(server.hashFunc, storedCred.Password(), authMsg)
+	clientSignature := HMAC(server.hashFunc, []byte(storedCred.Password()), []byte(authMsg))
 
 	clientProof, ok := clienttMsg.ClientProof()
 	if !ok {
@@ -218,9 +218,9 @@ func (server *Server) FinalMessageFrom(clienttMsg *Message) (*Message, error) {
 	}
 
 	// ServerKey := HMAC(SaltedPassword, "Server Key")
-	serverKey := HMAC(server.hashFunc, saltedPassword, "Server Key")
+	serverKey := HMAC(server.hashFunc, saltedPassword, []byte("Server Key"))
 	//  ServerSignature := HMAC(ServerKey, AuthMessage)
-	serverSignature := HMAC(server.hashFunc, serverKey, authMsg)
+	serverSignature := HMAC(server.hashFunc, serverKey, []byte(authMsg))
 
 	msg := NewMessage()
 	msg.SetServerSignature(serverSignature)
