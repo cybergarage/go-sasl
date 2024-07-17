@@ -23,20 +23,20 @@ import (
 
 func TestSCRAMExchange(t *testing.T) {
 	hashFunc := scram.HashSHA256()
-	authzID := sasltest.AuthzID
 	user := sasltest.Username
 	passwd := sasltest.Paassword
 
 	tests := []struct {
-		firstClientMsgStr string
+		clientRandomSequence string
+		firstClientMsgStr    string
 	}{
 		// RFC 5802 - Salted Challenge Response Authentication Mechanism (SCRAM) SASL and GSS-API Mechanisms
 		// 5. SCRAM Authentication Exchange
 		{
-			firstClientMsgStr: "",
+			clientRandomSequence: "",
 		},
 		{
-			firstClientMsgStr: "n,,n=user,r=fyko+d2lbbFgONRv9qkxdawL",
+			clientRandomSequence: "fyko+d2lbbFgONRv9qkxdawL",
 		},
 	}
 
@@ -44,21 +44,19 @@ func TestSCRAMExchange(t *testing.T) {
 		var err error
 		var client *scram.Client
 
-		if 0 < len(test.firstClientMsgStr) {
-			client, err = scram.NewClientFromMessageWithHeader(test.firstClientMsgStr)
-			if err != nil {
-				t.Error(err)
-				continue
-			}
-		} else {
-			client, err = scram.NewClient(
-				scram.WithClientAuthzID(authzID), scram.WithClientUsername(user), scram.WithClientPassword(passwd), scram.WithClientHashFunc(hashFunc))
-			if err != nil {
-				t.Error(err)
-				continue
-			}
+		client, err = scram.NewClient(
+			scram.WithClientUsername(user),
+			scram.WithClientPassword(passwd),
+			scram.WithClientHashFunc(hashFunc))
+
+		if err != nil {
+			t.Error(err)
+			continue
 		}
-		client.SetOption(scram.WithClientHashFunc(hashFunc))
+
+		if 0 < len(test.clientRandomSequence) {
+			client.SetOption(scram.WithClientRandomSequence(test.clientRandomSequence))
+		}
 
 		firstClientMsg, err := client.FirstMessage()
 		if err != nil {
