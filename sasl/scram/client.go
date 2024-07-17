@@ -85,6 +85,14 @@ func WithClientHashFunc(hashFunc HashFunc) ClientOption {
 	}
 }
 
+// WithClientRandomSequence returns a client option to set the random sequence.
+func WithClientRandomSequence(randomSequence string) ClientOption {
+	return func(client *Client) error {
+		client.firstMsg.SetRandomSequence(randomSequence)
+		return nil
+	}
+}
+
 // WithClientChallenge returns a client option to set the challenge.
 func WithClientChallenge(challenge string) ClientOption {
 	return func(client *Client) error {
