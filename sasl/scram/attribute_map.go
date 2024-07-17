@@ -15,6 +15,7 @@
 package scram
 
 import (
+	"encoding/base64"
 	"sort"
 	"strconv"
 	"strings"
@@ -82,8 +83,16 @@ func (m AttributeMap) IterationCount() (int, bool) {
 }
 
 // ClientProof returns the client proof attribute from the map.
-func (m AttributeMap) ClientProof() (string, bool) {
-	return m.Attribute(ClientProofAttr)
+func (m AttributeMap) ClientProof() ([]byte, bool) {
+	v, ok := m.Attribute(ClientProofAttr)
+	if !ok {
+		return nil, false
+	}
+	dv, err := base64.StdEncoding.DecodeString(v)
+	if err != nil {
+		return nil, false
+	}
+	return dv, true
 }
 
 // ChannelBindingData returns the channel binding data attribute from the map.
@@ -132,8 +141,8 @@ func (m AttributeMap) SetIterationCount(value int) {
 }
 
 // SetClientProof sets the client proof attribute to the map.
-func (m AttributeMap) SetClientProof(value string) {
-	m.SetAttribute(ClientProofAttr, value)
+func (m AttributeMap) SetClientProof(value []byte) {
+	m.SetAttribute(ClientProofAttr, base64.StdEncoding.EncodeToString(value))
 }
 
 // SetChannelBindingData sets the channel binding data attribute to the map.
