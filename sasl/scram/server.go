@@ -88,6 +88,14 @@ func WithServerHashFunc(hashFunc HashFunc) ServerOption {
 	}
 }
 
+// WithServerSalt returns a server option to set the salt.
+func WithServerSalt(salt string) ServerOption {
+	return func(server *Server) error {
+		server.salt = salt
+		return nil
+	}
+}
+
 // SetOption sets the specified options.
 func (server *Server) SetOption(opts ...ServerOption) error {
 	for _, opt := range opts {
