@@ -15,6 +15,7 @@
 package scram
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/cybergarage/go-sasl/sasl/scram"
@@ -27,63 +28,98 @@ func TestSCRAMExchange(t *testing.T) {
 	passwd := sasltest.Paassword
 
 	tests := []struct {
-		clientRandomSequence string
-		firstClientMsgStr    string
+		clientFirstRS string
+		serverFirstRS string
+		salt          string
+		ic            int
 	}{
 		// RFC 5802 - Salted Challenge Response Authentication Mechanism (SCRAM) SASL and GSS-API Mechanisms
 		// 5. SCRAM Authentication Exchange
 		{
-			clientRandomSequence: "",
+			clientFirstRS: "fyko+d2lbbFgONRv9qkxdawL",
+			serverFirstRS: "3rfcNHYJY1ZVvWVs7j",
+			salt:          "QSXCR+Q6sek8bf92",
+			ic:            4096,
 		},
 		{
-			clientRandomSequence: "fyko+d2lbbFgONRv9qkxdawL",
+			clientFirstRS: "",
+			serverFirstRS: "",
+			salt:          "",
+			ic:            0,
 		},
 	}
 
-	for _, test := range tests {
-		var err error
-		var client *scram.Client
+	for n, test := range tests {
+		t.Run(fmt.Sprintf("test%02d", n), func(t *testing.T) {
+			var err error
+			var client *scram.Client
 
-		client, err = scram.NewClient(
-			scram.WithClientUsername(user),
-			scram.WithClientPassword(passwd),
-			scram.WithClientHashFunc(hashFunc))
+			// Create a client
+			client, err = scram.NewClient(
+				scram.WithClientUsername(user),
+				scram.WithClientPassword(passwd),
+				scram.WithClientHashFunc(hashFunc))
 
-		if err != nil {
-			t.Error(err)
-			continue
-		}
+			if err != nil {
+				t.Error(err)
+				return
+			}
 
-		if 0 < len(test.clientRandomSequence) {
-			client.SetOption(scram.WithClientRandomSequence(test.clientRandomSequence))
-		}
+			clientOpts := []scram.ClientOption{}
+			if 0 < len(test.clientFirstRS) {
+				clientOpts = append(clientOpts, scram.WithClientRandomSequence(test.clientFirstRS))
+			}
+			client.SetOption(clientOpts...)
 
-		firstClientMsg, err := client.FirstMessage()
-		if err != nil {
-			t.Error(err)
-			continue
-		}
-		server, err := sasltest.NewServer()
-		if err != nil {
-			t.Error(err)
-			continue
-		}
-		firstServerMsg, err := server.FirstMessageFrom(firstClientMsg)
-		if err != nil {
-			t.Error(err)
-			continue
-		}
+			// Create a server
 
-		finalClientMsg, err := client.FinalMessageFrom(firstServerMsg)
-		if err != nil {
-			t.Error(err)
-			continue
-		}
+			server, err := sasltest.NewServer()
+			if err != nil {
+				t.Error(err)
+				return
+			}
 
-		_, err = server.FinalMessageFrom(finalClientMsg)
-		if err != nil {
-			t.Error(err)
-			continue
-		}
+			serverOpts := []scram.ServerOption{}
+			if 0 < len(test.serverFirstRS) {
+				serverOpts = append(serverOpts, scram.WithServerRandomSequence(test.serverFirstRS))
+			}
+			if 0 < len(test.salt) {
+				serverOpts = append(serverOpts, scram.WithServerSalt(test.salt))
+			}
+			if 0 < test.ic {
+				serverOpts = append(serverOpts, scram.WithServerIterationCount(test.ic))
+			}
+			server.SetOption(serverOpts...)
+
+			// Exchange messages
+
+			firstClientMsg, err := client.FirstMessage()
+			if err != nil {
+				t.Error(err)
+				return
+			}
+			t.Logf("c1 = %s", firstClientMsg.String())
+
+			firstServerMsg, err := server.FirstMessageFrom(firstClientMsg)
+			if err != nil {
+				t.Error(err)
+				return
+			}
+			t.Logf("s1 = %s", firstServerMsg.String())
+
+			finalClientMsg, err := client.FinalMessageFrom(firstServerMsg)
+			if err != nil {
+				t.Error(err)
+				return
+			}
+			t.Logf("c2 = %s", finalClientMsg.String())
+
+			finalServerMsg, err := server.FinalMessageFrom(finalClientMsg)
+			if err != nil {
+				t.Error(err)
+				return
+			}
+			t.Logf("s2 = %s", finalServerMsg.String())
+		})
 	}
 }
