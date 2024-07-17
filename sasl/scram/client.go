@@ -25,12 +25,13 @@ import (
 
 // Client is a SCRAM client.
 type Client struct {
-	authzID   string
-	username  string
-	password  string
-	hashFunc  HashFunc
-	challenge string
-	firstMsg  *Message
+	authzID        string
+	username       string
+	password       string
+	hashFunc       HashFunc
+	challenge      string
+	firstMsg       *Message
+	randomSequence string
 }
 
 // ClientOption represents a client option function.
@@ -39,17 +40,26 @@ type ClientOption func(*Client) error
 // NewClient returns a new SCRAM client with options.
 func NewClient(opts ...ClientOption) (*Client, error) {
 	client := &Client{
-		authzID:   "",
-		username:  "",
-		password:  "",
-		hashFunc:  HashSHA256(),
-		challenge: "",
-		firstMsg:  nil,
+		authzID:        "",
+		username:       "",
+		password:       "",
+		hashFunc:       HashSHA256(),
+		challenge:      "",
+		randomSequence: "",
+		firstMsg:       nil,
 	}
-	err := client.SetOption(opts...)
+
+	seq, err := rand.NewRandomSequence(initialRandomSequenceLength)
 	if err != nil {
 		return nil, err
 	}
+	client.randomSequence = string(seq)
+
+	err = client.SetOption(opts...)
+	if err != nil {
+		return nil, err
+	}
+
 	return client, nil
 }
 
@@ -88,7 +98,7 @@ func WithClientHashFunc(hashFunc HashFunc) ClientOption {
 // WithClientRandomSequence returns a client option to set the random sequence.
 func WithClientRandomSequence(randomSequence string) ClientOption {
 	return func(client *Client) error {
-		client.firstMsg.SetRandomSequence(randomSequence)
+		client.randomSequence = randomSequence
 		return nil
 	}
 }
@@ -175,11 +185,7 @@ func (client *Client) FirstMessage() (*Message, error) {
 
 	// r: random sequence
 
-	seq, err := rand.NewRandomSequence(initialRandomSequenceLength)
-	if err != nil {
-		return nil, err
-	}
-	msg.SetRandomSequence(string(seq))
+	msg.SetRandomSequence(client.randomSequence)
 
 	client.firstMsg = msg
 
