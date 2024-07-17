@@ -29,7 +29,7 @@ func NewRandomSequence(length int) (RandomSequence, error) {
 	// RFC 4086 - Randomness Requirements for Security
 	// https://datatracker.ietf.org/doc/html/rfc4086
 
-	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+{}[]|:;<>.?~"
+	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	randomBytes := make([]byte, length)
 
 	_, err := rand.Read(randomBytes)
