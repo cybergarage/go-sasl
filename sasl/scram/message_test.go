@@ -15,6 +15,7 @@
 package scram
 
 import (
+	"encoding/base64"
 	"testing"
 )
 
@@ -141,14 +142,14 @@ func TestSCRAMMessage(t *testing.T) {
 
 		if 0 < len(test.expected.clientProof) {
 			v, ok := msg.ClientProof()
-			if !ok || v != test.expected.clientProof {
+			if !ok || base64.StdEncoding.EncodeToString(v) != test.expected.clientProof {
 				t.Errorf("clientProof = %s, want %s", v, test.expected.clientProof)
 			}
 		}
 
 		if 0 < len(test.expected.serverSignature) {
 			v, ok := msg.ServerSignature()
-			if !ok || v != test.expected.serverSignature {
+			if !ok || base64.StdEncoding.EncodeToString(v) != test.expected.serverSignature {
 				t.Errorf("serverSignature = %s, want %s", v, test.expected.serverSignature)
 			}
 		}

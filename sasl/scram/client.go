@@ -250,7 +250,7 @@ func (client *Client) FinalMessageFrom(serverFirstMsg *Message) (*Message, error
 
 	// ClientKey := HMAC(SaltedPassword, "Client Key")
 
-	clientKey := HMAC(client.hashFunc, saltedPassword, "Client Key")
+	clientKey := ClientKey(client.hashFunc, saltedPassword)
 
 	//  StoredKey := H(ClientKey)
 
@@ -264,7 +264,7 @@ func (client *Client) FinalMessageFrom(serverFirstMsg *Message) (*Message, error
 
 	// ClientSignature := HMAC(StoredKey, AuthMessage)
 
-	clientSignature := HMAC(client.hashFunc, storedKey, authMsg)
+	clientSignature := HMAC(client.hashFunc, storedKey, []byte(authMsg))
 
 	// ClientProof := ClientKey XOR ClientSignature
 

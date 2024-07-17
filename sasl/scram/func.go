@@ -16,7 +16,6 @@ package scram
 
 import (
 	"crypto/hmac"
-	"encoding/hex"
 	"strconv"
 
 	"github.com/cybergarage/go-sasl/sasl/prep"
@@ -27,16 +26,16 @@ import (
 
 // Hi(str, salt, i) is defined as:.
 // 2.2. Notation.
-func Hi(h HashFunc, str string, salt string, i int) string {
+func Hi(h HashFunc, str string, salt string, i int) []byte {
 	if i <= 1 {
-		return ""
+		return []byte{}
 	}
-	u := make([]string, i)
-	u[0] = HMAC(h, str, salt+strconv.Itoa(1))
+	u := make([][]byte, i)
+	u[0] = HMAC(h, []byte(str), []byte(salt+strconv.Itoa(1)))
 	for n := 1; n < i; n++ {
-		u[n] = HMAC(h, str, u[n-1])
+		u[n] = HMAC(h, []byte(str), u[n-1])
 	}
-	var hi string
+	var hi []byte
 	hi = u[0]
 	for n := 1; n < i; n++ {
 		hi = XOR(hi, u[n])
@@ -48,24 +47,23 @@ func Hi(h HashFunc, str string, salt string, i int) string {
 // 2.2. Notation
 // RFC 2104　- HMAC: Keyed-Hashing for Message Authentication
 // https://datatracker.ietf.org/doc/html/rfc2104
-func HMAC(h HashFunc, key string, data string) string {
-	mac := hmac.New(h, []byte(key))
-	mac.Write([]byte(data))
-	signedByte := mac.Sum(nil)
-	return hex.EncodeToString(signedByte)
+func HMAC(h HashFunc, key []byte, data []byte) []byte {
+	mac := hmac.New(h, key)
+	mac.Write(data)
+	return mac.Sum(nil)
 }
 
 // H(data) is defined as:.
 // 2.2. Notation.
-func H(hf HashFunc, data string) string {
+func H(hf HashFunc, data []byte) []byte {
 	h := hf()
-	h.Write([]byte(data))
-	return string(h.Sum(nil))
+	h.Write(data)
+	return h.Sum(nil)
 }
 
 // XOR(a, b) is defined as:.
 // 2.2. Notation.
-func XOR(a, b string) string {
+func XOR(a, b []byte) []byte {
 	minLength := len(a)
 	if len(b) < minLength {
 		minLength = len(b)
@@ -74,25 +72,25 @@ func XOR(a, b string) string {
 	for i := 0; i < minLength; i++ {
 		result[i] = a[i] ^ b[i]
 	}
-	return string(result)
+	return result
 }
 
 // SaltedPassword  := Hi(Normalize(password), salt, i).
-func SaltedPassword(h HashFunc, password string, salt string, i int) (string, error) {
+func SaltedPassword(h HashFunc, password string, salt string, i int) ([]byte, error) {
 	prepPassword, err := prep.Normalize(password)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	return Hi(h, prepPassword, salt, i), nil
 }
 
 // ClientKey       := HMAC(SaltedPassword, "Client Key").
-func ClientKey(h HashFunc, saltedPassword string) string {
-	return HMAC(h, saltedPassword, "Client Key")
+func ClientKey(h HashFunc, saltedPassword []byte) []byte {
+	return HMAC(h, saltedPassword, []byte("Client Key"))
 }
 
 // StoredKey       := H(ClientKey).
-func StoredKey(h HashFunc, clientKey string) string {
+func StoredKey(h HashFunc, clientKey []byte) []byte {
 	return H(h, clientKey)
 }
 
@@ -105,21 +103,21 @@ func AuthMessage(clientFirstMessageBare, serverFirstMessage, clientFinalMessageW
 }
 
 // ClientSignature := HMAC(StoredKey, AuthMessage).
-func ClientSignature(h HashFunc, storedKey, authMessage string) string {
-	return HMAC(h, storedKey, authMessage)
+func ClientSignature(h HashFunc, storedKey, authMessage string) []byte {
+	return HMAC(h, []byte(storedKey), []byte(authMessage))
 }
 
 // ClientProof     := ClientKey XOR ClientSignature.
-func ClientProof(clientKey, clientSignature string) string {
-	return XOR(clientKey, clientSignature)
+func ClientProof(clientKey, clientSignature string) []byte {
+	return XOR([]byte(clientKey), []byte(clientSignature))
 }
 
 // ServerKey       := HMAC(SaltedPassword, "Server Key").
-func ServerKey(h HashFunc, saltedPassword string) string {
-	return HMAC(h, saltedPassword, "Server Key")
+func ServerKey(h HashFunc, saltedPassword string) []byte {
+	return HMAC(h, []byte(saltedPassword), []byte("Server Key"))
 }
 
 // ServerSignature := HMAC(ServerKey, AuthMessage).
-func ServerSignature(h HashFunc, serverKey, authMessage string) string {
-	return HMAC(h, serverKey, authMessage)
+func ServerSignature(h HashFunc, serverKey, authMessage string) []byte {
+	return HMAC(h, []byte(serverKey), []byte(authMessage))
 }
