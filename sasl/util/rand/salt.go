@@ -14,20 +14,11 @@
 
 package rand
 
-import (
-	"crypto/rand"
-	"encoding/base64"
-)
-
 // Salt represents a random salt.
 type Salt string
 
 // NewSalt creates a new random salt.
 func NewSalt(length int) (string, error) {
-	randomBytes := make([]byte, length)
-	_, err := rand.Read(randomBytes)
-	if err != nil {
-		return "", err
-	}
-	return base64.StdEncoding.EncodeToString(randomBytes), nil
+	v, err := NewRandomSequence(length)
+	return string(v), err
 }
