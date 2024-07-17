@@ -40,7 +40,7 @@ func Hi(h HashFunc, str string, salt string, i int) []byte {
 	for n := 1; n < i; n++ {
 		hi = XOR(hi, u[n])
 	}
-	return hi
+	return hi[0:h().Size()]
 }
 
 // HMAC(key, data) is defined as:.
