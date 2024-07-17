@@ -203,8 +203,6 @@ func (server *Server) FinalMessageFrom(clienttMsg *Message) (*Message, error) {
 		return nil, ErrAuthorization
 	}
 
-	msg := NewMessage()
-
 	// SaltedPassword := Hi(Normalize(password), salt, i)
 	saltedPassword, err := SaltedPassword(server.hashFunc, storedCred.Password(), server.salt, server.iterationCount)
 	if err != nil {
@@ -215,6 +213,8 @@ func (server *Server) FinalMessageFrom(clienttMsg *Message) (*Message, error) {
 	serverKey := HMAC(server.hashFunc, saltedPassword, "Server Key")
 	//  ServerSignature := HMAC(ServerKey, AuthMessage)
 	serverSignature := HMAC(server.hashFunc, serverKey, authMsg)
+
+	msg := NewMessage()
 	msg.SetServerSignature(serverSignature)
 
 	return msg, nil
