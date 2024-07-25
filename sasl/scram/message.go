@@ -147,5 +147,5 @@ func (msg *Message) String() string {
 	if !msg.HasHeader() {
 		return msg.AttributeMap.String()
 	}
-	return msg.Header.String() + "," + msg.AttributeMap.String()
+	return msg.Header.String() + msg.AttributeMap.String()
 }
