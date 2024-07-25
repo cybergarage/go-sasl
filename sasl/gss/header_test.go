@@ -38,7 +38,7 @@ func TestHeader(t *testing.T) {
 				cbFlag:     ClientSupportsUsedCBSFlag,
 				cbName:     "test",
 				authID:     "",
-				headerStr:  "p=test,",
+				headerStr:  "p=test,,",
 			},
 		},
 		{
@@ -48,7 +48,7 @@ func TestHeader(t *testing.T) {
 				cbFlag:     ClientDoesNotSupportCBSFlag,
 				cbName:     "",
 				authID:     "",
-				headerStr:  "n,",
+				headerStr:  "n,,",
 			},
 		},
 		{
@@ -58,7 +58,7 @@ func TestHeader(t *testing.T) {
 				cbFlag:     ClientSupportsCBSFlag,
 				cbName:     "",
 				authID:     "",
-				headerStr:  "F,y,",
+				headerStr:  "F,y,,",
 			},
 		},
 		{
@@ -68,7 +68,7 @@ func TestHeader(t *testing.T) {
 				cbFlag:     ClientSupportsCBSFlag,
 				cbName:     "",
 				authID:     "auth",
-				headerStr:  "F,y,a=auth",
+				headerStr:  "F,y,a=auth,",
 			},
 		},
 		{
@@ -78,7 +78,7 @@ func TestHeader(t *testing.T) {
 				cbFlag:     ClientSupportsCBSFlag,
 				cbName:     "",
 				authID:     "auth;",
-				headerStr:  "F,y,a=auth=2C",
+				headerStr:  "F,y,a=auth=2C,",
 			},
 		},
 	}

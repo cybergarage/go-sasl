@@ -143,8 +143,6 @@ func (header *Header) String() string {
 			if 0 < len(prop) {
 				str += prop + ","
 			}
-		case 2:
-			str += prop
 		default:
 			str += prop + ","
 		}
