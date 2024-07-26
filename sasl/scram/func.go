@@ -16,7 +16,6 @@ package scram
 
 import (
 	"crypto/hmac"
-	"strconv"
 
 	"github.com/cybergarage/go-sasl/sasl/prep"
 )
@@ -30,11 +29,20 @@ func Hi(h HashFunc, str string, salt string, i int) []byte {
 	if i <= 1 {
 		return []byte{}
 	}
+	// salt + INT(1)
+	// INT(g) is a 4-octet encoding of the integer g, most significant octet first.
+	saltInt1 := append([]byte(salt), 0x00, 0x00, 0x00, 0x01)
+	// U1   := HMAC(str, salt + INT(1))
+	// U2   := HMAC(str, U1)
+	// ...
+	// Ui-1 := HMAC(str, Ui-2)
+	// Ui   := HMAC(str, Ui-1)
 	u := make([][]byte, i)
-	u[0] = HMAC(h, []byte(str), []byte(salt+strconv.Itoa(1)))
+	u[0] = HMAC(h, []byte(str), saltInt1)
 	for n := 1; n < i; n++ {
 		u[n] = HMAC(h, []byte(str), u[n-1])
 	}
+	// Hi := U1 XOR U2 XOR ... XOR Ui
 	var hi []byte
 	hi = u[0]
 	for n := 1; n < i; n++ {
@@ -64,13 +72,10 @@ func H(hf HashFunc, data []byte) []byte {
 // XOR(a, b) is defined as:.
 // 2.2. Notation.
 func XOR(a, b []byte) []byte {
-	minLength := len(a)
-	if len(b) < minLength {
-		minLength = len(b)
-	}
+	minLength := min(len(a), len(b))
 	result := make([]byte, minLength)
-	for i := 0; i < minLength; i++ {
-		result[i] = a[i] ^ b[i]
+	for n := 0; n < minLength; n++ {
+		result[n] = a[n] ^ b[n]
 	}
 	return result
 }
