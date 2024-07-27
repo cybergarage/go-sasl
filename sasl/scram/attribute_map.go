@@ -24,16 +24,20 @@ import (
 )
 
 // AttributeMap represents a SCRAM attribute map.
-type AttributeMap map[string]Attribute
+type AttributeMap struct {
+	attrs map[string]Attribute
+}
 
 // NewAttributeMap returns a new SCRAM attribute map.
 func NewAttributeMap() AttributeMap {
-	return AttributeMap{}
+	return AttributeMap{
+		attrs: make(map[string]Attribute),
+	}
 }
 
 // Attribute returns an attribute from the map.
 func (m AttributeMap) Attribute(name string) (string, bool) {
-	prop := m[name]
+	prop := m.attrs[name]
 	if prop == nil {
 		return "", false
 	}
@@ -117,7 +121,7 @@ func (m AttributeMap) Error() (string, bool) {
 
 // SetAttribute sets an attribute to the map.
 func (m AttributeMap) SetAttribute(name, value string) {
-	m[name] = NewAttribute(name, value)
+	m.attrs[name] = NewAttribute(name, value)
 }
 
 // EncodeAttribute sets a base64 encoded attribute to the map.
@@ -177,11 +181,11 @@ func (m AttributeMap) SetError(value string) {
 
 // Equals returns true if the map is equal to the other map.
 func (m AttributeMap) Equals(other AttributeMap) bool {
-	if len(m) != len(other) {
+	if len(m.attrs) != len(other.attrs) {
 		return false
 	}
-	for name, prop := range m {
-		otherProp, ok := other[name]
+	for name, prop := range m.attrs {
+		otherProp, ok := other.attrs[name]
 		if !ok {
 			return false
 		}
@@ -195,14 +199,14 @@ func (m AttributeMap) Equals(other AttributeMap) bool {
 // String returns the string representation of the map.
 func (m AttributeMap) String() string {
 	keys := []string{}
-	for k := range m {
+	for k := range m.attrs {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
 
 	attrs := []string{}
 	for _, key := range keys {
-		attr := m[key]
+		attr := m.attrs[key]
 		attrs = append(attrs, key+"="+attr.Value())
 	}
 	return strings.Join(attrs, ",")

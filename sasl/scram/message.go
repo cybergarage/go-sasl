@@ -122,8 +122,7 @@ func (msg *Message) ParseStrings(props []string) error {
 			ClientProofAttr,
 			ServerSignatureAttr,
 			ErrorAttr:
-			prop := NewAttribute(attrName, attrValue)
-			msg.AttributeMap[attrName] = prop
+			msg.SetAttribute(attrName, attrValue)
 		default:
 			return newErrInvalidAttribute(scramProp)
 		}
