@@ -28,7 +28,7 @@ type Server struct {
 	authzID        string
 	randomSequence string
 	iterationCount int
-	salt           string
+	salt           []byte
 	hashFunc       HashFunc
 	clientFirstMsg *Message
 	serverFirstMsg *Message
@@ -46,7 +46,7 @@ func NewServer(opts ...ServerOption) (*Server, error) {
 		randomSequence: "",
 		hashFunc:       HashSHA256(),
 		iterationCount: defaultIterationCount,
-		salt:           "",
+		salt:           nil,
 		clientFirstMsg: nil,
 		serverFirstMsg: nil,
 	}
