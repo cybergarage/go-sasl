@@ -260,7 +260,7 @@ func (client *Client) FinalMessageFrom(serverFirstMsg *Message) (*Message, error
 	//                server-first-message + "," +
 	//                client-final-message-without-proof
 
-	authMsg := AuthMessage(client.firstMsg.String(), serverFirstMsg.String(), msg.String())
+	authMsg := AuthMessage(client.firstMsg.String(), serverFirstMsg.String(), msg.StringWithoutProof())
 
 	// ClientSignature := HMAC(StoredKey, AuthMessage)
 
