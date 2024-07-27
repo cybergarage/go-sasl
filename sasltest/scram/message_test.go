@@ -23,7 +23,7 @@ import (
 )
 
 func TestSCRAMExchange(t *testing.T) {
-	hashFunc := scram.HashSHA256()
+	hashFunc := scram.HashSHA1()
 	user := sasltest.Username
 	passwd := sasltest.Paassword
 
@@ -84,7 +84,7 @@ func TestSCRAMExchange(t *testing.T) {
 				serverOpts = append(serverOpts, scram.WithServerRandomSequence(test.serverFirstRS))
 			}
 			if 0 < len(test.salt) {
-				serverOpts = append(serverOpts, scram.WithServerSalt(test.salt))
+				serverOpts = append(serverOpts, scram.WithServerSaltString(test.salt))
 			}
 			if 0 < test.ic {
 				serverOpts = append(serverOpts, scram.WithServerIterationCount(test.ic))
