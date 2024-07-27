@@ -43,8 +43,8 @@ func Hi(h HashFunc, str string, salt string, i int) []byte {
 		u[n] = HMAC(h, []byte(str), u[n-1])
 	}
 	// Hi := U1 XOR U2 XOR ... XOR Ui
-	var hi []byte
-	hi = u[0]
+	hi := make([]byte, len(u[0]))
+	copy(hi, u[0])
 	for n := 1; n < i; n++ {
 		hi = XOR(hi, u[n])
 	}
