@@ -153,12 +153,18 @@ func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
 	sr := string(cr) + string(server.randomSequence)
 	msg.SetRandomSequence(sr)
 
-	salt, err := rand.NewSalt(defaultSaltLength)
-	if err != nil {
-		return nil, err
+	// s: salt
+
+	if len(server.salt) == 0 {
+		salt, err := rand.NewSalt(defaultSaltLength)
+		if err != nil {
+			return nil, err
+		}
+		server.salt = salt
 	}
-	server.salt = salt
-	msg.SetSaltBytes(salt)
+	msg.SetSaltBytes(server.salt)
+
+	// i: iteration count
 
 	msg.SetIterationCount(server.iterationCount)
 
