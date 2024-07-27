@@ -17,6 +17,8 @@ package scram
 import (
 	"bytes"
 	"encoding/base64"
+	"fmt"
+	"strings"
 	"testing"
 )
 
@@ -104,6 +106,10 @@ func TestSCRAMMessage(t *testing.T) {
 				t.Error(err)
 				continue
 			}
+		}
+
+		if strings.Contains(msg.StringWithoutProof(), fmt.Sprintf("%s=", ClientProofAttr)) {
+			t.Errorf("client proof is included in the message")
 		}
 
 		if 0 < len(test.expected.userName) {

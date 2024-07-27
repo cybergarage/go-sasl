@@ -148,3 +148,11 @@ func (msg *Message) String() string {
 	}
 	return msg.Header.String() + msg.AttributeMap.String()
 }
+
+// StringWithoutProof returns the string representation of the message without the proof.
+func (msg *Message) StringWithoutProof() string {
+	if !msg.HasHeader() {
+		return msg.AttributeMap.StringWithoutProof()
+	}
+	return msg.Header.String() + msg.AttributeMap.StringWithoutProof()
+}
