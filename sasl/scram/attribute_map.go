@@ -213,3 +213,16 @@ func (m *AttributeMap) String() string {
 	}
 	return strings.Join(attrs, ",")
 }
+
+// StringWithoutProof returns the string representation of the map without the proof.
+func (m *AttributeMap) StringWithoutProof() string {
+	attrs := []string{}
+	for _, key := range m.keys {
+		if key == ClientProofAttr {
+			continue
+		}
+		attr := m.attrs[key]
+		attrs = append(attrs, key+"="+attr.Value())
+	}
+	return strings.Join(attrs, ",")
+}
