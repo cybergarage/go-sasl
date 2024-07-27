@@ -25,13 +25,13 @@ import (
 
 // Hi(str, salt, i) is defined as:.
 // 2.2. Notation.
-func Hi(h HashFunc, str string, salt string, i int) []byte {
+func Hi(h HashFunc, str string, salt []byte, i int) []byte {
 	if i <= 1 {
 		return []byte{}
 	}
 	// salt + INT(1)
 	// INT(g) is a 4-octet encoding of the integer g, most significant octet first.
-	saltInt1 := append([]byte(salt), 0x00, 0x00, 0x00, 0x01)
+	saltInt1 := append(salt, 0x00, 0x00, 0x00, 0x01)
 	// U1   := HMAC(str, salt + INT(1))
 	// U2   := HMAC(str, U1)
 	// ...
@@ -81,7 +81,7 @@ func XOR(a, b []byte) []byte {
 }
 
 // SaltedPassword  := Hi(Normalize(password), salt, i).
-func SaltedPassword(h HashFunc, password string, salt string, i int) ([]byte, error) {
+func SaltedPassword(h HashFunc, password string, salt []byte, i int) ([]byte, error) {
 	prepPassword, err := prep.Normalize(password)
 	if err != nil {
 		return nil, err
