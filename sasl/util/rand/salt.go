@@ -18,7 +18,7 @@ package rand
 type Salt string
 
 // NewSalt creates a new random salt.
-func NewSalt(length int) (string, error) {
+func NewSalt(length int) ([]byte, error) {
 	v, err := NewRandomSequence(length)
-	return string(v), err
+	return []byte(v), err
 }
