@@ -15,6 +15,7 @@
 package scram
 
 import (
+	"bytes"
 	"encoding/base64"
 	"testing"
 )
@@ -120,8 +121,13 @@ func TestSCRAMMessage(t *testing.T) {
 		}
 
 		if 0 < len(test.expected.salt) {
+			decodedExpectedSalt, err := base64.StdEncoding.DecodeString(test.expected.salt)
+			if err != nil {
+				t.Error(err)
+				continue
+			}
 			v, ok := msg.Salt()
-			if !ok || v != test.expected.salt {
+			if !ok || !bytes.Equal(v, decodedExpectedSalt) {
 				t.Errorf("salt = %s, want %s", v, test.expected.salt)
 			}
 		}

@@ -16,6 +16,7 @@ package scram
 
 import (
 	"crypto/hmac"
+	"encoding/base64"
 
 	"github.com/cybergarage/go-sasl/sasl/auth"
 	"github.com/cybergarage/go-sasl/sasl/util/rand"
@@ -88,10 +89,14 @@ func WithServerHashFunc(hashFunc HashFunc) ServerOption {
 	}
 }
 
-// WithServerSalt returns a server option to set the salt.
-func WithServerSalt(salt string) ServerOption {
+// WithServerSaltString returns a server option to set the salt.
+func WithServerSaltString(salt string) ServerOption {
 	return func(server *Server) error {
-		server.salt = salt
+		decordedSalt, err := base64.StdEncoding.DecodeString(salt)
+		if err != nil {
+			return err
+		}
+		server.salt = decordedSalt
 		return nil
 	}
 }
@@ -153,7 +158,7 @@ func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
 		return nil, err
 	}
 	server.salt = salt
-	msg.SetSalt(salt)
+	msg.SetSaltBytes(salt)
 
 	msg.SetIterationCount(server.iterationCount)
 
