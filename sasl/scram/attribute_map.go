@@ -78,8 +78,8 @@ func (m AttributeMap) RandomSequence() (string, bool) {
 }
 
 // Salt returns the salt attribute from the map.
-func (m AttributeMap) Salt() (string, bool) {
-	return m.Attribute(SaltAttr)
+func (m AttributeMap) Salt() ([]byte, bool) {
+	return m.DecodeAttribute(SaltAttr)
 }
 
 // IterationCount returns the iteration count attribute from the map.
@@ -143,6 +143,11 @@ func (m AttributeMap) SetRandomSequence(value string) {
 // SetSalt sets the salt attribute to the map.
 func (m AttributeMap) SetSalt(value string) {
 	m.SetAttribute(SaltAttr, value)
+}
+
+// SetSaltBytes sets the salt attribute to the map.
+func (m AttributeMap) SetSaltBytes(value []byte) {
+	m.EncodeAttribute(SaltAttr, value)
 }
 
 // SetIterationCount sets the iteration count attribute to the map.
