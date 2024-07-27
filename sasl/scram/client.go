@@ -203,6 +203,11 @@ func (client *Client) FinalMessageFrom(serverFirstMsg *Message) (*Message, error
 	// RFC 5802 - Salted Challenge Response Authentication Mechanism (SCRAM) SASL and GSS-API Mechanisms
 	// 5.1. SCRAM Attributes
 
+	//  The base64-encoded GS2 header and channel binding data.
+
+	c := base64.StdEncoding.EncodeToString([]byte(client.firstMsg.Header.String()))
+	msg.SetChannelBindingData(c)
+
 	// The client MUST verify that the initial part of the nonce used in
 	// subsequent messages is the same as the nonce it initially specified.
 
@@ -230,11 +235,6 @@ func (client *Client) FinalMessageFrom(serverFirstMsg *Message) (*Message, error
 	if ic < minimumIterationCount {
 		return nil, newErrInvalidMessage(serverFirstMsg.String())
 	}
-
-	//  The base64-encoded GS2 header and channel binding data.
-
-	c := base64.StdEncoding.EncodeToString([]byte(client.firstMsg.Header.String()))
-	msg.SetChannelBindingData(c)
 
 	// SaltedPassword := Hi(Normalize(password), salt, i)
 
