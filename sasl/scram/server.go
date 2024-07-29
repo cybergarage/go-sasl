@@ -101,6 +101,11 @@ func WithServerSaltString(salt string) ServerOption {
 	}
 }
 
+// HashFunc returns the hash function.
+func (server *Server) HashFunc() HashFunc {
+	return server.hashFunc
+}
+
 // SetOption sets the specified options.
 func (server *Server) SetOption(opts ...ServerOption) error {
 	for _, opt := range opts {
