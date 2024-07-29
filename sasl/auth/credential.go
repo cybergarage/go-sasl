@@ -39,9 +39,7 @@ func NewCredential(opts ...CredentialOption) *Credential {
 		password: "",
 		hashFunc: sha256.New,
 	}
-	for _, opt := range opts {
-		opt(cred)
-	}
+	cred.SetOption(opts...)
 	return cred
 }
 
@@ -66,6 +64,18 @@ func WithHashFunc(hashFunc HashFunc) CredentialOption {
 	}
 }
 
+// SetOption sets the options.
+func (cred *Credential) SetOption(opts ...CredentialOption) {
+	for _, opt := range opts {
+		opt(cred)
+	}
+}
+
+// HashFunc returns the hash function.
+func (cred *Credential) HashFunc() HashFunc {
+	return cred.hashFunc
+}
+
 // Username returns the username.
 func (cred *Credential) Username() string {
 	return cred.username
@@ -74,4 +84,11 @@ func (cred *Credential) Username() string {
 // Password returns the password.
 func (cred *Credential) Password() string {
 	return cred.password
+}
+
+// HashPassword returns the hashed password.
+func (cred *Credential) HashPassword() []byte {
+	hash := cred.hashFunc()
+	hash.Write([]byte(cred.password))
+	return hash.Sum(nil)
 }
