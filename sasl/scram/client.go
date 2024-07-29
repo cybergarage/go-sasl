@@ -162,6 +162,11 @@ func (client *Client) SetOption(opts ...ClientOption) error {
 	return nil
 }
 
+// HashFunc returns the hash function.
+func (client *Client) HashFunc() HashFunc {
+	return client.hashFunc
+}
+
 // FirstMessage returns the first message.
 func (client *Client) FirstMessage() (*Message, error) {
 	msg := NewMessage(WithHeader(gss.NewHeader()))
