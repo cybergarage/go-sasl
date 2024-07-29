@@ -40,6 +40,7 @@ func (server *Server) HasCredential(username string) (*auth.Credential, bool) {
 	cred := auth.NewCredential(
 		auth.WithUsername(username),
 		auth.WithPassword(Paassword),
+		auth.WithHashFunc(server.HashFunc()),
 	)
 	return cred, true
 }
