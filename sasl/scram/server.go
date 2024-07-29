@@ -222,7 +222,13 @@ func (server *Server) FinalMessageFrom(clienttMsg *Message) (*Message, error) {
 
 	clientSignature := HMAC(server.hashFunc, []byte(storedCred.Password()), []byte(authMsg))
 
+	// ClientProof := ClientKey XOR ClientSignature
+	// ClientKey := ClientProof XOR ClientSignature
+
 	clientKey := XOR(clientProof, clientSignature)
+
+	// StoredKey := H(ClientKey)
+
 	storedKey := H(server.hashFunc, clientKey)
 
 	if !hmac.Equal([]byte(storedKey), []byte(storedCred.Password())) {
