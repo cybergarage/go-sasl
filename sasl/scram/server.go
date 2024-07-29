@@ -195,9 +195,16 @@ func (server *Server) FinalMessageFrom(clienttMsg *Message) (*Message, error) {
 		return nil, newErrInvalidMessage(server.serverFirstMsg.String())
 	}
 
-	storedCred, err := server.HasCredential(server.authzID)
-	if err != nil {
-		return nil, ErrAuthorization
+	// ClientProof
+
+	clientProof, ok := clienttMsg.ClientProof()
+	if !ok {
+		return nil, newErrInvalidMessage(clienttMsg.String())
+	}
+
+	hashSize := server.hashFunc().Size()
+	if len(clientProof) != hashSize {
+		return nil, newErrInvalidMessage(clienttMsg.String())
 	}
 
 	// AuthMessage := client-first-message-bare + "," +
@@ -208,12 +215,12 @@ func (server *Server) FinalMessageFrom(clienttMsg *Message) (*Message, error) {
 
 	// ClientSignature := HMAC(StoredKey, AuthMessage)
 
-	clientSignature := HMAC(server.hashFunc, []byte(storedCred.Password()), []byte(authMsg))
-
-	clientProof, ok := clienttMsg.ClientProof()
-	if !ok {
-		return nil, newErrInvalidMessage(clienttMsg.String())
+	storedCred, err := server.HasCredential(server.authzID)
+	if err != nil {
+		return nil, ErrAuthorization
 	}
+
+	clientSignature := HMAC(server.hashFunc, []byte(storedCred.Password()), []byte(authMsg))
 
 	clientKey := XOR(clientProof, clientSignature)
 	storedKey := H(server.hashFunc, clientKey)
