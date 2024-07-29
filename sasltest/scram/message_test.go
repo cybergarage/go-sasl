@@ -79,7 +79,9 @@ func TestSCRAMExchange(t *testing.T) {
 				return
 			}
 
-			serverOpts := []scram.ServerOption{}
+			serverOpts := []scram.ServerOption{
+				scram.WithServerHashFunc(hashFunc),
+			}
 			if 0 < len(test.serverFirstRS) {
 				serverOpts = append(serverOpts, scram.WithServerRandomSequence(test.serverFirstRS))
 			}
