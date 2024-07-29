@@ -236,7 +236,7 @@ func (server *Server) FinalMessageFrom(clienttMsg *Message) (*Message, error) {
 
 	storedKey := H(server.hashFunc, clientKey)
 
-	if !hmac.Equal([]byte(storedKey), []byte(storedCred.Password())) {
+	if !hmac.Equal(storedKey, storedCred.HashPassword()) {
 		return nil, ErrAuthorization
 	}
 
