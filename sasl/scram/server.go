@@ -200,6 +200,36 @@ func (server *Server) FinalMessageFrom(clienttMsg *Message) (*Message, error) {
 		return nil, newErrInvalidMessage(server.serverFirstMsg.String())
 	}
 
+	// SaltedPassword := Hi(Normalize(password), salt, i)
+
+	storedCred, err := server.HasCredential(server.authzID)
+	if err != nil {
+		return nil, ErrAuthorization
+	}
+
+	saltedPassword, err := SaltedPassword(server.hashFunc, storedCred.Password(), server.salt, server.iterationCount)
+	if err != nil {
+		return nil, err
+	}
+
+	// ClientKey := HMAC(SaltedPassword, "Client Key")
+
+	clientKey := ClientKey(server.hashFunc, saltedPassword)
+
+	//  StoredKey := H(ClientKey)
+
+	storedKey := H(server.hashFunc, clientKey)
+
+	// AuthMessage := client-first-message-bare + "," +
+	//                server-first-message + "," +
+	//                client-final-message-without-proof
+
+	authMsg := AuthMessage(server.clientFirstMsg.String(), server.serverFirstMsg.String(), clienttMsg.StringWithoutProof())
+
+	// ClientSignature := HMAC(StoredKey, AuthMessage)
+
+	clientSignature := HMAC(server.hashFunc, storedKey, []byte(authMsg))
+
 	// ClientProof
 
 	clientProof, ok := clienttMsg.ClientProof()
@@ -212,42 +242,22 @@ func (server *Server) FinalMessageFrom(clienttMsg *Message) (*Message, error) {
 		return nil, newErrInvalidMessage(clienttMsg.String())
 	}
 
-	// AuthMessage := client-first-message-bare + "," +
-	//                server-first-message + "," +
-	//                client-final-message-without-proof
-
-	authMsg := AuthMessage(server.clientFirstMsg.String(), server.serverFirstMsg.String(), clienttMsg.StringWithoutProof())
-
-	// ClientSignature := HMAC(StoredKey, AuthMessage)
-
-	storedCred, err := server.HasCredential(server.authzID)
-	if err != nil {
-		return nil, ErrAuthorization
-	}
-
-	clientSignature := HMAC(server.hashFunc, []byte(storedCred.Password()), []byte(authMsg))
-
 	// ClientProof := ClientKey XOR ClientSignature
 	// ClientKey := ClientProof XOR ClientSignature
 
-	clientKey := XOR(clientProof, clientSignature)
+	receivedClientKey := XOR(clientProof, clientSignature)
 
-	// StoredKey := H(ClientKey)
+	//  StoredKey := H(ClientKey)
 
-	storedKey := H(server.hashFunc, clientKey)
+	receivedStoredKey := H(server.hashFunc, receivedClientKey)
 
-	if !hmac.Equal(storedKey, storedCred.HashPassword()) {
+	if !hmac.Equal(storedKey, receivedStoredKey) {
 		return nil, ErrAuthorization
-	}
-
-	// SaltedPassword := Hi(Normalize(password), salt, i)
-	saltedPassword, err := SaltedPassword(server.hashFunc, storedCred.Password(), server.salt, server.iterationCount)
-	if err != nil {
-		return nil, err
 	}
 
 	// ServerKey := HMAC(SaltedPassword, "Server Key")
 	serverKey := HMAC(server.hashFunc, saltedPassword, []byte("Server Key"))
+
 	//  ServerSignature := HMAC(ServerKey, AuthMessage)
 	serverSignature := HMAC(server.hashFunc, serverKey, []byte(authMsg))
 
