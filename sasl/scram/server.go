@@ -258,7 +258,7 @@ func (server *Server) FinalMessageFrom(clienttMsg *Message) (*Message, error) {
 	// ServerKey := HMAC(SaltedPassword, "Server Key")
 	serverKey := HMAC(server.hashFunc, saltedPassword, []byte("Server Key"))
 
-	//  ServerSignature := HMAC(ServerKey, AuthMessage)
+	// ServerSignature := HMAC(ServerKey, AuthMessage)
 	serverSignature := HMAC(server.hashFunc, serverKey, []byte(authMsg))
 
 	msg := NewMessage()
