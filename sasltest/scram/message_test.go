@@ -122,6 +122,12 @@ func TestSCRAMExchange(t *testing.T) {
 				return
 			}
 			t.Logf("s2 = %s", finalServerMsg.String())
+
+			err = client.ValidateServerFinalMessage(finalServerMsg)
+			if err != nil {
+				t.Error(err)
+				return
+			}
 		})
 	}
 }

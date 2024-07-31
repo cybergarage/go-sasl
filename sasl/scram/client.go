@@ -15,6 +15,7 @@
 package scram
 
 import (
+	"bytes"
 	"encoding/base64"
 	"strings"
 
@@ -30,7 +31,9 @@ type Client struct {
 	password       string
 	hashFunc       HashFunc
 	challenge      string
-	firstMsg       *Message
+	clientFirstMsg *Message
+	clientFinalMsg *Message
+	serverFirstMsg *Message
 	randomSequence string
 }
 
@@ -46,7 +49,9 @@ func NewClient(opts ...ClientOption) (*Client, error) {
 		hashFunc:       HashSHA256(),
 		challenge:      "",
 		randomSequence: "",
-		firstMsg:       nil,
+		clientFirstMsg: nil,
+		clientFinalMsg: nil,
+		serverFirstMsg: nil,
 	}
 
 	seq, err := rand.NewRandomSequence(initialRandomSequenceLength)
@@ -192,16 +197,18 @@ func (client *Client) FirstMessage() (*Message, error) {
 
 	msg.SetRandomSequence(client.randomSequence)
 
-	client.firstMsg = msg
+	client.clientFirstMsg = msg
 
 	return msg, nil
 }
 
 // FinalMessageFrom returns the final message from the specified server first message.
 func (client *Client) FinalMessageFrom(serverFirstMsg *Message) (*Message, error) {
-	if client.firstMsg == nil {
+	if client.clientFirstMsg == nil {
 		return nil, newErrInvalidMessage("First message is not set")
 	}
+
+	client.serverFirstMsg = serverFirstMsg
 
 	msg := NewMessage()
 
@@ -210,22 +217,22 @@ func (client *Client) FinalMessageFrom(serverFirstMsg *Message) (*Message, error
 
 	//  The base64-encoded GS2 header and channel binding data.
 
-	c := base64.StdEncoding.EncodeToString([]byte(client.firstMsg.Header.String()))
+	c := base64.StdEncoding.EncodeToString([]byte(client.clientFirstMsg.Header.String()))
 	msg.SetChannelBindingData(c)
 
 	// The client MUST verify that the initial part of the nonce used in
 	// subsequent messages is the same as the nonce it initially specified.
 
-	clientRS, ok := client.firstMsg.RandomSequence()
+	clientRS, ok := client.clientFirstMsg.RandomSequence()
 	if !ok {
-		return nil, newErrInvalidMessage(client.firstMsg.String())
+		return nil, newErrInvalidMessage(client.clientFirstMsg.String())
 	}
 	serverRS, ok := serverFirstMsg.RandomSequence()
 	if !ok {
 		return nil, newErrInvalidMessage(serverFirstMsg.String())
 	}
 	if !strings.HasPrefix(serverRS, clientRS) {
-		return nil, newErrInvalidMessage(client.firstMsg.String())
+		return nil, newErrInvalidMessage(client.clientFirstMsg.String())
 	}
 	msg.SetRandomSequence(serverRS)
 
@@ -265,7 +272,7 @@ func (client *Client) FinalMessageFrom(serverFirstMsg *Message) (*Message, error
 	//                server-first-message + "," +
 	//                client-final-message-without-proof
 
-	authMsg := AuthMessage(client.firstMsg.String(), serverFirstMsg.String(), msg.StringWithoutProof())
+	authMsg := AuthMessage(client.clientFirstMsg.String(), serverFirstMsg.String(), msg.StringWithoutProof())
 
 	// ClientSignature := HMAC(StoredKey, AuthMessage)
 
@@ -276,5 +283,62 @@ func (client *Client) FinalMessageFrom(serverFirstMsg *Message) (*Message, error
 	clientProof := XOR(clientKey, clientSignature)
 	msg.SetClientProof(clientProof)
 
+	client.clientFinalMsg = msg
+
 	return msg, nil
+}
+
+// ValidateServerFinalMessage validates the final message from the specified server final message.
+func (client *Client) ValidateServerFinalMessage(serverFinalMsg *Message) error {
+	if client.clientFirstMsg == nil {
+		return newErrInvalidMessage("client first message is not set")
+	}
+
+	if client.clientFirstMsg == nil {
+		return newErrInvalidMessage("client final message is not set")
+	}
+
+	if client.serverFirstMsg == nil {
+		return newErrInvalidMessage("server first message is not set")
+	}
+
+	receivedServerSignature, ok := serverFinalMsg.ServerSignature()
+	if !ok {
+		return newErrInvalidMessage(serverFinalMsg.String())
+	}
+
+	// SaltedPassword := Hi(Normalize(password), salt, i)
+
+	ic, ok := client.serverFirstMsg.IterationCount()
+	if !ok {
+		return newErrInvalidMessage(client.serverFirstMsg.String())
+	}
+
+	salt, ok := client.serverFirstMsg.Salt()
+	if !ok {
+		return newErrInvalidMessage(client.serverFirstMsg.String())
+	}
+
+	saltedPassword, err := SaltedPassword(client.hashFunc, client.password, salt, ic)
+	if err != nil {
+		return err
+	}
+
+	// AuthMessage := client-first-message-bare + "," +
+	//                server-first-message + "," +
+	//                client-final-message-without-proof
+
+	authMsg := AuthMessage(client.clientFirstMsg.String(), client.serverFirstMsg.String(), client.clientFinalMsg.StringWithoutProof())
+
+	// ServerKey := HMAC(SaltedPassword, "Server Key")
+	serverKey := HMAC(client.hashFunc, saltedPassword, []byte("Server Key"))
+
+	// ServerSignature := HMAC(ServerKey, AuthMessage)
+	serverSignature := HMAC(client.hashFunc, serverKey, []byte(authMsg))
+
+	if !bytes.Equal(serverSignature, receivedServerSignature) {
+		return newErrInvalidMessage(serverFinalMsg.String())
+	}
+
+	return nil
 }
