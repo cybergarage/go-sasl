@@ -20,3 +20,9 @@ import (
 
 // Mechanism represents a SASL mechanism.
 type Mechanism = mechanism.Mechanism
+
+// Parameter represents a SASL mechanism parameter.
+type Parameter = mechanism.Parameter
+
+// Response represents a SASL mechanism response.
+type Response = mechanism.Response
