@@ -37,11 +37,11 @@ func (m *SCRAM) Type() SCRAMType {
 }
 
 // Start returns the initial response.
-func (m *SCRAM) Start() ([]byte, error) {
+func (m *SCRAM) Start(...Parameter) (Response, error) {
 	return nil, nil
 }
 
 // Next returns the next response.
-func (m *SCRAM) Next(challenge []byte) ([]byte, error) {
+func (m *SCRAM) Next(...Parameter) (Response, error) {
 	return nil, nil
 }

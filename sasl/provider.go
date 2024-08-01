@@ -14,10 +14,6 @@
 
 package sasl
 
-import (
-	"github.com/cybergarage/go-sasl/sasl/plugins"
-)
-
 type Provider struct {
 	Mechanisms []Mechanism
 }
@@ -37,5 +33,4 @@ func (provider *Provider) AddMechanism(mech Mechanism) {
 }
 
 func (provider *Provider) loadDefaultPlugins() {
-	provider.AddMechanism(plugins.NewPlain())
 }

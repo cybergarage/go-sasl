@@ -15,17 +15,17 @@
 package mechanism
 
 // Parameter represents a SASL mechanism parameter.
-type Parameter any
+type Parameter = any
 
 // Response represents a SASL mechanism response.
-type Response any
+type Response = any
 
 // Mechanism represents a SASL mechanism.
 type Mechanism interface {
 	// Name returns the mechanism name.
 	Name() string
 	// Start returns the initial response.
-	Start() ([]byte, error)
+	Start(...Parameter) (Response, error)
 	// Next returns the next response.
-	Next([]byte) ([]byte, error)
+	Next(...Parameter) (Response, error)
 }
