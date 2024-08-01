@@ -12,11 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package sasl
-
-import (
-	"github.com/cybergarage/go-sasl/sasl/mechanism"
-)
+package mechanism
 
 // Mechanism represents a SASL mechanism.
-type Mechanism = mechanism.Mechanism
+type Mechanism interface {
+	// Name returns the mechanism name.
+	Name() string
+	// Start returns the initial response.
+	Start() ([]byte, error)
+	// Next returns the next response.
+	Next(challenge []byte) ([]byte, error)
+}
