@@ -15,12 +15,15 @@
 package scram
 
 import (
+	"fmt"
+
 	"github.com/cybergarage/go-sasl/sasl/mechanism"
 	"github.com/cybergarage/go-sasl/sasl/scram"
 )
 
 // ServerContext represents a SCRAM server context.
 type ServerContext struct {
+	step int
 	*scram.Server
 }
 
@@ -31,13 +34,42 @@ func NewServerContext(opts ...scram.ServerOption) (*ServerContext, error) {
 		return nil, err
 	}
 	return &ServerContext{
+		step:   0,
 		Server: server,
 	}, nil
 }
 
 // Next returns the next response.
-func (ctx *ServerContext) Next(...mechanism.Parameter) (mechanism.Response, error) {
-	return nil, nil
+func (ctx *ServerContext) Next(opts ...mechanism.Parameter) (mechanism.Response, error) {
+	if len(opts) == 0 {
+		return nil, fmt.Errorf("no message")
+	}
+
+	var msgStr string
+	switch v := opts[0].(type) {
+	case string:
+		msgStr = v
+	case []byte:
+		msgStr = string(v)
+	default:
+		return nil, fmt.Errorf("invalid message type")
+	}
+
+	msg, err := scram.NewMessageFromString(msgStr)
+	if err != nil {
+		return nil, err
+	}
+
+	switch ctx.step {
+	case 0:
+		ctx.step++
+		return ctx.Server.FirstMessageFrom(msg)
+	case 1:
+		ctx.step++
+		return ctx.Server.FinalMessageFrom(msg)
+	}
+
+	return nil, fmt.Errorf("invalid step : %d", ctx.step)
 }
 
 // Dispose disposes the context.
@@ -77,5 +109,5 @@ func (server *Server) Start(...mechanism.Parameter) (mechanism.Context, error) {
 	case SCRAMTypeSHA512:
 		return NewServerContext(scram.WithServerHashFunc(scram.HashSHA512()))
 	}
-	return nil, nil
+	return nil, fmt.Errorf("unknown SCRAM type : %d", server.typ)
 }
