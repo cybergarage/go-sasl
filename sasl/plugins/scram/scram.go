@@ -14,13 +14,17 @@
 
 package plugins
 
+import (
+	"github.com/cybergarage/go-sasl/sasl/mechanism"
+)
+
 // SCRAM represents a PLAIN mechanism.
 type SCRAM struct {
 	typ SCRAMType
 }
 
 // NewSCRAM returns a new PLAIN mechanism.
-func NewSCRAMWithType(t SCRAMType) Mechanism {
+func NewSCRAMWithType(t SCRAMType) mechanism.Mechanism {
 	return &SCRAM{
 		typ: t,
 	}
@@ -37,11 +41,11 @@ func (m *SCRAM) Type() SCRAMType {
 }
 
 // Start returns the initial response.
-func (m *SCRAM) Start(...Parameter) (Response, error) {
+func (m *SCRAM) Start(...mechanism.Parameter) (mechanism.Response, error) {
 	return nil, nil
 }
 
 // Next returns the next response.
-func (m *SCRAM) Next(...Parameter) (Response, error) {
+func (m *SCRAM) Next(...mechanism.Parameter) (mechanism.Response, error) {
 	return nil, nil
 }
