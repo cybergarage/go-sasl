@@ -32,8 +32,6 @@ type Context interface {
 type Mechanism interface {
 	// Name returns the mechanism name.
 	Name() string
-	// Start returns the initial response.
-	Start(...Parameter) (Response, error)
-	// Next returns the next response.
-	Next(...Parameter) (Response, error)
+	// Start returns the initial context.
+	Start(...Parameter) (Context, error)
 }
