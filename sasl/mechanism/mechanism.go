@@ -24,6 +24,8 @@ type Response = any
 type Context interface {
 	// Next returns the next response.
 	Next(...Parameter) (Response, error)
+	// Dispose disposes the context.
+	Dispose() error
 }
 
 // Mechanism represents a SASL mechanism.
