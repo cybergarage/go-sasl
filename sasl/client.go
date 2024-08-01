@@ -16,12 +16,9 @@ package sasl
 
 // Client represents a SASL client.
 type Client struct {
-	*Context
 }
 
 // NewClient returns a new client.
 func NewClient() *Client {
-	return &Client{
-		Context: NewContext(),
-	}
+	return &Client{}
 }
