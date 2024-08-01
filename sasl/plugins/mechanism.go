@@ -14,12 +14,9 @@
 
 package plugins
 
+import (
+	"github.com/cybergarage/go-sasl/sasl/mechanism"
+)
+
 // Mechanism represents a SASL mechanism.
-type Mechanism interface {
-	// Name returns the mechanism name.
-	Name() string
-	// Start returns the initial response.
-	Start() ([]byte, error)
-	// Next returns the next response.
-	Next(challenge []byte) ([]byte, error)
-}
+type Mechanism = mechanism.Mechanism
