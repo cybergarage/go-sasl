@@ -26,3 +26,6 @@ type Parameter = mechanism.Parameter
 
 // Response represents a SASL mechanism response.
 type Response = mechanism.Response
+
+// Context represents a SASL mechanism context.
+type Context = mechanism.Context
