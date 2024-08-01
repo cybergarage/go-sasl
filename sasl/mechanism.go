@@ -15,8 +15,8 @@
 package sasl
 
 import (
-	"github.com/cybergarage/go-sasl/sasl/plugins"
+	"github.com/cybergarage/go-sasl/sasl/mechanism"
 )
 
 // Mechanism represents a SASL mechanism.
-type Mechanism = plugins.Mechanism
+type Mechanism = mechanism.Mechanism
