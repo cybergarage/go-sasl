@@ -18,11 +18,17 @@ package scram
 import (
 	"crypto/sha1"
 	"crypto/sha256"
+	"crypto/sha512"
 	"hash"
 )
 
 // HashFunc is a function that returns a hash.Hash.
 type HashFunc = func() hash.Hash
+
+// HashSHA512 returns a new SHA-512 hash function.
+func HashSHA512() HashFunc {
+	return sha512.New
+}
 
 // HashSHA256 returns a new SHA-256 hash function.
 func HashSHA256() HashFunc {
