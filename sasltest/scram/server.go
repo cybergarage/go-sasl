@@ -12,15 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package sasltest
+package scram
 
 import (
-	"github.com/cybergarage/go-sasl/sasl"
 	"github.com/cybergarage/go-sasl/sasl/auth"
+	"github.com/cybergarage/go-sasl/sasl/scram"
+	"github.com/cybergarage/go-sasl/sasltest"
 )
 
 type Server struct {
-	*sasl.Server
+	*scram.Server
 }
 
 func NewServer() (*Server, error) {
@@ -28,7 +29,7 @@ func NewServer() (*Server, error) {
 	server := &Server{
 		Server: nil,
 	}
-	server.Server, err = sasl.NewServer()
+	server.Server, err = scram.NewServer()
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +40,7 @@ func NewServer() (*Server, error) {
 func (server *Server) HasCredential(username string) (*auth.Credential, bool) {
 	cred := auth.NewCredential(
 		auth.WithUsername(username),
-		auth.WithPassword(Paassword),
+		auth.WithPassword(sasltest.Paassword),
 	)
 	return cred, true
 }
