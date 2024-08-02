@@ -55,17 +55,7 @@ func (ctx *ServerContext) Next(opts ...mechanism.Parameter) (mechanism.Response,
 		return nil, fmt.Errorf("no message")
 	}
 
-	var msgStr string
-	switch v := opts[0].(type) {
-	case string:
-		msgStr = v
-	case []byte:
-		msgStr = string(v)
-	default:
-		return nil, fmt.Errorf("invalid message type")
-	}
-
-	msg, err := scram.NewMessageFromString(msgStr)
+	msg, err := scram.NewMessageFrom(opts[0])
 	if err != nil {
 		return nil, err
 	}
