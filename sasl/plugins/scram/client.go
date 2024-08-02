@@ -97,7 +97,7 @@ type Client struct {
 	scramType Type
 }
 
-// NewSCRAM returns a new PLAIN mechanism.
+// NewSCRAM returns a new SCRAM mechanism.
 func NewClientWithType(t Type) mechanism.Mechanism {
 	return &Client{
 		scramType: t,
