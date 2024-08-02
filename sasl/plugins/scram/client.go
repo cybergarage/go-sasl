@@ -125,14 +125,28 @@ func (client *Client) Type() SCRAMType {
 }
 
 // Start returns the initial context.
-func (client *Client) Start(...mechanism.Parameter) (mechanism.Context, error) {
+func (client *Client) Start(opts ...mechanism.Option) (mechanism.Context, error) {
+	clientOpts := []scram.ClientOption{}
+	for _, opt := range opts {
+		switch v := opt.(type) {
+		case mechanism.Username:
+			clientOpts = append(clientOpts, scram.WithClientUsername(string(v)))
+		case mechanism.Password:
+			clientOpts = append(clientOpts, scram.WithClientPassword(string(v)))
+		}
+	}
+
 	switch client.typ {
 	case SCRAMTypeSHA1:
-		return NewClientContext(scram.WithClientHashFunc(scram.HashSHA1()))
+		clientOpts = append(clientOpts, scram.WithClientHashFunc(scram.HashSHA1()))
+		return NewClientContext(clientOpts...)
 	case SCRAMTypeSHA256:
-		return NewClientContext(scram.WithClientHashFunc(scram.HashSHA256()))
+		clientOpts = append(clientOpts, scram.WithClientHashFunc(scram.HashSHA256()))
+		return NewClientContext(clientOpts...)
 	case SCRAMTypeSHA512:
-		return NewClientContext(scram.WithClientHashFunc(scram.HashSHA512()))
+		clientOpts = append(clientOpts, scram.WithClientHashFunc(scram.HashSHA512()))
+		return NewClientContext(clientOpts...)
 	}
+
 	return nil, fmt.Errorf("unknown SCRAM type : %d", client.typ)
 }
