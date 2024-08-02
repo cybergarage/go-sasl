@@ -93,3 +93,8 @@ func (msg *Message) ParseBytes(b []byte) error {
 func (msg *Message) Bytes() []byte {
 	return []byte(msg.authzid + "\x00" + msg.authcid + "\x00" + msg.passwd)
 }
+
+// String returns the message string.
+func (msg *Message) String() string {
+	return fmt.Sprintf("%s,%s,%s", msg.authzid, msg.authcid, msg.passwd)
+}
