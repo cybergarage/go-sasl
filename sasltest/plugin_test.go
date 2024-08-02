@@ -16,7 +16,15 @@ package sasltest
 
 import (
 	"testing"
+
+	"github.com/cybergarage/go-sasl/sasl"
 )
 
 func TestMechanism(t *testing.T) {
+	client := sasl.NewClient()
+	// server := sasl.NewServer()
+
+	for _, m := range client.Mechanisms() {
+		t.Logf("Mechanism : %s", m.Name())
+	}
 }
