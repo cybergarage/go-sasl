@@ -40,7 +40,7 @@ func NewServer() (*Server, error) {
 func (server *Server) HasCredential(username string) (*auth.Credential, bool) {
 	cred := auth.NewCredential(
 		auth.WithUsername(username),
-		auth.WithPassword(sasltest.Paassword),
+		auth.WithPassword(sasltest.Password),
 	)
 	return cred, true
 }
