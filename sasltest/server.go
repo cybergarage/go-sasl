@@ -23,13 +23,12 @@ type Server struct {
 	*sasl.Server
 }
 
-func NewServer() (*Server, error) {
+func NewServer() *Server {
 	server := &Server{
-		Server: nil,
+		Server: sasl.NewServer(),
 	}
-	server.Server = sasl.NewServer()
 	server.AddAuthenticator(server)
-	return server, nil
+	return server
 }
 
 func (server *Server) HasCredential(username string) (*auth.Credential, bool) {
