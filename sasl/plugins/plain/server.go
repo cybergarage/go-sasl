@@ -60,10 +60,10 @@ func (ctx *ServerContext) Next(opts ...mechanism.Parameter) (mechanism.Response,
 		return nil, fmt.Errorf("no message")
 	}
 
-	// msg, err := NewMessageFrom(opts[0])
-	// if err != nil {
-	// 	return nil, err
-	// }
+	_, err := NewMessageFrom(opts[0])
+	if err != nil {
+		return nil, err
+	}
 
 	switch ctx.step {
 	case 0:
