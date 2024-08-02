@@ -43,6 +43,11 @@ func (mgr *AuthManager) ClearAuthenticators() {
 	mgr.authenticators = make([]Authenticator, 0)
 }
 
+// Authenticators returns the authenticators.
+func (mgr *AuthManager) Authenticators() Authenticators {
+	return mgr.authenticators
+}
+
 // HasCredential returns true if the username has a credential.
 func (mgr *AuthManager) HasCredential(username string) (*Credential, error) {
 	for _, authenticator := range mgr.authenticators {
