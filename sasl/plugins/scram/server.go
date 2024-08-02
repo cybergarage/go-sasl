@@ -39,6 +39,11 @@ func NewServerContext(opts ...scram.ServerOption) (*ServerContext, error) {
 	}, nil
 }
 
+// Step returns the current step number. The step number is incremented by one after each call to Next.
+func (ctx *ServerContext) Step() int {
+	return ctx.step
+}
+
 // Next returns the next response.
 func (ctx *ServerContext) Next(opts ...mechanism.Parameter) (mechanism.Response, error) {
 	if len(opts) == 0 {
