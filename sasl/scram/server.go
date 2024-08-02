@@ -127,6 +127,10 @@ func (server *Server) SetOption(opts ...ServerOption) error {
 
 // FirstMessageFrom returns a new server first message from the specified client message.
 func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
+	if clientMsg == nil {
+		return nil, newErrInvalidMessage("Client message is nil")
+	}
+
 	msg := NewMessage()
 
 	// authzid: authorization ID
@@ -189,6 +193,10 @@ func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
 
 // FinalMessageFrom returns a new server final message from the specified client final message.
 func (server *Server) FinalMessageFrom(clienttMsg *Message) (*Message, error) {
+	if clienttMsg == nil {
+		return nil, newErrInvalidMessage("Client message is nil")
+	}
+
 	if server.clientFirstMsg == nil || server.serverFirstMsg == nil {
 		return nil, newErrInvalidMessage("First message is not set")
 	}
