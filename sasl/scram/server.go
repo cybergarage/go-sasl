@@ -101,6 +101,14 @@ func WithServerSaltString(salt string) ServerOption {
 	}
 }
 
+// WithServerAuthenticators returns a server option to set the authenticators.
+func WithServerAuthenticators(authenticators auth.Authenticators) ServerOption {
+	return func(server *Server) error {
+		server.SetAuthenticators(authenticators)
+		return nil
+	}
+}
+
 // HashFunc returns the hash function.
 func (server *Server) HashFunc() HashFunc {
 	return server.hashFunc
