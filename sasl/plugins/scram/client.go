@@ -39,6 +39,11 @@ func NewClientContext(opts ...scram.ClientOption) (*ClientContext, error) {
 	}, nil
 }
 
+// Step returns the current step number. The step number is incremented by one after each call to Next.
+func (ctx *ClientContext) Step() int {
+	return ctx.step
+}
+
 // Next returns the next response.
 func (ctx *ClientContext) Next(opts ...mechanism.Parameter) (mechanism.Response, error) {
 	if len(opts) == 0 {

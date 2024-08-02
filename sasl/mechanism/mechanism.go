@@ -24,6 +24,8 @@ type Response = any
 type Context interface {
 	// Next returns the next response.
 	Next(...Parameter) (Response, error)
+	// Step returns the current step number. The step number is incremented by one after each call to Next.
+	Step() int
 	// Dispose disposes the context.
 	Dispose() error
 }
