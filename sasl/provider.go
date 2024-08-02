@@ -15,20 +15,20 @@
 package sasl
 
 type Provider struct {
-	Mechanisms []Mechanism
+	mechanismMap map[string]Mechanism
 }
 
 // NewProvider returns a new SASL server.
 func NewProvider() *Provider {
 	provider := &Provider{
-		Mechanisms: []Mechanism{},
+		mechanismMap: make(map[string]Mechanism),
 	}
 	return provider
 }
 
 // AddMechanism adds a mechanism to the server.
 func (provider *Provider) AddMechanism(mech Mechanism) {
-	provider.Mechanisms = append(provider.Mechanisms, mech)
+	provider.mechanismMap[mech.Name()] = mech
 }
 
 // AddMechanisms adds mechanisms to the server.
@@ -36,4 +36,22 @@ func (provider *Provider) AddMechanisms(mech ...Mechanism) {
 	for _, m := range mech {
 		provider.AddMechanism(m)
 	}
+}
+
+// Mechanisms returns all mechanisms.
+func (provider *Provider) Mechanisms() []Mechanism {
+	mechs := make([]Mechanism, 0)
+	for _, mech := range provider.mechanismMap {
+		mechs = append(mechs, mech)
+	}
+	return mechs
+}
+
+// Mechanism returns a mechanism by name.
+func (provider *Provider) Mechanism(name string) (Mechanism, error) {
+	mech, ok := provider.mechanismMap[name]
+	if !ok {
+		return nil, newErrUnsupportedMechanism(name)
+	}
+	return mech, nil
 }
