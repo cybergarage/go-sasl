@@ -90,7 +90,7 @@ type Server struct {
 	scramType Type
 }
 
-// NewSCRAM returns a new PLAIN mechanism.
+// NewSCRAM returns a new SCRAM mechanism.
 func NewServerWithType(t Type) mechanism.Mechanism {
 	return &Server{
 		scramType: t,
@@ -108,7 +108,7 @@ func (server *Server) Type() mechanism.Type {
 }
 
 // Start returns the initial context.
-func (server *Server) Start(opts ...mechanism.Parameter) (mechanism.Context, error) {
+func (server *Server) Start(opts ...mechanism.Option) (mechanism.Context, error) {
 	serverOpts := []scram.ServerOption{}
 	for _, opt := range opts {
 		switch v := opt.(type) {
@@ -128,5 +128,6 @@ func (server *Server) Start(opts ...mechanism.Parameter) (mechanism.Context, err
 		serverOpts = append(serverOpts, scram.WithServerHashFunc(scram.HashSHA512()))
 		return NewServerContext(serverOpts...)
 	}
+
 	return nil, fmt.Errorf("unknown SCRAM type : %d", server.scramType)
 }
