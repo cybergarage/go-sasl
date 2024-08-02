@@ -20,9 +20,6 @@ type Parameter = any
 // Response represents a SASL mechanism response.
 type Response = any
 
-// Option represents a SASL mechanism option.
-type Option = any
-
 // Context represents a SASL mechanism context.
 type Context interface {
 	// Next returns the next response.
