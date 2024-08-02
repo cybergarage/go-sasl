@@ -75,7 +75,7 @@ func (ctx *ClientContext) Next(opts ...mechanism.Parameter) (mechanism.Response,
 		}
 		ctx.step++
 		return res, nil
-	case 3:
+	case 2:
 		err := ctx.Client.ValidateServerFinalMessage(msg)
 		if err != nil {
 			return nil, err
