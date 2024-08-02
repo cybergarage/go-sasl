@@ -15,6 +15,7 @@
 package scram
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/cybergarage/go-sasl/sasl/gss"
@@ -59,6 +60,21 @@ func WithAttribute(name, value string) MessageOption {
 	return func(msg *Message) {
 		msg.AttributeMap.SetAttribute(name, value)
 	}
+}
+
+// NewMessageFrom returns a new Message from the specified value.
+func NewMessageFrom(v any) (*Message, error) {
+	switch v := v.(type) {
+	case *Message:
+		return v, nil
+	case string:
+		return NewMessageFromString(v)
+	case []byte:
+		return NewMessageFromString(string(v))
+	case nil:
+		return nil, nil
+	}
+	return nil, fmt.Errorf("invalid message type")
 }
 
 // NewMessageFromString returns a new Message from the specified string.
