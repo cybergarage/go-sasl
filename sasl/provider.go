@@ -23,7 +23,6 @@ func NewProvider() *Provider {
 	provider := &Provider{
 		Mechanisms: []Mechanism{},
 	}
-	provider.loadDefaultPlugins()
 	return provider
 }
 
@@ -32,5 +31,9 @@ func (provider *Provider) AddMechanism(mech Mechanism) {
 	provider.Mechanisms = append(provider.Mechanisms, mech)
 }
 
-func (provider *Provider) loadDefaultPlugins() {
+// AddMechanisms adds mechanisms to the server.
+func (provider *Provider) AddMechanisms(mech ...Mechanism) {
+	for _, m := range mech {
+		provider.AddMechanism(m)
+	}
 }
