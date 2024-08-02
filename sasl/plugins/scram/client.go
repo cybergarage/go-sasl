@@ -39,6 +39,11 @@ func NewClientContext(opts ...scram.ClientOption) (*ClientContext, error) {
 	}, nil
 }
 
+// IsCompleted returns true if the context is completed.
+func (ctx *ClientContext) IsCompleted() bool {
+	return ctx.step == 3
+}
+
 // Step returns the current step number. The step number is incremented by one after each call to Next.
 func (ctx *ClientContext) Step() int {
 	return ctx.step

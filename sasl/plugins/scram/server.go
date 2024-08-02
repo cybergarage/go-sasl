@@ -39,6 +39,11 @@ func NewServerContext(opts ...scram.ServerOption) (*ServerContext, error) {
 	}, nil
 }
 
+// IsCompleted returns true if the context is completed.
+func (ctx *ServerContext) IsCompleted() bool {
+	return ctx.step == 2
+}
+
 // Step returns the current step number. The step number is incremented by one after each call to Next.
 func (ctx *ServerContext) Step() int {
 	return ctx.step

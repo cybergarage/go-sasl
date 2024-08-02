@@ -50,7 +50,7 @@ func TestMechanism(t *testing.T) {
 					return
 				}
 
-				if clientResponse == nil {
+				if clientCtx.IsCompleted() {
 					break
 				}
 
@@ -60,13 +60,16 @@ func TestMechanism(t *testing.T) {
 					return
 				}
 
-				// if clientResp.IsCompleted() && serverResp.IsCompleted() {
-				// 	break
-				// }
-
 				lastResponse = serverResponse
 			}
 
+			if !clientCtx.IsCompleted() {
+				t.Error("client context is not completed")
+			}
+
+			if !serverCtx.IsCompleted() {
+				t.Error("server context is not completed")
+			}
 		})
 	}
 }
