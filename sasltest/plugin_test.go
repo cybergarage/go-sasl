@@ -22,9 +22,51 @@ import (
 
 func TestMechanism(t *testing.T) {
 	client := sasl.NewClient()
-	// server := sasl.NewServer()
+	server := sasl.NewServer()
 
-	for _, m := range client.Mechanisms() {
-		t.Logf("Mechanism : %s", m.Name())
+	for _, clientMech := range client.Mechanisms() {
+		t.Run(clientMech.Name(), func(t *testing.T) {
+			serverMech, err := server.Mechanism(clientMech.Name())
+			if err != nil {
+				t.Error(err)
+			}
+
+			clientCtx, err := clientMech.Start()
+			if err != nil {
+				t.Error(err)
+				return
+			}
+
+			serverCtx, err := serverMech.Start()
+			if err != nil {
+				t.Error(err)
+				return
+			}
+			var lastResponse sasl.Response
+			for {
+				clientResponse, err := clientCtx.Next(lastResponse)
+				if err != nil {
+					t.Error(err)
+					return
+				}
+
+				if clientResponse == nil {
+					break
+				}
+
+				serverResponse, err := serverCtx.Next(clientResponse)
+				if err != nil {
+					t.Error(err)
+					return
+				}
+
+				// if clientResp.IsCompleted() && serverResp.IsCompleted() {
+				// 	break
+				// }
+
+				lastResponse = serverResponse
+			}
+
+		})
 	}
 }
