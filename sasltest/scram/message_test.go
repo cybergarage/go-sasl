@@ -23,9 +23,14 @@ import (
 )
 
 func TestSCRAMExchange(t *testing.T) {
-	hashFunc := scram.HashSHA1()
 	user := sasltest.Username
 	passwd := sasltest.Paassword
+
+	hashFuncs := []scram.HashFunc{
+		scram.HashSHA1(),
+		scram.HashSHA256(),
+		scram.HashSHA512(),
+	}
 
 	tests := []struct {
 		clientFirstRS string
@@ -51,82 +56,86 @@ func TestSCRAMExchange(t *testing.T) {
 
 	for n, test := range tests {
 		t.Run(fmt.Sprintf("test%02d", n), func(t *testing.T) {
-			var err error
-			var client *scram.Client
+			for _, hashFunc := range hashFuncs {
+				t.Run(fmt.Sprintf("%d", hashFunc().Size()), func(t *testing.T) {
+					var err error
+					var client *scram.Client
 
-			// Create a client
-			client, err = scram.NewClient(
-				scram.WithClientUsername(user),
-				scram.WithClientPassword(passwd),
-				scram.WithClientHashFunc(hashFunc))
+					// Create a client
+					client, err = scram.NewClient(
+						scram.WithClientUsername(user),
+						scram.WithClientPassword(passwd),
+						scram.WithClientHashFunc(hashFunc))
 
-			if err != nil {
-				t.Error(err)
-				return
-			}
+					if err != nil {
+						t.Error(err)
+						return
+					}
 
-			clientOpts := []scram.ClientOption{}
-			if 0 < len(test.clientFirstRS) {
-				clientOpts = append(clientOpts, scram.WithClientRandomSequence(test.clientFirstRS))
-			}
-			client.SetOption(clientOpts...)
+					clientOpts := []scram.ClientOption{}
+					if 0 < len(test.clientFirstRS) {
+						clientOpts = append(clientOpts, scram.WithClientRandomSequence(test.clientFirstRS))
+					}
+					client.SetOption(clientOpts...)
 
-			// Create a server
+					// Create a server
 
-			server, err := NewServer()
-			if err != nil {
-				t.Error(err)
-				return
-			}
+					server, err := NewServer()
+					if err != nil {
+						t.Error(err)
+						return
+					}
 
-			serverOpts := []scram.ServerOption{
-				scram.WithServerHashFunc(hashFunc),
-			}
-			if 0 < len(test.serverFirstRS) {
-				serverOpts = append(serverOpts, scram.WithServerRandomSequence(test.serverFirstRS))
-			}
-			if 0 < len(test.salt) {
-				serverOpts = append(serverOpts, scram.WithServerSaltString(test.salt))
-			}
-			if 0 < test.ic {
-				serverOpts = append(serverOpts, scram.WithServerIterationCount(test.ic))
-			}
-			server.SetOption(serverOpts...)
+					serverOpts := []scram.ServerOption{
+						scram.WithServerHashFunc(hashFunc),
+					}
+					if 0 < len(test.serverFirstRS) {
+						serverOpts = append(serverOpts, scram.WithServerRandomSequence(test.serverFirstRS))
+					}
+					if 0 < len(test.salt) {
+						serverOpts = append(serverOpts, scram.WithServerSaltString(test.salt))
+					}
+					if 0 < test.ic {
+						serverOpts = append(serverOpts, scram.WithServerIterationCount(test.ic))
+					}
+					server.SetOption(serverOpts...)
 
-			// Exchange messages
+					// Exchange messages
 
-			firstClientMsg, err := client.FirstMessage()
-			if err != nil {
-				t.Error(err)
-				return
-			}
-			t.Logf("c1 = %s", firstClientMsg.String())
+					firstClientMsg, err := client.FirstMessage()
+					if err != nil {
+						t.Error(err)
+						return
+					}
+					t.Logf("c1 = %s", firstClientMsg.String())
 
-			firstServerMsg, err := server.FirstMessageFrom(firstClientMsg)
-			if err != nil {
-				t.Error(err)
-				return
-			}
-			t.Logf("s1 = %s", firstServerMsg.String())
+					firstServerMsg, err := server.FirstMessageFrom(firstClientMsg)
+					if err != nil {
+						t.Error(err)
+						return
+					}
+					t.Logf("s1 = %s", firstServerMsg.String())
 
-			finalClientMsg, err := client.FinalMessageFrom(firstServerMsg)
-			if err != nil {
-				t.Error(err)
-				return
-			}
-			t.Logf("c2 = %s", finalClientMsg.String())
+					finalClientMsg, err := client.FinalMessageFrom(firstServerMsg)
+					if err != nil {
+						t.Error(err)
+						return
+					}
+					t.Logf("c2 = %s", finalClientMsg.String())
 
-			finalServerMsg, err := server.FinalMessageFrom(finalClientMsg)
-			if err != nil {
-				t.Error(err)
-				return
-			}
-			t.Logf("s2 = %s", finalServerMsg.String())
+					finalServerMsg, err := server.FinalMessageFrom(finalClientMsg)
+					if err != nil {
+						t.Error(err)
+						return
+					}
+					t.Logf("s2 = %s", finalServerMsg.String())
 
-			err = client.ValidateServerFinalMessage(finalServerMsg)
-			if err != nil {
-				t.Error(err)
-				return
+					err = client.ValidateServerFinalMessage(finalServerMsg)
+					if err != nil {
+						t.Error(err)
+						return
+					}
+				})
 			}
 		})
 	}
