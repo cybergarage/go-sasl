@@ -24,7 +24,7 @@ import (
 
 func TestSCRAMExchange(t *testing.T) {
 	user := sasltest.Username
-	passwd := sasltest.Paassword
+	passwd := sasltest.Password
 
 	hashFuncs := []scram.HashFunc{
 		scram.HashSHA1(),
