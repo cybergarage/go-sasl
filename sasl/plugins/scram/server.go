@@ -62,11 +62,19 @@ func (ctx *ServerContext) Next(opts ...mechanism.Parameter) (mechanism.Response,
 
 	switch ctx.step {
 	case 0:
+		res, err := ctx.Server.FirstMessageFrom(msg)
+		if err != nil {
+			return nil, err
+		}
 		ctx.step++
-		return ctx.Server.FirstMessageFrom(msg)
+		return res, nil
 	case 1:
+		res, err := ctx.Server.FinalMessageFrom(msg)
+		if err != nil {
+			return nil, err
+		}
 		ctx.step++
-		return ctx.Server.FinalMessageFrom(msg)
+		return res, nil
 	}
 
 	return nil, fmt.Errorf("invalid step : %d", ctx.step)
