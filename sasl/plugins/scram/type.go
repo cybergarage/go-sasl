@@ -23,6 +23,15 @@ const (
 	SCRAMTypeSHA512
 )
 
+// SCRAMTypes returns the SCRAM types.
+func SCRAMTypes() []SCRAMType {
+	return []SCRAMType{
+		SCRAMTypeSHA1,
+		SCRAMTypeSHA256,
+		SCRAMTypeSHA512,
+	}
+}
+
 // SCRAMType returns the SCRAM type.
 func (t SCRAMType) String() string {
 	switch t {
