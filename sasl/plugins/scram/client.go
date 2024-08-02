@@ -94,11 +94,11 @@ func (ctx *ClientContext) Dispose() error {
 
 // Client represents a SCRAM mechanism.
 type Client struct {
-	scramType SCRAMType
+	scramType Type
 }
 
 // NewSCRAM returns a new PLAIN mechanism.
-func NewClientWithType(t SCRAMType) mechanism.Mechanism {
+func NewClientWithType(t Type) mechanism.Mechanism {
 	return &Client{
 		scramType: t,
 	}
@@ -127,13 +127,13 @@ func (client *Client) Start(opts ...mechanism.Option) (mechanism.Context, error)
 	}
 
 	switch client.scramType {
-	case SCRAMTypeSHA1:
+	case SHA1:
 		clientOpts = append(clientOpts, scram.WithClientHashFunc(scram.HashSHA1()))
 		return NewClientContext(clientOpts...)
-	case SCRAMTypeSHA256:
+	case SHA256:
 		clientOpts = append(clientOpts, scram.WithClientHashFunc(scram.HashSHA256()))
 		return NewClientContext(clientOpts...)
-	case SCRAMTypeSHA512:
+	case SHA512:
 		clientOpts = append(clientOpts, scram.WithClientHashFunc(scram.HashSHA512()))
 		return NewClientContext(clientOpts...)
 	}

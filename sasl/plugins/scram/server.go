@@ -87,11 +87,11 @@ func (ctx *ServerContext) Dispose() error {
 
 // Server represents a SCRAM mechanism.
 type Server struct {
-	scramType SCRAMType
+	scramType Type
 }
 
 // NewSCRAM returns a new PLAIN mechanism.
-func NewServerWithType(t SCRAMType) mechanism.Mechanism {
+func NewServerWithType(t Type) mechanism.Mechanism {
 	return &Server{
 		scramType: t,
 	}
@@ -118,13 +118,13 @@ func (server *Server) Start(opts ...mechanism.Parameter) (mechanism.Context, err
 	}
 
 	switch server.scramType {
-	case SCRAMTypeSHA1:
+	case SHA1:
 		serverOpts = append(serverOpts, scram.WithServerHashFunc(scram.HashSHA1()))
 		return NewServerContext(serverOpts...)
-	case SCRAMTypeSHA256:
+	case SHA256:
 		serverOpts = append(serverOpts, scram.WithServerHashFunc(scram.HashSHA256()))
 		return NewServerContext(serverOpts...)
-	case SCRAMTypeSHA512:
+	case SHA512:
 		serverOpts = append(serverOpts, scram.WithServerHashFunc(scram.HashSHA512()))
 		return NewServerContext(serverOpts...)
 	}

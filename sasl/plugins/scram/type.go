@@ -14,32 +14,32 @@
 
 package scram
 
-// SCRAMType represents a SCRAM type.
-type SCRAMType int
+// Type represents a SCRAM type.
+type Type int
 
 const (
-	SCRAMTypeSHA1 SCRAMType = iota
-	SCRAMTypeSHA256
-	SCRAMTypeSHA512
+	SHA1 Type = iota
+	SHA256
+	SHA512
 )
 
 // SCRAMTypes returns the SCRAM types.
-func SCRAMTypes() []SCRAMType {
-	return []SCRAMType{
-		SCRAMTypeSHA1,
-		SCRAMTypeSHA256,
-		SCRAMTypeSHA512,
+func SCRAMTypes() []Type {
+	return []Type{
+		SHA1,
+		SHA256,
+		SHA512,
 	}
 }
 
 // SCRAMType returns the SCRAM type.
-func (t SCRAMType) String() string {
+func (t Type) String() string {
 	switch t {
-	case SCRAMTypeSHA1:
+	case SHA1:
 		return "SHA-1"
-	case SCRAMTypeSHA256:
+	case SHA256:
 		return "SHA-256"
-	case SCRAMTypeSHA512:
+	case SHA512:
 		return "SHA-512"
 	}
 	return ""
