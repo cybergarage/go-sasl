@@ -18,11 +18,17 @@ import (
 	"testing"
 
 	"github.com/cybergarage/go-sasl/sasl"
+	"github.com/cybergarage/go-sasl/sasl/mechanism"
 )
 
 func TestMechanism(t *testing.T) {
 	client := sasl.NewClient()
 	server := sasl.NewServer()
+
+	clientOpts := []mechanism.Option{
+		mechanism.Username(Username),
+		mechanism.Password(Password),
+	}
 
 	for _, clientMech := range client.Mechanisms() {
 		t.Run(clientMech.Name(), func(t *testing.T) {
@@ -31,7 +37,7 @@ func TestMechanism(t *testing.T) {
 				t.Error(err)
 			}
 
-			clientCtx, err := clientMech.Start()
+			clientCtx, err := clientMech.Start(clientOpts...)
 			if err != nil {
 				t.Error(err)
 				return
