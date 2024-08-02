@@ -108,14 +108,25 @@ func (server *Server) Type() SCRAMType {
 }
 
 // Start returns the initial context.
-func (server *Server) Start(...mechanism.Parameter) (mechanism.Context, error) {
+func (server *Server) Start(opts ...mechanism.Parameter) (mechanism.Context, error) {
+	serverOpts := []scram.ServerOption{}
+	for _, opt := range opts {
+		switch v := opt.(type) {
+		case mechanism.Authenticators:
+			serverOpts = append(serverOpts, scram.WithServerAuthenticators(v))
+		}
+	}
+
 	switch server.typ {
 	case SCRAMTypeSHA1:
-		return NewServerContext(scram.WithServerHashFunc(scram.HashSHA1()))
+		serverOpts = append(serverOpts, scram.WithServerHashFunc(scram.HashSHA1()))
+		return NewServerContext(serverOpts...)
 	case SCRAMTypeSHA256:
-		return NewServerContext(scram.WithServerHashFunc(scram.HashSHA256()))
+		serverOpts = append(serverOpts, scram.WithServerHashFunc(scram.HashSHA256()))
+		return NewServerContext(serverOpts...)
 	case SCRAMTypeSHA512:
-		return NewServerContext(scram.WithServerHashFunc(scram.HashSHA512()))
+		serverOpts = append(serverOpts, scram.WithServerHashFunc(scram.HashSHA512()))
+		return NewServerContext(serverOpts...)
 	}
 	return nil, fmt.Errorf("unknown SCRAM type : %d", server.typ)
 }
