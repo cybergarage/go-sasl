@@ -39,16 +39,6 @@ func NewClientContext(opts ...scram.ClientOption) (*ClientContext, error) {
 	}, nil
 }
 
-// SetUsername sets a username.
-func (ctx *ClientContext) SetUsername(username string) {
-	ctx.Client.SetOption(scram.WithClientUsername(username))
-}
-
-// SetPassword sets a password.
-func (ctx *ClientContext) SetPassword(password string) {
-	ctx.Client.SetOption(scram.WithClientPassword(password))
-}
-
 // IsCompleted returns true if the context is completed.
 func (ctx *ClientContext) IsCompleted() bool {
 	return ctx.step == 3
