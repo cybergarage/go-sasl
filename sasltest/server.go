@@ -24,14 +24,10 @@ type Server struct {
 }
 
 func NewServer() (*Server, error) {
-	var err error
 	server := &Server{
 		Server: nil,
 	}
-	server.Server, err = sasl.NewServer()
-	if err != nil {
-		return nil, err
-	}
+	server.Server = sasl.NewServer()
 	server.AddAuthenticator(server)
 	return server, nil
 }

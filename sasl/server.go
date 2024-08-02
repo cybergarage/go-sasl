@@ -26,13 +26,13 @@ type Server struct {
 }
 
 // NewServer returns a new SASL server.
-func NewServer() (*Server, error) {
+func NewServer() *Server {
 	server := &Server{
 		Provider:    NewProvider(),
 		AuthManager: auth.NewAuthManager(),
 	}
 	server.loadDefaultPlugins()
-	return server, nil
+	return server
 }
 
 func (server *Server) loadDefaultPlugins() {
