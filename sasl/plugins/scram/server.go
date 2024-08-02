@@ -87,24 +87,24 @@ func (ctx *ServerContext) Dispose() error {
 
 // Server represents a SCRAM mechanism.
 type Server struct {
-	typ SCRAMType
+	scramType SCRAMType
 }
 
 // NewSCRAM returns a new PLAIN mechanism.
 func NewServerWithType(t SCRAMType) mechanism.Mechanism {
 	return &Server{
-		typ: t,
+		scramType: t,
 	}
 }
 
 // Name returns the mechanism name.
 func (server *Server) Name() string {
-	return "SCRAM-" + server.typ.String()
+	return "SCRAM-" + server.scramType.String()
 }
 
-// Type returns the SCRAM type.
-func (server *Server) Type() SCRAMType {
-	return server.typ
+// Type returns the mechanism type.
+func (server *Server) Type() mechanism.Type {
+	return mechanism.Server
 }
 
 // Start returns the initial context.
@@ -117,7 +117,7 @@ func (server *Server) Start(opts ...mechanism.Parameter) (mechanism.Context, err
 		}
 	}
 
-	switch server.typ {
+	switch server.scramType {
 	case SCRAMTypeSHA1:
 		serverOpts = append(serverOpts, scram.WithServerHashFunc(scram.HashSHA1()))
 		return NewServerContext(serverOpts...)
@@ -128,5 +128,5 @@ func (server *Server) Start(opts ...mechanism.Parameter) (mechanism.Context, err
 		serverOpts = append(serverOpts, scram.WithServerHashFunc(scram.HashSHA512()))
 		return NewServerContext(serverOpts...)
 	}
-	return nil, fmt.Errorf("unknown SCRAM type : %d", server.typ)
+	return nil, fmt.Errorf("unknown SCRAM type : %d", server.scramType)
 }

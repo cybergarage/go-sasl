@@ -94,24 +94,24 @@ func (ctx *ClientContext) Dispose() error {
 
 // Client represents a SCRAM mechanism.
 type Client struct {
-	typ SCRAMType
+	scramType SCRAMType
 }
 
 // NewSCRAM returns a new PLAIN mechanism.
 func NewClientWithType(t SCRAMType) mechanism.Mechanism {
 	return &Client{
-		typ: t,
+		scramType: t,
 	}
 }
 
 // Name returns the mechanism name.
 func (client *Client) Name() string {
-	return "SCRAM-" + client.typ.String()
+	return "SCRAM-" + client.scramType.String()
 }
 
-// Type returns the SCRAM type.
-func (client *Client) Type() SCRAMType {
-	return client.typ
+// Type returns the mechanism type.
+func (client *Client) Type() mechanism.Type {
+	return mechanism.Client
 }
 
 // Start returns the initial context.
@@ -126,7 +126,7 @@ func (client *Client) Start(opts ...mechanism.Option) (mechanism.Context, error)
 		}
 	}
 
-	switch client.typ {
+	switch client.scramType {
 	case SCRAMTypeSHA1:
 		clientOpts = append(clientOpts, scram.WithClientHashFunc(scram.HashSHA1()))
 		return NewClientContext(clientOpts...)
@@ -138,5 +138,5 @@ func (client *Client) Start(opts ...mechanism.Option) (mechanism.Context, error)
 		return NewClientContext(clientOpts...)
 	}
 
-	return nil, fmt.Errorf("unknown SCRAM type : %d", client.typ)
+	return nil, fmt.Errorf("unknown SCRAM type : %d", client.scramType)
 }
