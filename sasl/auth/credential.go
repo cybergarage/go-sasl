@@ -14,19 +14,10 @@
 
 package auth
 
-import (
-	"crypto/sha256"
-	"hash"
-)
-
-// HashFunc is a function that returns a hash.Hash.
-type HashFunc = func() hash.Hash
-
 // Credential represents a credential.
 type Credential struct {
 	username string
 	password string
-	hashFunc HashFunc
 }
 
 // CredentialOption represents an option for a credential.
@@ -37,7 +28,6 @@ func NewCredential(opts ...CredentialOption) *Credential {
 	cred := &Credential{
 		username: "",
 		password: "",
-		hashFunc: sha256.New,
 	}
 	cred.SetOption(opts...)
 	return cred
@@ -57,23 +47,11 @@ func WithPassword(password string) CredentialOption {
 	}
 }
 
-// WithHashFunc returns an option to set the hash function.
-func WithHashFunc(hashFunc HashFunc) CredentialOption {
-	return func(cred *Credential) {
-		cred.hashFunc = hashFunc
-	}
-}
-
 // SetOption sets the options.
 func (cred *Credential) SetOption(opts ...CredentialOption) {
 	for _, opt := range opts {
 		opt(cred)
 	}
-}
-
-// HashFunc returns the hash function.
-func (cred *Credential) HashFunc() HashFunc {
-	return cred.hashFunc
 }
 
 // Username returns the username.
@@ -84,11 +62,4 @@ func (cred *Credential) Username() string {
 // Password returns the password.
 func (cred *Credential) Password() string {
 	return cred.password
-}
-
-// HashPassword returns the hashed password.
-func (cred *Credential) HashPassword() []byte {
-	hash := cred.hashFunc()
-	hash.Write([]byte(cred.password))
-	return hash.Sum(nil)
 }
