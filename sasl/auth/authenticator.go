@@ -19,3 +19,6 @@ type Authenticator interface {
 	// HasCredential returns true if the authenticator has the specified username.
 	HasCredential(username string) (*Credential, bool)
 }
+
+// Authenticators represents a list of authenticators.
+type Authenticators []Authenticator
