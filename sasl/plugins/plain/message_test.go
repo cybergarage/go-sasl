@@ -31,6 +31,14 @@ func TestPlainMessage(t *testing.T) {
 			message:  []byte{0x61, 0x00, 0x62, 0x00, 0x63, 0x00},
 			expected: "a,b,c",
 		},
+		{
+			message:  []byte{0x61, 0x00, 0x62, 0x00, 0x63, 0x00, 0x64},
+			expected: "a,b,c",
+		},
+		{
+			message:  []byte{0x61, 0x00, 0x62, 0x00, 0x63, 0x00, 0x64, 0x00},
+			expected: "a,b,c",
+		},
 	}
 	for _, test := range tests {
 		t.Run(test.expected, func(t *testing.T) {
