@@ -23,11 +23,15 @@ import (
 
 func TestMechanism(t *testing.T) {
 	client := sasl.NewClient()
-	server := sasl.NewServer()
+	server := NewServer()
 
 	clientOpts := []mechanism.Option{
 		mechanism.Username(Username),
 		mechanism.Password(Password),
+	}
+
+	serverOpts := []mechanism.Option{
+		// server.Authenticators(),
 	}
 
 	for _, clientMech := range client.Mechanisms() {
@@ -43,7 +47,7 @@ func TestMechanism(t *testing.T) {
 				return
 			}
 
-			serverCtx, err := serverMech.Start()
+			serverCtx, err := serverMech.Start(serverOpts...)
 			if err != nil {
 				t.Error(err)
 				return
