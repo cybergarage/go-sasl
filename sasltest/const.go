@@ -15,7 +15,7 @@
 package sasltest
 
 const (
-	AuthzID   = ""
-	Username  = "user"
-	Paassword = "password"
+	AuthzID  = ""
+	Username = "user"
+	Password = "password"
 )
