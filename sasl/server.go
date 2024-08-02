@@ -15,25 +15,25 @@
 package sasl
 
 import (
-	"github.com/cybergarage/go-sasl/sasl/scram"
+	"github.com/cybergarage/go-sasl/sasl/plugins/scram"
 )
 
 // Server represents a SASL server.
 type Server struct {
 	*Provider
-	*scram.Server
 }
 
 // NewServer returns a new SASL server.
 func NewServer() (*Server, error) {
-	var err error
 	server := &Server{
 		Provider: NewProvider(),
-		Server:   nil,
 	}
-	server.Server, err = scram.NewServer()
-	if err != nil {
-		return nil, err
-	}
+	server.loadDefaultPlugins()
 	return server, nil
+}
+
+func (server *Server) loadDefaultPlugins() {
+	for _, t := range scram.SCRAMTypes() {
+		server.AddMechanism(scram.NewServerWithType(t))
+	}
 }
