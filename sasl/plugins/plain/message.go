@@ -14,7 +14,10 @@
 
 package plain
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 // The PLAIN Simple Authentication and Security Layer (SASL) Mechanism
 // https://datatracker.ietf.org/doc/html/rfc4616
@@ -76,6 +79,13 @@ func (msg *Message) Passwd() string {
 
 // ParseBytes parses the message bytes.
 func (msg *Message) ParseBytes(b []byte) error {
+	strs := strings.Split(string(b), "\x00")
+	if len(strs) != 3 {
+		return fmt.Errorf("invalid PLAIN message")
+	}
+	msg.authzid = strs[0]
+	msg.authcid = strs[1]
+	msg.passwd = strs[2]
 	return nil
 }
 
