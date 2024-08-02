@@ -14,7 +14,9 @@
 
 package sasl
 
-import "github.com/cybergarage/go-sasl/sasl/plugins/scram"
+import (
+	"github.com/cybergarage/go-sasl/sasl/plugins/scram"
+)
 
 // Client represents a SASL client.
 type Client struct {
