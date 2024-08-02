@@ -31,7 +31,7 @@ func TestMechanism(t *testing.T) {
 	}
 
 	serverOpts := []mechanism.Option{
-		// server.Authenticators(),
+		server.Authenticators(),
 	}
 
 	for _, clientMech := range client.Mechanisms() {
