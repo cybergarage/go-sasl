@@ -36,6 +36,8 @@ type Context interface {
 type Mechanism interface {
 	// Name returns the mechanism name.
 	Name() string
+	// Type returns the mechanism type.
+	Type() Type
 	// Start returns the initial context.
 	Start(...Option) (Context, error)
 }
