@@ -14,11 +14,24 @@
 
 package sasl
 
+import "github.com/cybergarage/go-sasl/sasl/plugins/scram"
+
 // Client represents a SASL client.
 type Client struct {
+	*Provider
 }
 
 // NewClient returns a new client.
 func NewClient() *Client {
-	return &Client{}
+	client := &Client{
+		Provider: NewProvider(),
+	}
+	client.loadDefaultPlugins()
+	return client
+}
+
+func (client *Client) loadDefaultPlugins() {
+	for _, t := range scram.SCRAMTypes() {
+		client.AddMechanism(scram.NewClientWithType(t))
+	}
 }
