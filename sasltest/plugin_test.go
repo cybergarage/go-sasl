@@ -60,6 +60,12 @@ func TestMechanism(t *testing.T) {
 					return
 				}
 
+				if clientResponse != nil {
+					t.Logf("c%d: %s", clientCtx.Step(), clientResponse)
+				} else {
+					t.Logf("c%d:", clientCtx.Step())
+				}
+
 				if clientCtx.IsCompleted() {
 					break
 				}
@@ -69,6 +75,8 @@ func TestMechanism(t *testing.T) {
 					t.Error(err)
 					return
 				}
+
+				t.Logf("s%d: %s", serverCtx.Step(), serverResponse)
 
 				lastResponse = serverResponse
 			}
