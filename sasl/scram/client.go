@@ -204,6 +204,10 @@ func (client *Client) FirstMessage() (*Message, error) {
 
 // FinalMessageFrom returns the final message from the specified server first message.
 func (client *Client) FinalMessageFrom(serverFirstMsg *Message) (*Message, error) {
+	if serverFirstMsg == nil {
+		return nil, newErrInvalidMessage("Server first message is not set")
+	}
+
 	if client.clientFirstMsg == nil {
 		return nil, newErrInvalidMessage("First message is not set")
 	}
@@ -290,6 +294,10 @@ func (client *Client) FinalMessageFrom(serverFirstMsg *Message) (*Message, error
 
 // ValidateServerFinalMessage validates the final message from the specified server final message.
 func (client *Client) ValidateServerFinalMessage(serverFinalMsg *Message) error {
+	if serverFinalMsg == nil {
+		return newErrInvalidMessage("server final message is not set")
+	}
+
 	if client.clientFirstMsg == nil {
 		return newErrInvalidMessage("client first message is not set")
 	}
