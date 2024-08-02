@@ -73,7 +73,7 @@ func TestSCRAMExchange(t *testing.T) {
 
 			// Create a server
 
-			server, err := sasltest.NewServer()
+			server, err := NewServer()
 			if err != nil {
 				t.Error(err)
 				return
