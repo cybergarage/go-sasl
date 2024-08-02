@@ -32,6 +32,12 @@ func (mgr *AuthManager) AddAuthenticator(authenticator Authenticator) {
 	mgr.authenticators = append(mgr.authenticators, authenticator)
 }
 
+// SetAuthenticators sets the specified authenticators.
+func (mgr *AuthManager) SetAuthenticators(authenticators Authenticators) {
+	mgr.authenticators = make([]Authenticator, len(authenticators))
+	copy(mgr.authenticators, authenticators)
+}
+
 // ClearAuthenticators clears all authenticators.
 func (mgr *AuthManager) ClearAuthenticators() {
 	mgr.authenticators = make([]Authenticator, 0)
