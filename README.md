@@ -58,7 +58,7 @@ type Mechanism interface {
 ```
 ### Example
 
-The following pseudo example demonstrates how to authenticate a `SCRAM-SHA-256` client using the `go-sasl` server. For more complete examples, see go-sasl mechanism plugin testing, [TestMechanism](https://github.com/cybergarage/go-sasl/blob/main/sasltest/mech/plugin_test.go).
+The following pseudo example demonstrates how to authenticate client messages for SCRAM-SHA-256 mechanism using the `go-sasl` server. For more complete examples, see go-sasl mechanism plugin testing, [TestMechanism()](https://github.com/cybergarage/go-sasl/blob/main/sasltest/mech/plugin_test.go).
 
 ```go
 package main
@@ -71,9 +71,10 @@ func main() {
 
   server := sasl.NewServer()
 
-  // Receive mechanism negotiation for `SCRAM-SHA-256` from the client.
+  // Receive mechanism negotiation from the client.
   
-  mech, err := server.Mechanism("SCRAM-SHA-256")
+  mechName := ... // SCRAM-SHA-256
+  mech, err := server.Mechanism(mechName)
   if err != nil {
     return
   }
