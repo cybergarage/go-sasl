@@ -15,6 +15,7 @@
 package sasl
 
 import (
+	"github.com/cybergarage/go-sasl/sasl/plugins/plain"
 	"github.com/cybergarage/go-sasl/sasl/plugins/scram"
 )
 
@@ -33,6 +34,7 @@ func NewClient() *Client {
 }
 
 func (client *Client) loadDefaultPlugins() {
+	client.AddMechanism(plain.NewClient())
 	for _, t := range scram.SCRAMTypes() {
 		client.AddMechanism(scram.NewClientWithType(t))
 	}
