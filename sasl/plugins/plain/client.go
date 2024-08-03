@@ -81,6 +81,11 @@ func (ctx *ClientContext) Dispose() error {
 type Client struct {
 }
 
+// NewClient returns a new PLAIN client.
+func NewClient() *Client {
+	return &Client{}
+}
+
 // Name returns the mechanism name.
 func (client *Client) Name() string {
 	return Type
