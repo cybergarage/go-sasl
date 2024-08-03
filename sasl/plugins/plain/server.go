@@ -56,17 +56,27 @@ func (ctx *ServerContext) Step() int {
 
 // Next returns the next response.
 func (ctx *ServerContext) Next(opts ...mech.Parameter) (mech.Response, error) {
-	if len(opts) == 0 {
-		return nil, fmt.Errorf("no message")
-	}
-
-	_, err := NewMessageFrom(opts[0])
-	if err != nil {
-		return nil, err
-	}
-
 	switch ctx.step {
 	case 0:
+		if len(opts) == 0 {
+			return nil, fmt.Errorf("no message")
+		}
+		msg, err := NewMessageFrom(opts[0])
+		if err != nil {
+			return nil, err
+		}
+		cred := cred.NewCredential(
+			cred.WithGroup(msg.Authzid()),
+			cred.WithUsername(msg.Authcid()),
+			cred.WithPassword(msg.Passwd()),
+		)
+		storeCred, err := ctx.HasCredential(cred.Username())
+		if err != nil {
+			return nil, fmt.Errorf("no credential")
+		}
+		if !storeCred.Authorize(cred) {
+			return nil, fmt.Errorf("no credential")
+		}
 		ctx.step++
 		return nil, nil
 	}
