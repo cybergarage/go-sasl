@@ -16,6 +16,7 @@ package sasl
 
 import (
 	"github.com/cybergarage/go-sasl/sasl/cred"
+	"github.com/cybergarage/go-sasl/sasl/mech/plugins/anonymous"
 	"github.com/cybergarage/go-sasl/sasl/mech/plugins/plain"
 	"github.com/cybergarage/go-sasl/sasl/mech/plugins/scram"
 )
@@ -37,6 +38,7 @@ func NewServer() *Server {
 }
 
 func (server *Server) loadDefaultPlugins() {
+	server.AddMechanism(anonymous.NewServer())
 	server.AddMechanism(plain.NewServer())
 	for _, t := range scram.SCRAMTypes() {
 		server.AddMechanism(scram.NewServerWithType(t))
