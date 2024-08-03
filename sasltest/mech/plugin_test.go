@@ -12,22 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package sasltest
+package mech
 
 import (
 	"testing"
 
 	"github.com/cybergarage/go-sasl/sasl"
 	"github.com/cybergarage/go-sasl/sasl/mech"
+	"github.com/cybergarage/go-sasl/sasltest"
 )
 
 func TestMechanism(t *testing.T) {
 	client := sasl.NewClient()
-	server := NewServer()
+	server := sasltest.NewServer()
 
 	clientOpts := []mech.Option{
-		mech.Username(Username),
-		mech.Password(Password),
+		mech.Username(sasltest.Username),
+		mech.Password(sasltest.Password),
+		mech.Token(sasltest.Username),
 	}
 
 	serverOpts := []mech.Option{
