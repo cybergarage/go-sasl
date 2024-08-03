@@ -17,7 +17,7 @@ package plain
 import (
 	"fmt"
 
-	"github.com/cybergarage/go-sasl/sasl/mechanism"
+	"github.com/cybergarage/go-sasl/sasl/mech"
 )
 
 // ClientContext represents a PLAIN client context.
@@ -28,7 +28,7 @@ type ClientContext struct {
 }
 
 // NewClientContext returns a new PLAIN client context.
-func NewClientContext(opts ...mechanism.Option) (*ClientContext, error) {
+func NewClientContext(opts ...mech.Option) (*ClientContext, error) {
 	ctx := &ClientContext{
 		username: "",
 		password: "",
@@ -37,9 +37,9 @@ func NewClientContext(opts ...mechanism.Option) (*ClientContext, error) {
 
 	for _, opt := range opts {
 		switch v := opt.(type) {
-		case mechanism.Username:
+		case mech.Username:
 			ctx.username = string(v)
-		case mechanism.Password:
+		case mech.Password:
 			ctx.password = string(v)
 		}
 	}
@@ -58,7 +58,7 @@ func (ctx *ClientContext) Step() int {
 }
 
 // Next returns the next response.
-func (ctx *ClientContext) Next(opts ...mechanism.Parameter) (mechanism.Response, error) {
+func (ctx *ClientContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 	switch ctx.step {
 	case 0:
 		ctx.step++
@@ -72,7 +72,7 @@ func (ctx *ClientContext) Dispose() error {
 	return nil
 }
 
-// Client represents a PLAIN mechanism.
+// Client represents a PLAIN mech.
 type Client struct {
 }
 
@@ -82,11 +82,11 @@ func (client *Client) Name() string {
 }
 
 // Type returns the mechanism type.
-func (client *Client) Type() mechanism.Type {
-	return mechanism.Client
+func (client *Client) Type() mech.Type {
+	return mech.Client
 }
 
 // Start returns the initial context.
-func (client *Client) Start(opts ...mechanism.Option) (mechanism.Context, error) {
+func (client *Client) Start(opts ...mech.Option) (mech.Context, error) {
 	return NewClientContext(opts...)
 }
