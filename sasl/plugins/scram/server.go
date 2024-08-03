@@ -17,7 +17,7 @@ package scram
 import (
 	"fmt"
 
-	"github.com/cybergarage/go-sasl/sasl/mechanism"
+	"github.com/cybergarage/go-sasl/sasl/mech"
 	"github.com/cybergarage/go-sasl/sasl/scram"
 )
 
@@ -50,7 +50,7 @@ func (ctx *ServerContext) Step() int {
 }
 
 // Next returns the next response.
-func (ctx *ServerContext) Next(opts ...mechanism.Parameter) (mechanism.Response, error) {
+func (ctx *ServerContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 	if len(opts) == 0 {
 		return nil, fmt.Errorf("no message")
 	}
@@ -85,13 +85,13 @@ func (ctx *ServerContext) Dispose() error {
 	return nil
 }
 
-// Server represents a SCRAM mechanism.
+// Server represents a SCRAM mech.
 type Server struct {
 	scramType Type
 }
 
-// NewSCRAM returns a new SCRAM mechanism.
-func NewServerWithType(t Type) mechanism.Mechanism {
+// NewSCRAM returns a new SCRAM mech.
+func NewServerWithType(t Type) mech.Mechanism {
 	return &Server{
 		scramType: t,
 	}
@@ -103,16 +103,16 @@ func (server *Server) Name() string {
 }
 
 // Type returns the mechanism type.
-func (server *Server) Type() mechanism.Type {
-	return mechanism.Server
+func (server *Server) Type() mech.Type {
+	return mech.Server
 }
 
 // Start returns the initial context.
-func (server *Server) Start(opts ...mechanism.Option) (mechanism.Context, error) {
+func (server *Server) Start(opts ...mech.Option) (mech.Context, error) {
 	serverOpts := []scram.ServerOption{}
 	for _, opt := range opts {
 		switch v := opt.(type) {
-		case mechanism.Authenticators:
+		case mech.Authenticators:
 			serverOpts = append(serverOpts, scram.WithServerAuthenticators(v))
 		}
 	}

@@ -14,18 +14,16 @@
 
 package sasl
 
-import (
-	"github.com/cybergarage/go-sasl/sasl/mechanism"
-)
+import "github.com/cybergarage/go-sasl/sasl/mech"
 
 // Mechanism represents a SASL mechanism.
-type Mechanism = mechanism.Mechanism
+type Mechanism = mech.Mechanism
 
 // Parameter represents a SASL mechanism parameter.
-type Parameter = mechanism.Parameter
+type Parameter = mech.Parameter
 
 // Response represents a SASL mechanism response.
-type Response = mechanism.Response
+type Response = mech.Response
 
 // Context represents a SASL mechanism context.
-type Context = mechanism.Context
+type Context = mech.Context

@@ -18,19 +18,19 @@ import (
 	"testing"
 
 	"github.com/cybergarage/go-sasl/sasl"
-	"github.com/cybergarage/go-sasl/sasl/mechanism"
+	"github.com/cybergarage/go-sasl/sasl/mech"
 )
 
 func TestMechanism(t *testing.T) {
 	client := sasl.NewClient()
 	server := NewServer()
 
-	clientOpts := []mechanism.Option{
-		mechanism.Username(Username),
-		mechanism.Password(Password),
+	clientOpts := []mech.Option{
+		mech.Username(Username),
+		mech.Password(Password),
 	}
 
-	serverOpts := []mechanism.Option{
+	serverOpts := []mech.Option{
 		server.Authenticators(),
 	}
 

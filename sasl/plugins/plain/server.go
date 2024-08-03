@@ -18,7 +18,7 @@ import (
 	"fmt"
 
 	"github.com/cybergarage/go-sasl/sasl/cred"
-	"github.com/cybergarage/go-sasl/sasl/mechanism"
+	"github.com/cybergarage/go-sasl/sasl/mech"
 )
 
 // ServerContext represents a PLAIN server context.
@@ -28,7 +28,7 @@ type ServerContext struct {
 }
 
 // NewServerContext returns a new PLAIN server context.
-func NewServerContext(opts ...mechanism.Option) (*ServerContext, error) {
+func NewServerContext(opts ...mech.Option) (*ServerContext, error) {
 	ctx := &ServerContext{
 		step:            0,
 		CredentialStore: cred.NewCredentialStore(),
@@ -36,7 +36,7 @@ func NewServerContext(opts ...mechanism.Option) (*ServerContext, error) {
 
 	for _, opt := range opts {
 		switch v := opt.(type) {
-		case mechanism.Authenticators:
+		case mech.Authenticators:
 			ctx.SetAuthenticators(v)
 		}
 	}
@@ -55,7 +55,7 @@ func (ctx *ServerContext) Step() int {
 }
 
 // Next returns the next response.
-func (ctx *ServerContext) Next(opts ...mechanism.Parameter) (mechanism.Response, error) {
+func (ctx *ServerContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 	if len(opts) == 0 {
 		return nil, fmt.Errorf("no message")
 	}
@@ -79,11 +79,11 @@ func (ctx *ServerContext) Dispose() error {
 	return nil
 }
 
-// Server represents a PLAIN mechanism.
+// Server represents a PLAIN mech.
 type Server struct {
 }
 
-func NewServer() mechanism.Mechanism {
+func NewServer() mech.Mechanism {
 	return &Server{}
 }
 
@@ -93,11 +93,11 @@ func (server *Server) Name() string {
 }
 
 // Type returns the mechanism type.
-func (server *Server) Type() mechanism.Type {
-	return mechanism.Server
+func (server *Server) Type() mech.Type {
+	return mech.Server
 }
 
 // Start returns the initial context.
-func (server *Server) Start(opts ...mechanism.Option) (mechanism.Context, error) {
+func (server *Server) Start(opts ...mech.Option) (mech.Context, error) {
 	return NewServerContext(opts...)
 }
