@@ -113,6 +113,10 @@ func main() {
 
   ....
 
+  // Dispose the mechanism context.
+
+  ctx.Dispose()
+  
 ```
 
 
