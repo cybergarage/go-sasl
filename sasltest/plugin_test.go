@@ -53,6 +53,7 @@ func TestMechanism(t *testing.T) {
 				t.Error(err)
 				return
 			}
+
 			var lastResponse sasl.Response
 			for {
 				clientResponse, err := clientCtx.Next(lastResponse)
@@ -62,12 +63,12 @@ func TestMechanism(t *testing.T) {
 				}
 
 				if clientResponse != nil {
-					t.Logf("c%d: %s", clientCtx.Step(), clientResponse)
+					t.Logf("c%d: %v", clientCtx.Step(), clientResponse)
 				} else {
 					t.Logf("c%d:", clientCtx.Step())
 				}
 
-				if clientCtx.IsCompleted() {
+				if serverCtx.IsCompleted() {
 					break
 				}
 
@@ -77,7 +78,15 @@ func TestMechanism(t *testing.T) {
 					return
 				}
 
-				t.Logf("s%d: %s", serverCtx.Step(), serverResponse)
+				if serverResponse != nil {
+					t.Logf("s%d: %v", serverCtx.Step(), serverResponse)
+				} else {
+					t.Logf("s%d:", serverCtx.Step())
+				}
+
+				if clientCtx.IsCompleted() {
+					break
+				}
 
 				lastResponse = serverResponse
 			}
