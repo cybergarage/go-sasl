@@ -12,21 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mechanism
+package mech
 
-import "github.com/cybergarage/go-sasl/sasl/cred"
+// Type represents a SASL mechanism type.
+type Type int
 
-// Option represents a SASL mechanism option.
-type Option = any
+const (
+	Client Type = iota
+	Server
+)
 
-// Group represents a group option.
-type Group string
+// Types returns the SASL mechanism types.
+func Types() []Type {
+	return []Type{
+		Client,
+		Server,
+	}
+}
 
-// Username represents a username option.
-type Username string
-
-// Password represents a password option.
-type Password string
-
-// Authenticators represents a list of credential authenticators.
-type Authenticators = cred.Authenticators
+// String returns the SASL mechanism type.
+func (t Type) String() string {
+	switch t {
+	case Client:
+		return "client"
+	case Server:
+		return "server"
+	}
+	return ""
+}
