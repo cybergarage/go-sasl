@@ -7,9 +7,20 @@
  [![Go Report Card](https://img.shields.io/badge/go%20report-A%2B-brightgreen)](https://goreportcard.com/report/github.com/cybergarage/go-sasl) 
  [![codecov](https://codecov.io/gh/cybergarage/go-sasl/graph/badge.svg?token=OCU5V0H3OX)](https://codecov.io/gh/cybergarage/go-sasl)
 
-`go-sasl` is a library for implementing [SASL](https://datatracker.ietf.org/doc/html/rfc4422) authentication in Go.
+The `go-sasl` is a client and server framework for implementing [Simple Authentication and Security Layer (SASL)](https://datatracker.ietf.org/doc/html/rfc4422) authentication in Go. 
+
+[SASL](https://datatracker.ietf.org/doc/html/rfc4422) is a framework for authentication and data security in Internet protocols. It decouples authentication mechanisms from application protocols, allowing any authentication mechanism to be used with any protocol. SASL provides a structured interface for adding authentication support to connection-based protocols.　The framework provides a common [SASL](https://datatracker.ietf.org/doc/html/rfc4422) mechanism interface for the client and server as the following:
+
 
 ![](doc/img/framework.png)
+
+SASL mechanisms are responsible for the authentication process, which can include steps such as exchanging credentials, verifying identities, and establishing secure communication channels. Each mechanism defines its own protocol for these steps, allowing for flexibility and extensibility. The framework provides the following mechanism plugins:
+
+- [ANONYMOUS](https://datatracker.ietf.org/doc/html/rfc4505)
+- [PLAIN](https://datatracker.ietf.org/doc/html/rfc4616)
+- [SCRAM-SHA-1](https://datatracker.ietf.org/doc/html/rfc5802)
+- [SCRAM-SHA-236](https://datatracker.ietf.org/doc/html/rfc7677)
+
 
 ## References
 
