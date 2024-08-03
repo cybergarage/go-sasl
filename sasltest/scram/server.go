@@ -15,7 +15,7 @@
 package scram
 
 import (
-	"github.com/cybergarage/go-sasl/sasl/auth"
+	"github.com/cybergarage/go-sasl/sasl/cred"
 	"github.com/cybergarage/go-sasl/sasl/scram"
 	"github.com/cybergarage/go-sasl/sasltest"
 )
@@ -37,10 +37,10 @@ func NewServer() (*Server, error) {
 	return server, nil
 }
 
-func (server *Server) HasCredential(username string) (*auth.Credential, bool) {
-	cred := auth.NewCredential(
-		auth.WithUsername(username),
-		auth.WithPassword(sasltest.Password),
+func (server *Server) HasCredential(username string) (*cred.Credential, bool) {
+	cred := cred.NewCredential(
+		cred.WithUsername(username),
+		cred.WithPassword(sasltest.Password),
 	)
 	return cred, true
 }
