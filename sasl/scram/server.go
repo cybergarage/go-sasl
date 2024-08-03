@@ -24,7 +24,7 @@ import (
 
 // Server represents a SCRAM server.
 type Server struct {
-	*cred.AuthManager
+	*cred.CredentialStore
 	challenge      string
 	authzID        string
 	randomSequence string
@@ -41,15 +41,15 @@ type ServerOption func(*Server) error
 // NewServer returns a new SCRAM server.
 func NewServer(opts ...ServerOption) (*Server, error) {
 	srv := &Server{
-		AuthManager:    cred.NewAuthManager(),
-		challenge:      "",
-		authzID:        "",
-		randomSequence: "",
-		hashFunc:       HashSHA256(),
-		iterationCount: defaultIterationCount,
-		salt:           nil,
-		clientFirstMsg: nil,
-		serverFirstMsg: nil,
+		CredentialStore: cred.NewCredentialStore(),
+		challenge:       "",
+		authzID:         "",
+		randomSequence:  "",
+		hashFunc:        HashSHA256(),
+		iterationCount:  defaultIterationCount,
+		salt:            nil,
+		clientFirstMsg:  nil,
+		serverFirstMsg:  nil,
 	}
 	rs, err := rand.NewRandomSequence(additionalRandomSequenceLength)
 	if err != nil {

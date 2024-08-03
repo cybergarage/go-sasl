@@ -14,42 +14,42 @@
 
 package cred
 
-// AuthManager represent an authenticator manager.
-type AuthManager struct {
+// CredentialStore represent an credential store.
+type CredentialStore struct {
 	authenticators []Authenticator
 }
 
-// NewAuthManager returns a new authenticator manager.
-func NewAuthManager() *AuthManager {
-	manager := &AuthManager{
+// NewCredentialStore returns a new credential store.
+func NewCredentialStore() *CredentialStore {
+	manager := &CredentialStore{
 		authenticators: make([]Authenticator, 0),
 	}
 	return manager
 }
 
 // AddAuthenticator adds a new authenticator.
-func (mgr *AuthManager) AddAuthenticator(authenticator Authenticator) {
+func (mgr *CredentialStore) AddAuthenticator(authenticator Authenticator) {
 	mgr.authenticators = append(mgr.authenticators, authenticator)
 }
 
 // SetAuthenticators sets the specified authenticators.
-func (mgr *AuthManager) SetAuthenticators(authenticators Authenticators) {
+func (mgr *CredentialStore) SetAuthenticators(authenticators Authenticators) {
 	mgr.authenticators = make([]Authenticator, len(authenticators))
 	copy(mgr.authenticators, authenticators)
 }
 
 // ClearAuthenticators clears all authenticators.
-func (mgr *AuthManager) ClearAuthenticators() {
+func (mgr *CredentialStore) ClearAuthenticators() {
 	mgr.authenticators = make([]Authenticator, 0)
 }
 
 // Authenticators returns the authenticators.
-func (mgr *AuthManager) Authenticators() Authenticators {
+func (mgr *CredentialStore) Authenticators() Authenticators {
 	return mgr.authenticators
 }
 
 // HasCredential returns true if the username has a credential.
-func (mgr *AuthManager) HasCredential(username string) (*Credential, error) {
+func (mgr *CredentialStore) HasCredential(username string) (*Credential, error) {
 	for _, authenticator := range mgr.authenticators {
 		if cred, ok := authenticator.HasCredential(username); ok {
 			return cred, nil

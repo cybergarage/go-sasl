@@ -24,14 +24,14 @@ import (
 // ServerContext represents a PLAIN server context.
 type ServerContext struct {
 	step int
-	*cred.AuthManager
+	*cred.CredentialStore
 }
 
 // NewServerContext returns a new PLAIN server context.
 func NewServerContext(opts ...mechanism.Option) (*ServerContext, error) {
 	ctx := &ServerContext{
-		step:        0,
-		AuthManager: cred.NewAuthManager(),
+		step:            0,
+		CredentialStore: cred.NewCredentialStore(),
 	}
 
 	for _, opt := range opts {
