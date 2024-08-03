@@ -19,10 +19,14 @@ import "github.com/cybergarage/go-sasl/sasl/cred"
 // Option represents a SASL mechanism option.
 type Option = any
 
+// Group represents a group option.
+type Group string
+
 // Username represents a username option.
 type Username string
 
 // Password represents a password option.
 type Password string
 
+// Authenticators represents a list of credential authenticators.
 type Authenticators = cred.Authenticators
