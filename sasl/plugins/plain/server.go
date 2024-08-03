@@ -17,21 +17,21 @@ package plain
 import (
 	"fmt"
 
-	"github.com/cybergarage/go-sasl/sasl/auth"
+	"github.com/cybergarage/go-sasl/sasl/cred"
 	"github.com/cybergarage/go-sasl/sasl/mechanism"
 )
 
 // ServerContext represents a PLAIN server context.
 type ServerContext struct {
 	step int
-	*auth.AuthManager
+	*cred.AuthManager
 }
 
 // NewServerContext returns a new PLAIN server context.
 func NewServerContext(opts ...mechanism.Option) (*ServerContext, error) {
 	ctx := &ServerContext{
 		step:        0,
-		AuthManager: auth.NewAuthManager(),
+		AuthManager: cred.NewAuthManager(),
 	}
 
 	for _, opt := range opts {

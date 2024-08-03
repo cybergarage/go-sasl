@@ -14,9 +14,7 @@
 
 package mechanism
 
-import (
-	"github.com/cybergarage/go-sasl/sasl/auth"
-)
+import "github.com/cybergarage/go-sasl/sasl/cred"
 
 // Option represents a SASL mechanism option.
 type Option = any
@@ -27,4 +25,4 @@ type Username string
 // Password represents a password option.
 type Password string
 
-type Authenticators = auth.Authenticators
+type Authenticators = cred.Authenticators

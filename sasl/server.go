@@ -15,21 +15,21 @@
 package sasl
 
 import (
-	"github.com/cybergarage/go-sasl/sasl/auth"
+	"github.com/cybergarage/go-sasl/sasl/cred"
 	"github.com/cybergarage/go-sasl/sasl/plugins/scram"
 )
 
 // Server represents a SASL server.
 type Server struct {
 	*Provider
-	*auth.AuthManager
+	*cred.AuthManager
 }
 
 // NewServer returns a new SASL server.
 func NewServer() *Server {
 	server := &Server{
 		Provider:    NewProvider(),
-		AuthManager: auth.NewAuthManager(),
+		AuthManager: cred.NewAuthManager(),
 	}
 	server.loadDefaultPlugins()
 	return server
