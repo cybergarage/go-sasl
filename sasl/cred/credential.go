@@ -16,6 +16,7 @@ package cred
 
 // Credential represents a credential.
 type Credential struct {
+	group    string
 	username string
 	password string
 }
@@ -26,11 +27,19 @@ type CredentialOption func(*Credential)
 // NewCredential returns a new credential with options.
 func NewCredential(opts ...CredentialOption) *Credential {
 	cred := &Credential{
+		group:    "",
 		username: "",
 		password: "",
 	}
 	cred.SetOption(opts...)
 	return cred
+}
+
+// WithGroup returns an option to set the group.
+func WithGroup(group string) CredentialOption {
+	return func(cred *Credential) {
+		cred.group = group
+	}
 }
 
 // WithUsername returns an option to set the username.
@@ -52,6 +61,11 @@ func (cred *Credential) SetOption(opts ...CredentialOption) {
 	for _, opt := range opts {
 		opt(cred)
 	}
+}
+
+// Group returns the group.
+func (cred *Credential) Group() string {
+	return cred.group
 }
 
 // Username returns the username.
