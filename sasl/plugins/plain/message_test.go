@@ -24,6 +24,18 @@ func TestPlainMessage(t *testing.T) {
 		expected string
 	}{
 		{
+			message:  []byte{0x00, 0x00, 0x63},
+			expected: ",,c",
+		},
+		{
+			message:  []byte{0x00, 0x62, 0x00, 0x63},
+			expected: ",b,c",
+		},
+		{
+			message:  []byte{0x00, 0x62, 0x00, 0x63},
+			expected: ",b,c",
+		},
+		{
 			message:  []byte{0x61, 0x00, 0x62, 0x00, 0x63},
 			expected: "a,b,c",
 		},
