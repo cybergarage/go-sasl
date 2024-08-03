@@ -100,6 +100,16 @@ func TestMechanism(t *testing.T) {
 			if !serverCtx.IsCompleted() {
 				t.Error("server context is not completed")
 			}
+
+			err = clientCtx.Dispose()
+			if err != nil {
+				t.Error(err)
+			}
+
+			err = serverCtx.Dispose()
+			if err != nil {
+				t.Error(err)
+			}
 		})
 	}
 }
