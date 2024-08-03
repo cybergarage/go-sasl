@@ -28,5 +28,11 @@ type Username string
 // Password represents a password option.
 type Password string
 
+// Token represents a token.
+type Token string
+
+// Email represents an email.
+type Email string
+
 // Authenticators represents a list of credential authenticators.
 type Authenticators = cred.Authenticators
