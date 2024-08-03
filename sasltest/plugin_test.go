@@ -39,6 +39,7 @@ func TestMechanism(t *testing.T) {
 			serverMech, err := server.Mechanism(clientMech.Name())
 			if err != nil {
 				t.Error(err)
+				return
 			}
 
 			clientCtx, err := clientMech.Start(clientOpts...)
