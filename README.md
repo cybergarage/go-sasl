@@ -8,7 +8,6 @@
  [![codecov](https://codecov.io/gh/cybergarage/go-sasl/graph/badge.svg?token=OCU5V0H3OX)](https://codecov.io/gh/cybergarage/go-sasl)
 
 The `go-sasl` is a client and server framework for implementing [Simple Authentication and Security Layer (SASL)](https://datatracker.ietf.org/doc/html/rfc4422) authentication in Go. 
-
 [SASL](https://datatracker.ietf.org/doc/html/rfc4422) is a framework for authentication and data security in Internet protocols. It decouples authentication mechanisms from application protocols, allowing any authentication mechanism to be used with any protocol. SASL provides a structured interface for adding authentication support to connection-based protocols.　The `go-sasl` provides a common [SASL](https://datatracker.ietf.org/doc/html/rfc4422) mechanism interface for the client and server as the following:
 
 
@@ -22,7 +21,7 @@ SASL mechanisms are responsible for the authentication process, which can includ
 
 The client and server negotiate the SASL mechanism to use during the authentication process. The client sends a list of supported mechanisms to the server, which selects one and returns it to the client. The client then initializes the selected mechanism and begins the authentication process.
 
-SASL mechanisms are named by character strings, such as `ANONYMOUS`, `PLAIN`, `SCRAM-SHA-1`, `SCRAM-SHA-256`, and `SCRAM-SHA-512`. The `go-sasl` client and server can find mechanisms by name using `Server::HasMechanism()` and `Client::HasMechanism()`.  The `go-sasl` provides the following mechanism plugins:
+SASL mechanisms are named by character strings, such as `PLAIN` and `SCRAM-SHA-256`. The `go-sasl` client and server can find mechanisms by name using `Server::Mechanism()` and `Client::Mechanism()`.  The `go-sasl` provides the following mechanism plugins:
 
 - [ANONYMOUS](https://datatracker.ietf.org/doc/html/rfc4505)
 - [PLAIN](https://datatracker.ietf.org/doc/html/rfc4616)
