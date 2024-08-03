@@ -18,13 +18,13 @@ import (
 	"crypto/hmac"
 	"encoding/base64"
 
-	"github.com/cybergarage/go-sasl/sasl/auth"
+	"github.com/cybergarage/go-sasl/sasl/cred"
 	"github.com/cybergarage/go-sasl/sasl/util/rand"
 )
 
 // Server represents a SCRAM server.
 type Server struct {
-	*auth.AuthManager
+	*cred.AuthManager
 	challenge      string
 	authzID        string
 	randomSequence string
@@ -41,7 +41,7 @@ type ServerOption func(*Server) error
 // NewServer returns a new SCRAM server.
 func NewServer(opts ...ServerOption) (*Server, error) {
 	srv := &Server{
-		AuthManager:    auth.NewAuthManager(),
+		AuthManager:    cred.NewAuthManager(),
 		challenge:      "",
 		authzID:        "",
 		randomSequence: "",
@@ -102,7 +102,7 @@ func WithServerSaltString(salt string) ServerOption {
 }
 
 // WithServerAuthenticators returns a server option to set the authenticators.
-func WithServerAuthenticators(authenticators auth.Authenticators) ServerOption {
+func WithServerAuthenticators(authenticators cred.Authenticators) ServerOption {
 	return func(server *Server) error {
 		server.SetAuthenticators(authenticators)
 		return nil
