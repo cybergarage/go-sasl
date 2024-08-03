@@ -22,6 +22,7 @@ import (
 
 // ClientContext represents a PLAIN client context.
 type ClientContext struct {
+	group    string
 	username string
 	password string
 	step     int
@@ -30,6 +31,7 @@ type ClientContext struct {
 // NewClientContext returns a new PLAIN client context.
 func NewClientContext(opts ...mech.Option) (*ClientContext, error) {
 	ctx := &ClientContext{
+		group:    "",
 		username: "",
 		password: "",
 		step:     0,
@@ -37,6 +39,8 @@ func NewClientContext(opts ...mech.Option) (*ClientContext, error) {
 
 	for _, opt := range opts {
 		switch v := opt.(type) {
+		case mech.Group:
+			ctx.group = string(v)
 		case mech.Username:
 			ctx.username = string(v)
 		case mech.Password:
@@ -61,8 +65,9 @@ func (ctx *ClientContext) Step() int {
 func (ctx *ClientContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 	switch ctx.step {
 	case 0:
+		msg := NewMessageWith(ctx.group, ctx.username, ctx.password)
 		ctx.step++
-		return nil, nil
+		return msg.Bytes(), nil
 	}
 	return nil, fmt.Errorf("invalid step : %d", ctx.step)
 }
