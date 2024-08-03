@@ -77,3 +77,19 @@ func (cred *Credential) Username() string {
 func (cred *Credential) Password() string {
 	return cred.password
 }
+
+// Authorize returns true if the credential is authorized.
+func (cred *Credential) Authorize(other *Credential) bool {
+	if 0 < len(cred.group) {
+		if cred.group != other.group {
+			return false
+		}
+	}
+	if cred.username != other.username {
+		return false
+	}
+	if cred.password != other.password {
+		return false
+	}
+	return true
+}
