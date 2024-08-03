@@ -9,17 +9,112 @@
 
 The `go-sasl` is a client and server framework for implementing [Simple Authentication and Security Layer (SASL)](https://datatracker.ietf.org/doc/html/rfc4422) authentication in Go. 
 
-[SASL](https://datatracker.ietf.org/doc/html/rfc4422) is a framework for authentication and data security in Internet protocols. It decouples authentication mechanisms from application protocols, allowing any authentication mechanism to be used with any protocol. SASL provides a structured interface for adding authentication support to connection-based protocols.　The framework provides a common [SASL](https://datatracker.ietf.org/doc/html/rfc4422) mechanism interface for the client and server as the following:
+[SASL](https://datatracker.ietf.org/doc/html/rfc4422) is a framework for authentication and data security in Internet protocols. It decouples authentication mechanisms from application protocols, allowing any authentication mechanism to be used with any protocol. SASL provides a structured interface for adding authentication support to connection-based protocols.　The `go-sasl` provides a common [SASL](https://datatracker.ietf.org/doc/html/rfc4422) mechanism interface for the client and server as the following:
 
 
 ![](doc/img/framework.png)
 
-SASL mechanisms are responsible for the authentication process, which can include steps such as exchanging credentials, verifying identities, and establishing secure communication channels. Each mechanism defines its own protocol for these steps, allowing for flexibility and extensibility. The framework provides the following mechanism plugins:
+SASL mechanisms are responsible for the authentication process, which can include steps such as exchanging credentials, verifying identities, and establishing secure communication channels. Each mechanism defines its own protocol for these steps, allowing for flexibility and extensibility.
+
+## Getting Started
+
+### Mechanism Negotiation
+
+The client and server negotiate the SASL mechanism to use during the authentication process. The client sends a list of supported mechanisms to the server, which selects one and returns it to the client. The client then initializes the selected mechanism and begins the authentication process.
+
+SASL mechanisms are named by character strings, such as `ANONYMOUS`, `PLAIN`, `SCRAM-SHA-1`, `SCRAM-SHA-256`, and `SCRAM-SHA-512`. The `go-sasl` client and server can find mechanisms by name using `Server::HasMechanism()` and `Client::HasMechanism()`.  The `go-sasl` provides the following mechanism plugins:
 
 - [ANONYMOUS](https://datatracker.ietf.org/doc/html/rfc4505)
 - [PLAIN](https://datatracker.ietf.org/doc/html/rfc4616)
 - [SCRAM-SHA-1](https://datatracker.ietf.org/doc/html/rfc5802)
-- [SCRAM-SHA-236](https://datatracker.ietf.org/doc/html/rfc7677)
+- [SCRAM-SHA-256](https://datatracker.ietf.org/doc/html/rfc7677)
+- [SCRAM-SHA-512 (Draft)](https://datatracker.ietf.org/doc/draft-melnikov-scram-sha-512/)
+
+### Mechanism Interface
+
+The `go-sasl` provides a common [SASL](https://datatracker.ietf.org/doc/html/rfc4422) API as the following [Mechanism](https://github.com/cybergarage/go-sasl/blob/main/sasl/mech/mechanism.go) interface for the client and server.
+
+```go
+// Context represents a SASL mechanism context.
+type Context interface {
+    // Next returns the next response.
+    Next(...Parameter) (Response, error)
+    // Step returns the current step number. The step number is incremented by one after each call to Next.
+    Step() int
+    // IsCompleted returns true if the context is completed.
+    IsCompleted() bool
+    // Dispose disposes the context.
+    Dispose() error
+}
+
+// Mechanism represents a SASL mechanism.
+type Mechanism interface {
+    // Name returns the mechanism name.
+    Name() string
+    // Type returns the mechanism type.
+    Type() Type
+    // Start returns the initial context.
+    Start(...Option) (Context, error)
+}
+```
+### Example
+
+The following pseudo example demonstrates how to authenticate a `SCRAM-SHA-256` client using the `go-sasl` server. For more complete examples, see go-sasl mechanism plugin testing, [TestMechanism](https://github.com/cybergarage/go-sasl/blob/main/sasltest/mech/plugin_test.go).
+
+```go
+package main
+
+import (
+  "github.com/cybergarage/go-sasl/sasl"
+)
+
+func main() {
+
+  server := sasl.NewServer()
+
+  // Receive mechanism negotiation for `SCRAM-SHA-256` from the client.
+  
+  mech, err := server.Mechanism("SCRAM-SHA-256")
+  if err != nil {
+    return
+  }
+
+  serverOpts := []mech.Option{...}
+  ctx, err := mech.Start(serverOpts...)
+  if err != nil {
+    return
+  }
+
+  // Check the first client message from the client.
+
+  clientFirstMsg := ...
+  res, err := mech.Next(clientFirstMsg)
+  if err != nil {
+    // Send the error message to the client.
+    ....
+    return
+  }
+
+  // Send the first server message to the client.
+
+  ....
+  clientFinalMsg := ...
+
+  // Check the final authentication message from the client.
+
+  res, err := mech.Next(clientFirstMsg)
+  if err != nil {
+    // Send the error message to the client.
+    ....
+    return
+  }
+
+  // Send the final server message to the client.
+
+  ....
+
+```
+
 
 
 ## References
