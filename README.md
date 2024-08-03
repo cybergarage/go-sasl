@@ -57,6 +57,8 @@ type Mechanism interface {
 ```
 ### Example
 
+#### Server
+
 The following pseudo example demonstrates how to authenticate client messages for SCRAM-SHA-256 mechanism using the `go-sasl` server. For more complete examples, see go-sasl mechanism plugin testing, [TestMechanism()](https://github.com/cybergarage/go-sasl/blob/main/sasltest/mech/plugin_test.go).
 
 ```go
@@ -84,24 +86,25 @@ func main() {
     return
   }
 
-  // Check the first client message from the client.
+  // Check the first authentication message from the client.
 
   clientFirstMsg := ...
-  res, err := mech.Next(clientFirstMsg)
+  serverFirstMsg, err := mech.Next(clientFirstMsg)
   if err != nil {
     // Send the error message to the client.
     ....
     return
   }
 
-  // Send the first server message to the client.
+  // Send the first server authentication message to the client.
 
-  ....
-  clientFinalMsg := ...
+  serverFirstMsgStr := serverFirstMsg.String()
+  ...
 
   // Check the final authentication message from the client.
 
-  res, err := mech.Next(clientFirstMsg)
+  clientFinalMsg := ...
+  finalServerMsg, err := mech.Next(clientFinalMsg)
   if err != nil {
     // Send the error message to the client.
     ....
@@ -110,6 +113,7 @@ func main() {
 
   // Send the final server message to the client.
 
+  serverFinalMsgStr := finalServerMsg.String()
   ....
 
   // Dispose the mechanism context.
