@@ -16,8 +16,8 @@ package sasl
 
 import (
 	"github.com/cybergarage/go-sasl/sasl/cred"
-	"github.com/cybergarage/go-sasl/sasl/plugins/plain"
-	"github.com/cybergarage/go-sasl/sasl/plugins/scram"
+	"github.com/cybergarage/go-sasl/sasl/mech/plugins/plain"
+	"github.com/cybergarage/go-sasl/sasl/mech/plugins/scram"
 )
 
 // Server represents a SASL server.
