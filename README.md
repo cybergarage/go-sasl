@@ -87,8 +87,8 @@ func main() {
   }
 
   // Check the first authentication message from the client.
-
-  clientFirstMsg := ...　// ex. "n,,n=user,r=fyko+d2lbbFgONRv9qkxdawL"
+  // ex. "n,,n=user,r=fyko+d2lbbFgONRv9qkxdawL"
+  clientFirstMsg := ...　
   serverFirstMsg, err := mech.Next(clientFirstMsg)
   if err != nil {
     // Send the error message to the client.
@@ -97,13 +97,13 @@ func main() {
   }
 
   // Send the first server authentication message to the client.
-
-  serverFirstMsgStr := serverFirstMsg.String() // ex. "r=fyko+d2lbbFgONRv9qkxdawL,s=QSXCR+Q6sek8bf92"
+  // ex. "r=fyko+d2lbbFgONRv9qkxdawL,s=QSXCR+Q6sek8bf92"
+  serverFirstMsgStr := serverFirstMsg.String() 
   ...
 
   // Check the final authentication message from the client.
-
-  clientFinalMsg := ... // ex. "c=biws,r=fyko+d2lbbFgONRv9qkxdawL,p=v0X8v3Bz2T0CJGbJQyF0X+HI4Ts="
+  // ex. "c=biws,r=fyko+d2lbbFgONRv9qkxdawL,p=v0X8v3Bz2T0CJGbJQyF0X+HI4Ts="
+  clientFinalMsg := ... 
   finalServerMsg, err := mech.Next(clientFinalMsg)
   if err != nil {
     // Send the error message to the client.
@@ -112,8 +112,8 @@ func main() {
   }
 
   // Send the final server message to the client.
-
-  serverFinalMsgStr := finalServerMsg.String() // ex. "v=rmF9pqV8S7suAoZWja4dJRkFsKQ="
+  // ex. "v=rmF9pqV8S7suAoZWja4dJRkFsKQ="
+  serverFinalMsgStr := finalServerMsg.String()
   ....
 
   // Dispose the mechanism context.
