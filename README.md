@@ -72,8 +72,8 @@ func main() {
 
   server := sasl.NewServer()
 
-  // Receive mechanism negotiation from the client.  
-  mechName := ... // SCRAM-SHA-256
+  // Receive CRAM-SHA-256 mechanism negotiation from the client.  
+  mechName := ... // "SCRAM-SHA-256"
   mech, err := server.Mechanism(mechName)
   if err != nil {
     return
