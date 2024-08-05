@@ -72,14 +72,12 @@ func main() {
 
   server := sasl.NewServer()
 
-  // Receive mechanism negotiation from the client.
-  
+  // Receive mechanism negotiation from the client.  
   mechName := ... // SCRAM-SHA-256
   mech, err := server.Mechanism(mechName)
   if err != nil {
     return
   }
-
   serverOpts := []mech.Option{...}
   ctx, err := mech.Start(serverOpts...)
   if err != nil {
@@ -117,7 +115,6 @@ func main() {
   ....
 
   // Dispose the mechanism context.
-
   ctx.Dispose()
   
 ```
