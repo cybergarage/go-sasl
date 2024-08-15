@@ -16,13 +16,12 @@ package sasltest
 
 import (
 	"testing"
-
-	"github.com/cybergarage/go-sasl/sasl"
 )
 
 func TestServer(t *testing.T) {
-	server := sasl.NewServer()
-	if server == nil {
-		t.Error("client is nil")
+	server := NewServer()
+	mechs := server.Mechanisms()
+	if len(mechs) == 0 {
+		t.Error("mechs is empty")
 	}
 }
