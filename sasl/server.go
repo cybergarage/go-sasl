@@ -37,6 +37,11 @@ func NewServer() *Server {
 	return server
 }
 
+// SASLProvider returns the SASL provider.
+func (server *Server) SASLProvider() *Provider {
+	return server.Provider
+}
+
 func (server *Server) loadDefaultPlugins() {
 	server.AddMechanism(anonymous.NewServer())
 	server.AddMechanism(plain.NewServer())
