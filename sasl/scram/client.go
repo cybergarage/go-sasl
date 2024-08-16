@@ -60,7 +60,7 @@ func NewClient(opts ...ClientOption) (*Client, error) {
 	}
 	client.randomSequence = string(seq)
 
-	err = client.SetOption(opts...)
+	err = client.SetOptions(opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -116,33 +116,29 @@ func WithClientChallenge(challenge string) ClientOption {
 	}
 }
 
-// NewClientFromMessage returns a new SCRAM client from the specified message.
-func NewClientFromMessage(msgStr string) (*Client, error) {
-	msg, err := NewMessageFromString(msgStr)
-	if err != nil {
-		return nil, err
+func WithClientPayload(payload string) ClientOption {
+	return func(client *Client) error {
+		msg, err := NewMessageFromString(payload)
+		if err != nil {
+			return err
+		}
+		opts, err := newClientOptionsFromMessage(msg)
+		if err != nil {
+			return err
+		}
+		return client.SetOptions(opts...)
 	}
-	return newClientWithMessage(msg)
 }
 
-// NewClientFromMessageWithHeader returns a new SCRAM client from the specified message with the GS2 header.
-func NewClientFromMessageWithHeader(msgStr string) (*Client, error) {
-	msg, err := NewMessageFromStringWithHeader(msgStr)
-	if err != nil {
-		return nil, err
-	}
-	return newClientWithMessage(msg)
-}
+func newClientOptionsFromMessage(msg *Message) ([]ClientOption, error) {
+	opts := []ClientOption{}
 
-func newClientWithMessage(msg *Message) (*Client, error) {
 	// RFC 5802 - Salted Challenge Response Authentication Mechanism (SCRAM) SASL and GSS-API Mechanisms
 	// 5. SCRAM Authentication Exchange
 	cbFlag := msg.CBFlag()
 	if !cbFlag.IsValid() {
-		return nil, newErrInvalidMessage(msg.String())
+		return opts, newErrInvalidMessage(msg.String())
 	}
-
-	opts := []ClientOption{}
 
 	// 5.1. SCRAM Attributes
 	authzID, ok := msg.AuthorizationID()
@@ -153,11 +149,38 @@ func newClientWithMessage(msg *Message) (*Client, error) {
 	if ok {
 		opts = append(opts, WithClientUsername(util.DecodeName(user)))
 	}
+
+	return opts, nil
+}
+
+// NewClientFromPayload returns a new SCRAM client from the specified payload.
+func NewClientFromPayload(payload string) (*Client, error) {
+	msg, err := NewMessageFromString(payload)
+	if err != nil {
+		return nil, err
+	}
+	return newClientWithMessage(msg)
+}
+
+// NewClientFromPayloadWithHeader returns a new SCRAM client from the specified payload with the header.
+func NewClientFromPayloadWithHeader(payload string) (*Client, error) {
+	msg, err := NewMessageFromStringWithHeader(payload)
+	if err != nil {
+		return nil, err
+	}
+	return newClientWithMessage(msg)
+}
+
+func newClientWithMessage(msg *Message) (*Client, error) {
+	opts, err := newClientOptionsFromMessage(msg)
+	if err != nil {
+		return nil, err
+	}
 	return NewClient(opts...)
 }
 
-// SetOption sets the client options.
-func (client *Client) SetOption(opts ...ClientOption) error {
+// SetOptions sets the client options.
+func (client *Client) SetOptions(opts ...ClientOption) error {
 	for _, opt := range opts {
 		err := opt(client)
 		if err != nil {
