@@ -52,6 +52,12 @@ func NewMessageFrom(v any) (*Message, error) {
 	switch v := v.(type) {
 	case *Message:
 		return v, nil
+	case string:
+		msg := NewMessage()
+		if err := msg.ParseBytes([]byte(v)); err != nil {
+			return nil, err
+		}
+		return msg, nil
 	case []byte:
 		msg := NewMessage()
 		if err := msg.ParseBytes(v); err != nil {
