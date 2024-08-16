@@ -30,3 +30,24 @@ type Context = mech.Context
 
 // Option represents a SASL mechanism option.
 type Option = mech.Option
+
+// Group represents a group option.
+type Group = mech.Group
+
+// Username represents a username option.
+type Username = mech.Username
+
+// Password represents a password option.
+type Password = mech.Password
+
+// Token represents a token.
+type Token = mech.Token
+
+// Email represents an email.
+type Email = mech.Email
+
+// Payload represents a payload.
+type Payload = mech.Payload
+
+// Authenticators represents a list of credential authenticators.
+type Authenticators = mech.Authenticators
