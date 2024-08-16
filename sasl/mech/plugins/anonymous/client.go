@@ -33,6 +33,14 @@ func NewClientContext(opts ...mech.Option) (*ClientContext, error) {
 		step: 0,
 	}
 
+	if err := ctx.setOptions(opts...); err != nil {
+		return nil, err
+	}
+
+	return ctx, nil
+}
+
+func (ctx *ClientContext) setOptions(opts ...any) error {
 	for _, opt := range opts {
 		switch v := opt.(type) {
 		case mech.Email:
@@ -41,8 +49,7 @@ func NewClientContext(opts ...mech.Option) (*ClientContext, error) {
 			ctx.msg = string(v)
 		}
 	}
-
-	return ctx, nil
+	return nil
 }
 
 // IsCompleted returns true if the context is completed.
@@ -59,6 +66,9 @@ func (ctx *ClientContext) Step() int {
 func (ctx *ClientContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 	switch ctx.step {
 	case 0:
+		if err := ctx.setOptions(opts...); err != nil {
+			return nil, err
+		}
 		msg, err := NewMessageFrom(ctx.msg)
 		if err != nil {
 			return nil, err
