@@ -128,6 +128,8 @@ func (client *Client) Start(opts ...mech.Option) (mech.Context, error) {
 			clientOpts = append(clientOpts, scram.WithClientUsername(string(v)))
 		case mech.Password:
 			clientOpts = append(clientOpts, scram.WithClientPassword(string(v)))
+		case mech.Payload:
+			clientOpts = append(clientOpts, scram.WithClientPayload(v))
 		}
 	}
 
