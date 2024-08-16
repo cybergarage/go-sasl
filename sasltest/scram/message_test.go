@@ -76,7 +76,7 @@ func TestSCRAMExchange(t *testing.T) {
 					if 0 < len(test.clientFirstRS) {
 						clientOpts = append(clientOpts, scram.WithClientRandomSequence(test.clientFirstRS))
 					}
-					client.SetOption(clientOpts...)
+					client.SetOptions(clientOpts...)
 
 					// Create a server
 
