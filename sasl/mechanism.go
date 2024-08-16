@@ -27,3 +27,6 @@ type Response = mech.Response
 
 // Context represents a SASL mechanism context.
 type Context = mech.Context
+
+// Option represents a SASL mechanism option.
+type Option = mech.Option
