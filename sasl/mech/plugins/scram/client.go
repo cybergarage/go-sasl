@@ -51,15 +51,6 @@ func (ctx *ClientContext) Step() int {
 
 // Next returns the next response.
 func (ctx *ClientContext) Next(opts ...mech.Parameter) (mech.Response, error) {
-	if len(opts) == 0 {
-		return nil, fmt.Errorf("no message")
-	}
-
-	msg, err := scram.NewMessageFrom(opts[0])
-	if err != nil {
-		return nil, err
-	}
-
 	switch ctx.step {
 	case 0:
 		res, err := ctx.Client.FirstMessage()
@@ -69,6 +60,13 @@ func (ctx *ClientContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 		ctx.step++
 		return res, nil
 	case 1:
+		if len(opts) == 0 {
+			return nil, fmt.Errorf("no client first message")
+		}
+		msg, err := scram.NewMessageFrom(opts[0])
+		if err != nil {
+			return nil, err
+		}
 		res, err := ctx.Client.FinalMessageFrom(msg)
 		if err != nil {
 			return nil, err
@@ -76,7 +74,14 @@ func (ctx *ClientContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 		ctx.step++
 		return res, nil
 	case 2:
-		err := ctx.Client.ValidateServerFinalMessage(msg)
+		if len(opts) == 0 {
+			return nil, fmt.Errorf("no client final message")
+		}
+		msg, err := scram.NewMessageFrom(opts[0])
+		if err != nil {
+			return nil, err
+		}
+		err = ctx.Client.ValidateServerFinalMessage(msg)
 		if err != nil {
 			return nil, err
 		}
