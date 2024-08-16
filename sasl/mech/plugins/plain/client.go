@@ -37,6 +37,14 @@ func NewClientContext(opts ...mech.Option) (*ClientContext, error) {
 		step:     0,
 	}
 
+	if err := ctx.setOptions(opts...); err != nil {
+		return nil, err
+	}
+
+	return ctx, nil
+}
+
+func (ctx *ClientContext) setOptions(opts ...any) error {
 	for _, opt := range opts {
 		switch v := opt.(type) {
 		case mech.Group:
@@ -45,10 +53,17 @@ func NewClientContext(opts ...mech.Option) (*ClientContext, error) {
 			ctx.username = string(v)
 		case mech.Password:
 			ctx.password = string(v)
+		case []byte, string, *Message:
+			msg, err := NewMessageFrom(v)
+			if err != nil {
+				return err
+			}
+			ctx.group = msg.authzid
+			ctx.username = msg.authcid
+			ctx.password = msg.passwd
 		}
 	}
-
-	return ctx, nil
+	return nil
 }
 
 // IsCompleted returns true if the context is completed.
@@ -65,6 +80,9 @@ func (ctx *ClientContext) Step() int {
 func (ctx *ClientContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 	switch ctx.step {
 	case 0:
+		if err := ctx.setOptions(opts...); err != nil {
+			return nil, err
+		}
 		msg := NewMessageWith(ctx.group, ctx.username, ctx.password)
 		ctx.step++
 		return msg.Bytes(), nil
