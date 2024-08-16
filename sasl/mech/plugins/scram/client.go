@@ -49,10 +49,32 @@ func (ctx *ClientContext) Step() int {
 	return ctx.step
 }
 
+func newClientOptions(opts ...any) ([]scram.ClientOption, error) {
+	clientOpts := []scram.ClientOption{}
+	for _, opt := range opts {
+		switch v := opt.(type) {
+		case mech.Username:
+			clientOpts = append(clientOpts, scram.WithClientUsername(string(v)))
+		case mech.Password:
+			clientOpts = append(clientOpts, scram.WithClientPassword(string(v)))
+		case mech.Payload:
+			clientOpts = append(clientOpts, scram.WithClientPayload(v))
+		}
+	}
+	return clientOpts, nil
+}
+
 // Next returns the next response.
 func (ctx *ClientContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 	switch ctx.step {
 	case 0:
+		clientOpts, err := newClientOptions(opts...)
+		if err != nil {
+			return nil, err
+		}
+		if err := ctx.Client.SetOptions(clientOpts...); err != nil {
+			return nil, err
+		}
 		res, err := ctx.Client.FirstMessage()
 		if err != nil {
 			return nil, err
@@ -121,18 +143,10 @@ func (client *Client) Type() mech.Type {
 
 // Start returns the initial context.
 func (client *Client) Start(opts ...mech.Option) (mech.Context, error) {
-	clientOpts := []scram.ClientOption{}
-	for _, opt := range opts {
-		switch v := opt.(type) {
-		case mech.Username:
-			clientOpts = append(clientOpts, scram.WithClientUsername(string(v)))
-		case mech.Password:
-			clientOpts = append(clientOpts, scram.WithClientPassword(string(v)))
-		case mech.Payload:
-			clientOpts = append(clientOpts, scram.WithClientPayload(v))
-		}
+	clientOpts, err := newClientOptions(opts...)
+	if err != nil {
+		return nil, err
 	}
-
 	switch client.scramType {
 	case SHA1:
 		clientOpts = append(clientOpts, scram.WithClientHashFunc(scram.HashSHA1()))
@@ -144,6 +158,5 @@ func (client *Client) Start(opts ...mech.Option) (mech.Context, error) {
 		clientOpts = append(clientOpts, scram.WithClientHashFunc(scram.HashSHA512()))
 		return NewClientContext(clientOpts...)
 	}
-
 	return nil, fmt.Errorf("unknown SCRAM type : %d", client.scramType)
 }
