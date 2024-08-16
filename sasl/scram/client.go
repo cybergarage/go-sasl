@@ -20,6 +20,7 @@ import (
 	"strings"
 
 	"github.com/cybergarage/go-sasl/sasl/gss"
+	"github.com/cybergarage/go-sasl/sasl/mech"
 	"github.com/cybergarage/go-sasl/sasl/util"
 	"github.com/cybergarage/go-sasl/sasl/util/rand"
 )
@@ -116,9 +117,9 @@ func WithClientChallenge(challenge string) ClientOption {
 	}
 }
 
-func WithClientPayload(payload string) ClientOption {
+func WithClientPayload(payload mech.Payload) ClientOption {
 	return func(client *Client) error {
-		msg, err := NewMessageFromString(payload)
+		msg, err := NewMessageFromString(string(payload))
 		if err != nil {
 			return err
 		}
