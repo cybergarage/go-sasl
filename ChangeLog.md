@@ -6,6 +6,9 @@
   - SCRAM-SHA-256-PLUS
   - SCRAM-SHA-512-PLUS
 
+## v1.1.1 (2024-08-18)
+- Add mech.Context::SetValue() and Value()
+
 ## v1.1.0 (2024-08-18)
 - Update mech.Response interface to add Byte() method
 - Update mech.Context interface to parse the specified parameters in the first step
