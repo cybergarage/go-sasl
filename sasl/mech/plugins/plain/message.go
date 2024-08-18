@@ -17,6 +17,8 @@ package plain
 import (
 	"fmt"
 	"strings"
+
+	"github.com/cybergarage/go-sasl/sasl/mech"
 )
 
 // The PLAIN Simple Authentication and Security Layer (SASL) Mechanism
@@ -64,6 +66,11 @@ func NewMessageFrom(v any) (*Message, error) {
 			return nil, err
 		}
 		return msg, nil
+	case mech.Payload:
+		msg := NewMessage()
+		if err := msg.ParseBytes(v); err != nil {
+			return nil, err
+		}
 	}
 	return nil, fmt.Errorf("invalid type %T for PLAIN message", v)
 }

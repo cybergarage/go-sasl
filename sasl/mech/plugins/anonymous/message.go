@@ -16,6 +16,8 @@ package anonymous
 
 import (
 	"fmt"
+
+	"github.com/cybergarage/go-sasl/sasl/mech"
 )
 
 // Anonymous Simple Authentication and Security Layer (SASL) Mechanism
@@ -34,6 +36,10 @@ func NewMessageFrom(v any) (Message, error) {
 			return Message(v), nil
 		}
 	case []byte:
+		if 0 < len(v) {
+			return Message(v), nil
+		}
+	case mech.Password:
 		if 0 < len(v) {
 			return Message(v), nil
 		}

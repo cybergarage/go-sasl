@@ -19,6 +19,7 @@ import (
 	"strings"
 
 	"github.com/cybergarage/go-sasl/sasl/gss"
+	"github.com/cybergarage/go-sasl/sasl/mech"
 )
 
 // Message represents a SCRAM message.
@@ -70,6 +71,8 @@ func NewMessageFrom(v any) (*Message, error) {
 	case string:
 		return NewMessageFromString(v)
 	case []byte:
+		return NewMessageFromString(string(v))
+	case mech.Payload:
 		return NewMessageFromString(string(v))
 	case nil:
 		return nil, nil

@@ -35,7 +35,7 @@ type Token string
 type Email string
 
 // Payload represents a payload.
-type Payload string
+type Payload []byte
 
 // Authenticators represents a list of credential authenticators.
 type Authenticators = cred.Authenticators
