@@ -58,13 +58,12 @@ func (ctx *ServerContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 		return nil, fmt.Errorf("no message")
 	}
 
-	msg, err := scram.NewMessageFrom(opts[0])
-	if err != nil {
-		return nil, err
-	}
-
 	switch ctx.step {
 	case 0:
+		msg, err := scram.NewMessageFromWithHeader(opts[0])
+		if err != nil {
+			return nil, err
+		}
 		res, err := ctx.Server.FirstMessageFrom(msg)
 		if err != nil {
 			return nil, err
@@ -72,6 +71,10 @@ func (ctx *ServerContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 		ctx.step++
 		return res, nil
 	case 1:
+		msg, err := scram.NewMessageFrom(opts[0])
+		if err != nil {
+			return nil, err
+		}
 		res, err := ctx.Server.FinalMessageFrom(msg)
 		if err != nil {
 			return nil, err
