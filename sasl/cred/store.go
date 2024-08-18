@@ -32,6 +32,11 @@ func (mgr *CredentialStore) AddAuthenticator(authenticator Authenticator) {
 	mgr.authenticators = append(mgr.authenticators, authenticator)
 }
 
+// AddAuthenticators adds the specified authenticators.
+func (mgr *CredentialStore) AddAuthenticators(authenticators Authenticators) {
+	mgr.authenticators = append(mgr.authenticators, authenticators...)
+}
+
 // SetAuthenticators sets the specified authenticators.
 func (mgr *CredentialStore) SetAuthenticators(authenticators Authenticators) {
 	mgr.authenticators = make([]Authenticator, len(authenticators))
