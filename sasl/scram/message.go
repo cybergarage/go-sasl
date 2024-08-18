@@ -80,6 +80,23 @@ func NewMessageFrom(v any) (*Message, error) {
 	return nil, fmt.Errorf("invalid message type")
 }
 
+// NewMessageFromWithHeader returns a new Message from the specified value with the GS2 header.
+func NewMessageFromWithHeader(v any) (*Message, error) {
+	switch v := v.(type) {
+	case *Message:
+		return v, nil
+	case string:
+		return NewMessageFromStringWithHeader(v)
+	case []byte:
+		return NewMessageFromStringWithHeader(string(v))
+	case mech.Payload:
+		return NewMessageFromStringWithHeader(string(v))
+	case nil:
+		return nil, nil
+	}
+	return nil, fmt.Errorf("invalid message type")
+}
+
 // NewMessageFromString returns a new Message from the specified string.
 func NewMessageFromString(msg string) (*Message, error) {
 	scramMsg := NewMessage()
