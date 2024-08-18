@@ -18,7 +18,10 @@ package mech
 type Parameter = any
 
 // Response represents a SASL mechanism response.
-type Response = any
+type Response interface {
+	// Bytes returns the response bytes.
+	Bytes() []byte
+}
 
 // Context represents a SASL mechanism context.
 type Context interface {
