@@ -14,16 +14,24 @@
 
 package plugins
 
-import "github.com/cybergarage/go-sasl/sasl/mech"
+type Context struct {
+	values map[string]any
+}
 
-// Mechanism represents a SASL mechanism.
-type Mechanism = mech.Mechanism
+// NewContext returns a new Context.
+func NewContext() *Context {
+	return &Context{
+		values: make(map[string]any),
+	}
+}
 
-// Parameter represents a SASL mechanism parameter.
-type Parameter = mech.Parameter
+// SetValue sets a value to the context.
+func (ctx *Context) SetValue(key string, value any) {
+	ctx.values[key] = value
+}
 
-// Response represents a SASL mechanism response.
-type Response = mech.Response
-
-// Context represents a SASL mechanism context.
-type Context = mech.Context
+// Value returns a value from the context.
+func (ctx *Context) Value(key string) (any, bool) {
+	value, hasValue := ctx.values[key]
+	return value, hasValue
+}

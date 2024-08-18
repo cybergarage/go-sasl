@@ -18,11 +18,13 @@ import (
 	"fmt"
 
 	"github.com/cybergarage/go-sasl/sasl/mech"
+	"github.com/cybergarage/go-sasl/sasl/mech/plugins"
 	"github.com/cybergarage/go-sasl/sasl/scram"
 )
 
 // ServerContext represents a SCRAM server context.
 type ServerContext struct {
+	*plugins.Context
 	step int
 	*scram.Server
 }
@@ -34,8 +36,9 @@ func NewServerContext(opts ...scram.ServerOption) (*ServerContext, error) {
 		return nil, err
 	}
 	return &ServerContext{
-		step:   0,
-		Server: server,
+		Context: plugins.NewContext(),
+		step:    0,
+		Server:  server,
 	}, nil
 }
 

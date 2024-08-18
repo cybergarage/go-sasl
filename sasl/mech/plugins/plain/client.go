@@ -18,10 +18,12 @@ import (
 	"fmt"
 
 	"github.com/cybergarage/go-sasl/sasl/mech"
+	"github.com/cybergarage/go-sasl/sasl/mech/plugins"
 )
 
 // ClientContext represents a PLAIN client context.
 type ClientContext struct {
+	*plugins.Context
 	group    string
 	username string
 	password string
@@ -31,6 +33,7 @@ type ClientContext struct {
 // NewClientContext returns a new PLAIN client context.
 func NewClientContext(opts ...mech.Option) (*ClientContext, error) {
 	ctx := &ClientContext{
+		Context:  plugins.NewContext(),
 		group:    "",
 		username: "",
 		password: "",
