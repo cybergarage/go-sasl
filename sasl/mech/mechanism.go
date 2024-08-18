@@ -33,6 +33,10 @@ type Context interface {
 	IsCompleted() bool
 	// Dispose disposes the context.
 	Dispose() error
+	// SetValue sets the context value.
+	SetValue(key string, value any)
+	// Value returns the context value.
+	Value(key string) (any, bool)
 }
 
 // Mechanism represents a SASL mechanism.
