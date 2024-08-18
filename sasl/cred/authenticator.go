@@ -22,3 +22,8 @@ type Authenticator interface {
 
 // Authenticators represents a list of authenticators.
 type Authenticators []Authenticator
+
+// NewAuthenticators returns a new Authenticators.
+func NewAuthenticators(auths ...Authenticator) Authenticators {
+	return Authenticators(auths)
+}
