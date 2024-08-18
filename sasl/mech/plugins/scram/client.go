@@ -18,11 +18,13 @@ import (
 	"fmt"
 
 	"github.com/cybergarage/go-sasl/sasl/mech"
+	"github.com/cybergarage/go-sasl/sasl/mech/plugins"
 	"github.com/cybergarage/go-sasl/sasl/scram"
 )
 
 // ClientContext represents a SCRAM client context.
 type ClientContext struct {
+	*plugins.Context
 	step int
 	*scram.Client
 }
@@ -34,8 +36,9 @@ func NewClientContext(opts ...scram.ClientOption) (*ClientContext, error) {
 		return nil, err
 	}
 	return &ClientContext{
-		step:   0,
-		Client: client,
+		Context: plugins.NewContext(),
+		step:    0,
+		Client:  client,
 	}, nil
 }
 

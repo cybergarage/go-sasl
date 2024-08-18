@@ -19,10 +19,12 @@ import (
 
 	"github.com/cybergarage/go-sasl/sasl/cred"
 	"github.com/cybergarage/go-sasl/sasl/mech"
+	"github.com/cybergarage/go-sasl/sasl/mech/plugins"
 )
 
 // ServerContext represents a PLAIN server context.
 type ServerContext struct {
+	*plugins.Context
 	step int
 	*cred.CredentialStore
 }
@@ -30,6 +32,7 @@ type ServerContext struct {
 // NewServerContext returns a new PLAIN server context.
 func NewServerContext(opts ...mech.Option) (*ServerContext, error) {
 	ctx := &ServerContext{
+		Context:         plugins.NewContext(),
 		step:            0,
 		CredentialStore: cred.NewCredentialStore(),
 	}

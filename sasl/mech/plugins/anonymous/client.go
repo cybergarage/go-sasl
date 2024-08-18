@@ -18,10 +18,12 @@ import (
 	"fmt"
 
 	"github.com/cybergarage/go-sasl/sasl/mech"
+	"github.com/cybergarage/go-sasl/sasl/mech/plugins"
 )
 
 // ClientContext represents a PLAIN client context.
 type ClientContext struct {
+	*plugins.Context
 	msg  string
 	step int
 }
@@ -29,8 +31,9 @@ type ClientContext struct {
 // NewClientContext returns a new PLAIN client context.
 func NewClientContext(opts ...mech.Option) (*ClientContext, error) {
 	ctx := &ClientContext{
-		msg:  "",
-		step: 0,
+		Context: plugins.NewContext(),
+		msg:     "",
+		step:    0,
 	}
 
 	if err := ctx.setOptions(opts...); err != nil {
