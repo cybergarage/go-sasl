@@ -175,3 +175,8 @@ func (msg *Message) StringWithoutProof() string {
 	}
 	return msg.Header.String() + msg.AttributeMap.StringWithoutProof()
 }
+
+// Bytes returns the message bytes.
+func (msg *Message) Bytes() []byte {
+	return []byte(msg.String())
+}

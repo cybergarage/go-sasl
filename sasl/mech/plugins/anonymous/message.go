@@ -24,25 +24,43 @@ import (
 // https://www.rfc-editor.org/rfc/rfc4505.html
 
 // Message represents a SASL ANONYMOUS message.
-type Message string
+type Message struct {
+	identity string
+}
+
+func NewMessageWith(identity string) *Message {
+	return &Message{
+		identity: identity,
+	}
+}
 
 // NewMessage returns a new ANONYMOUS message.
-func NewMessageFrom(v any) (Message, error) {
+func NewMessageFrom(v any) (*Message, error) {
 	switch v := v.(type) {
-	case Message:
+	case *Message:
 		return v, nil
 	case string:
 		if 0 < len(v) {
-			return Message(v), nil
+			return NewMessageWith(v), nil
 		}
 	case []byte:
 		if 0 < len(v) {
-			return Message(v), nil
+			return NewMessageWith(string(v)), nil
 		}
 	case mech.Password:
 		if 0 < len(v) {
-			return Message(v), nil
+			return NewMessageWith(string(v)), nil
 		}
 	}
-	return "", fmt.Errorf("invalid type %T for ANONYMOUS message", v)
+	return nil, fmt.Errorf("invalid type %T for ANONYMOUS message", v)
+}
+
+// String returns the message as a string.
+func (msg *Message) String() string {
+	return msg.identity
+}
+
+// Bytes returns the message as a byte array.
+func (msg *Message) Bytes() []byte {
+	return []byte(msg.identity)
 }

@@ -85,7 +85,7 @@ func (ctx *ClientContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 		}
 		msg := NewMessageWith(ctx.group, ctx.username, ctx.password)
 		ctx.step++
-		return msg.Bytes(), nil
+		return msg, nil
 	}
 	return nil, fmt.Errorf("invalid step : %d", ctx.step)
 }
