@@ -96,7 +96,7 @@ func main() {
 
   // Send the first server authentication message to the client.
   // ex. "r=fyko+d2lbbFgONRv9qkxdawL,s=QSXCR+Q6sek8bf92"
-  serverFirstMsgStr := serverFirstMsg.String()
+  serverFirstMsgBytes := serverFirstMsg.Bytes()
   ...
 
   // Check the final authentication message from the client.
@@ -111,7 +111,7 @@ func main() {
 
   // Send the final server message to the client.
   // ex. "v=rmF9pqV8S7suAoZWja4dJRkFsKQ="
-  serverFinalMsgStr := finalServerMsg.String()
+  serverFinalMsgBytes := finalServerMsg.Bytes()
   ....
 
   // Dispose the mechanism context.
