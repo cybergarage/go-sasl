@@ -36,8 +36,8 @@ func NewServerContext(opts ...mech.Option) (*ServerContext, error) {
 	return ctx, nil
 }
 
-// IsCompleted returns true if the context is completed.
-func (ctx *ServerContext) IsCompleted() bool {
+// Done returns true if the context is completed.
+func (ctx *ServerContext) Done() bool {
 	return ctx.step == 1
 }
 

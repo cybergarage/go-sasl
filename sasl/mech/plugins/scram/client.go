@@ -42,8 +42,8 @@ func NewClientContext(opts ...scram.ClientOption) (*ClientContext, error) {
 	}, nil
 }
 
-// IsCompleted returns true if the context is completed.
-func (ctx *ClientContext) IsCompleted() bool {
+// Done returns true if the context is completed.
+func (ctx *ClientContext) Done() bool {
 	return ctx.step == 3
 }
 

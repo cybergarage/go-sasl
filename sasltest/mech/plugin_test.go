@@ -70,7 +70,7 @@ func TestMechanism(t *testing.T) {
 					t.Logf("c%d:", clientCtx.Step())
 				}
 
-				if serverCtx.IsCompleted() {
+				if serverCtx.Done() {
 					break
 				}
 
@@ -86,18 +86,18 @@ func TestMechanism(t *testing.T) {
 					t.Logf("s%d:", serverCtx.Step())
 				}
 
-				if clientCtx.IsCompleted() {
+				if clientCtx.Done() {
 					break
 				}
 
 				lastResponse = serverResponse
 			}
 
-			if !clientCtx.IsCompleted() {
+			if !clientCtx.Done() {
 				t.Error("client context is not completed")
 			}
 
-			if !serverCtx.IsCompleted() {
+			if !serverCtx.Done() {
 				t.Error("server context is not completed")
 			}
 

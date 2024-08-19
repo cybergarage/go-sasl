@@ -69,8 +69,8 @@ func (ctx *ClientContext) setOptions(opts ...any) error {
 	return nil
 }
 
-// IsCompleted returns true if the context is completed.
-func (ctx *ClientContext) IsCompleted() bool {
+// Done returns true if the context is completed.
+func (ctx *ClientContext) Done() bool {
 	return ctx.step == 1
 }
 

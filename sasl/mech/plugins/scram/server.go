@@ -42,8 +42,8 @@ func NewServerContext(opts ...scram.ServerOption) (*ServerContext, error) {
 	}, nil
 }
 
-// IsCompleted returns true if the context is completed.
-func (ctx *ServerContext) IsCompleted() bool {
+// Done returns true if the context is completed.
+func (ctx *ServerContext) Done() bool {
 	return ctx.step == 2
 }
 
