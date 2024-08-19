@@ -31,8 +31,8 @@ type Context interface {
 	Next(...Parameter) (Response, error)
 	// Step returns the current step number. The step number is incremented by one after each call to Next.
 	Step() int
-	// IsCompleted returns true if the context is completed.
-	IsCompleted() bool
+	// Done returns true if the context is completed.
+	Done() bool
 	// Dispose disposes the context.
 	Dispose() error
 	// SetValue sets the context value.
