@@ -21,6 +21,8 @@ type Parameter = any
 type Response interface {
 	// Bytes returns the response bytes.
 	Bytes() []byte
+	// String returns the response as a string.
+	String() string
 }
 
 // Context represents a SASL mechanism context.
