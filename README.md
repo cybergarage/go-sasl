@@ -96,7 +96,7 @@ func main() {
 
   // Send the first server authentication message to the client.
   // ex. "r=fyko+d2lbbFgONRv9qkxdawL,s=QSXCR+Q6sek8bf92"
-  serverFirstMsgStr := serverFirstMsg.String() 
+  serverFirstMsgStr := serverFirstMsg.String()
   ...
 
   // Check the final authentication message from the client.
