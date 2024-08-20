@@ -57,7 +57,81 @@ type Mechanism interface {
 ```
 ### Example
 
-#### Server
+#### Client side
+
+The following pseudo example demonstrates how to authenticate server messages for SCRAM-SHA-256 mechanism using the `go-sasl` server. For more complete examples, see go-sasl mechanism plugin testing, [TestMechanism()](https://github.com/cybergarage/go-sasl/blob/main/sasltest/mech/plugin_test.go).
+
+```go
+package main
+
+import (
+  "github.com/cybergarage/go-sasl/sasl"
+)
+
+func main() {
+
+  client := sasl.NewServer()
+
+  // Get SCRAM-SHA-256 mechanism negotiation from the client.  
+  mech, err := client.Mechanism("SCRAM-SHA-256")
+  if err != nil {
+    return
+  }
+
+  user := ... // "user"
+  password := ... // "password"
+
+  clientOpts := []mech.Option{
+		mech.Username(user),
+		mech.Password(password),
+	}
+
+  ctx, err := mech.Start(clientOpts...)
+  if err != nil {
+    return
+  }
+
+  // Generate the first authentication message for the server.
+  clientFirstMsg, err := mech.Next()
+  if err != nil {
+    ....
+    return
+  }
+
+  // Send the first server authentication message to the server.
+  // ex. "n,,n=user,r=5lWV5BbvRW44ff97iaICZ5aK"
+  clientFirstMsgBytes := clientFirstMsg.Bytes()
+  ...
+
+  // Check the first authentication message from the server.
+  // ex. "r=5lWV5BbvRW44ff97iaICZ5aKf1yv9rLKEHbMACfg,s=QVNyRlpRc3M3OXVIOXlVMg==,i=4096"
+  serverFirstMsg := ... 
+  clientFinalrMsg, err := mech.Next(serverFirstMsg)
+  if err != nil {
+    ....
+    return
+  }
+
+  // Send the final client message to the server.
+  // ex. "v=rmF9pqV8S7suAoZWja4dJRkFsKQ="
+  clientFinalrMsgBytes := clientFinalrMsg.Bytes()
+  ....
+
+  // Check the final authentication message from the server.
+  // ex. "v=6xPZm6Qrq8WVGNpjS235dg81OF0="
+  serverFinalMsg := ... 
+  clientFinalrMsg, err := mech.Next(serverFinalMsg)
+  if err != nil {
+    ....
+    return
+  }
+
+  // Dispose the mechanism context.
+  ctx.Dispose()
+  
+```
+
+#### Server side
 
 The following pseudo example demonstrates how to authenticate client messages for SCRAM-SHA-256 mechanism using the `go-sasl` server. For more complete examples, see go-sasl mechanism plugin testing, [TestMechanism()](https://github.com/cybergarage/go-sasl/blob/main/sasltest/mech/plugin_test.go).
 
@@ -72,7 +146,7 @@ func main() {
 
   server := sasl.NewServer()
 
-  // Receive CRAM-SHA-256 mechanism negotiation from the client.  
+  // Receive SCRAM-SHA-256 mechanism negotiation from the client.  
   mechName := ... // "SCRAM-SHA-256"
   mech, err := server.Mechanism(mechName)
   if err != nil {
@@ -118,8 +192,6 @@ func main() {
   ctx.Dispose()
   
 ```
-
-
 
 ## References
 
