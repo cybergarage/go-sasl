@@ -116,6 +116,18 @@ func (server *Server) Type() mech.Type {
 // Start returns the initial context.
 func (server *Server) Start(opts ...mech.Option) (mech.Context, error) {
 	serverOpts := []scram.ServerOption{}
+	switch server.scramType {
+	case SHA1:
+		serverOpts = append(serverOpts, scram.WithServerHashFunc(scram.HashSHA1()))
+		return NewServerContext(serverOpts...)
+	case SHA256:
+		serverOpts = append(serverOpts, scram.WithServerHashFunc(scram.HashSHA256()))
+		return NewServerContext(serverOpts...)
+	case SHA512:
+		serverOpts = append(serverOpts, scram.WithServerHashFunc(scram.HashSHA512()))
+		return NewServerContext(serverOpts...)
+	}
+
 	for _, opt := range opts {
 		switch v := opt.(type) {
 		case mech.Authenticators:
@@ -131,18 +143,6 @@ func (server *Server) Start(opts ...mech.Option) (mech.Context, error) {
 		default:
 			return nil, fmt.Errorf("unknown option : %v", v)
 		}
-	}
-
-	switch server.scramType {
-	case SHA1:
-		serverOpts = append(serverOpts, scram.WithServerHashFunc(scram.HashSHA1()))
-		return NewServerContext(serverOpts...)
-	case SHA256:
-		serverOpts = append(serverOpts, scram.WithServerHashFunc(scram.HashSHA256()))
-		return NewServerContext(serverOpts...)
-	case SHA512:
-		serverOpts = append(serverOpts, scram.WithServerHashFunc(scram.HashSHA512()))
-		return NewServerContext(serverOpts...)
 	}
 
 	return nil, fmt.Errorf("unknown SCRAM type : %d", server.scramType)
