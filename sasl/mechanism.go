@@ -34,6 +34,9 @@ type Option = mech.Option
 // Group represents a group option.
 type Group = mech.Group
 
+// AuthzID represents an authorization ID option.
+type AuthzID = mech.AuthzID
+
 // Username represents a username option.
 type Username = mech.Username
 
@@ -51,3 +54,18 @@ type Payload = mech.Payload
 
 // Authenticators represents a list of credential authenticators.
 type Authenticators = mech.Authenticators
+
+// RandomSequence represents a random sequence.
+type RandomSequence = mech.RandomSequence
+
+// IterationCount represents an iteration count.
+type IterationCount = mech.IterationCount
+
+// HashFunc represents a hash function.
+type HashFunc = mech.HashFunc
+
+// Challenge represents a challenge.
+type Challenge = mech.Challenge
+
+// Salt represents a salt.
+type Salt = mech.Salt
