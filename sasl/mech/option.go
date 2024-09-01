@@ -14,7 +14,11 @@
 
 package mech
 
-import "github.com/cybergarage/go-sasl/sasl/cred"
+import (
+	"hash"
+
+	"github.com/cybergarage/go-sasl/sasl/cred"
+)
 
 // Option represents a SASL mechanism option.
 type Option = any
@@ -45,6 +49,9 @@ type RandomSequence string
 
 // IterationCount represents an iteration count.
 type IterationCount int
+
+// HashFunc represents a hash function.
+type HashFunc func() hash.Hash
 
 // Salt represents a salt.
 type Salt []byte
