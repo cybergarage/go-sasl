@@ -62,6 +62,14 @@ func newClientOptions(opts ...any) ([]scram.ClientOption, error) {
 			clientOpts = append(clientOpts, scram.WithClientPassword(string(v)))
 		case mech.Payload:
 			clientOpts = append(clientOpts, scram.WithClientPayload(v))
+		case mech.HashFunc:
+			clientOpts = append(clientOpts, scram.WithClientHashFunc(v))
+		case mech.AuthzID:
+			clientOpts = append(clientOpts, scram.WithClientAuthzID(string(v)))
+		case mech.RandomSequence:
+			clientOpts = append(clientOpts, scram.WithClientRandomSequence(string(v)))
+		case mech.Challenge:
+			clientOpts = append(clientOpts, scram.WithClientChallenge(string(v)))
 		}
 	}
 	return clientOpts, nil
