@@ -128,6 +128,8 @@ func (server *Server) Start(opts ...mech.Option) (mech.Context, error) {
 			serverOpts = append(serverOpts, scram.WithServerIterationCount(int(v)))
 		case mech.Salt:
 			serverOpts = append(serverOpts, scram.WithServerSaltString(string(v)))
+		default:
+			return nil, fmt.Errorf("unknown option : %v", v)
 		}
 	}
 
