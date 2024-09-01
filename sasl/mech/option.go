@@ -26,6 +26,9 @@ type Option = any
 // Group represents a group option.
 type Group string
 
+// AuthzID represents an authorization ID option.
+type AuthzID string
+
 // Username represents a username option.
 type Username string
 
@@ -52,6 +55,9 @@ type IterationCount int
 
 // HashFunc represents a hash function.
 type HashFunc func() hash.Hash
+
+// Challenge represents a challenge.
+type Challenge []byte
 
 // Salt represents a salt.
 type Salt []byte
