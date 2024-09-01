@@ -120,6 +120,14 @@ func (server *Server) Start(opts ...mech.Option) (mech.Context, error) {
 		switch v := opt.(type) {
 		case mech.Authenticators:
 			serverOpts = append(serverOpts, scram.WithServerAuthenticators(v))
+		case mech.RandomSequence:
+			serverOpts = append(serverOpts, scram.WithServerRandomSequence(string(v)))
+		case mech.HashFunc:
+			serverOpts = append(serverOpts, scram.WithServerHashFunc(v))
+		case mech.IterationCount:
+			serverOpts = append(serverOpts, scram.WithServerIterationCount(int(v)))
+		case mech.Salt:
+			serverOpts = append(serverOpts, scram.WithServerSaltString(string(v)))
 		}
 	}
 
