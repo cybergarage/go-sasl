@@ -39,3 +39,12 @@ type Payload []byte
 
 // Authenticators represents a list of credential authenticators.
 type Authenticators = cred.Authenticators
+
+// HashFunc represents a hash function.
+type RandomSequence string
+
+// IterationCount represents an iteration count.
+type IterationCount int
+
+// Salt represents a salt.
+type Salt []byte
