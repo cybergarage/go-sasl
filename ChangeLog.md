@@ -6,6 +6,9 @@
   - SCRAM-SHA-256-PLUS
   - SCRAM-SHA-512-PLUS
 
+## v1.1.3 (2024-09-02)
+- Update SCRAM plugins to handle more startop options
+
 ## v1.1.2 (2024-08-18)
 - Add mech.Response::Byte() and String() interfaces
 - Fix scram.SeverContext::Next() to parse the specified parameters in the first step
