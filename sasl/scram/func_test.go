@@ -31,7 +31,8 @@ func TestSaltedPassword(t *testing.T) {
 	}{
 		{
 			sha256.New,
-			"pencil", "ATHENA.MIT.EDUraeburn",
+			"pencil",
+			"ATHENA.MIT.EDUraeburn",
 			4096,
 			"93ce7dfda354911328861af885b907feb5aece70953c43cbe697ed2b1e368f95"},
 	}
