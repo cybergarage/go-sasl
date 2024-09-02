@@ -57,8 +57,8 @@ func Hi(h HashFunc, str string, salt []byte, i int) []byte {
 // 2.2. Notation
 // RFC 2104　- HMAC: Keyed-Hashing for Message Authentication
 // https://datatracker.ietf.org/doc/html/rfc2104
-func HMAC(h HashFunc, key []byte, data []byte) []byte {
-	mac := hmac.New(h, key)
+func HMAC(hf HashFunc, key []byte, data []byte) []byte {
+	mac := hmac.New(hf, key)
 	mac.Write(data)
 	return mac.Sum(nil)
 }
