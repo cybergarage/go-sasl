@@ -199,8 +199,8 @@ func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
 }
 
 // FinalMessageFrom returns a new server final message from the specified client final message.
-func (server *Server) FinalMessageFrom(clienttMsg *Message) (*Message, error) {
-	if clienttMsg == nil {
+func (server *Server) FinalMessageFrom(clientMsg *Message) (*Message, error) {
+	if clientMsg == nil {
 		return nil, newErrInvalidMessage("Client message is nil")
 	}
 
@@ -211,9 +211,9 @@ func (server *Server) FinalMessageFrom(clienttMsg *Message) (*Message, error) {
 	// The server MUST verify that the nonce sent by the client in the second message is
 	// the same as the one sent by the server in its first message.
 
-	clientRS, ok := clienttMsg.RandomSequence()
+	clientRS, ok := clientMsg.RandomSequence()
 	if !ok {
-		return nil, newErrInvalidMessage(clienttMsg.String())
+		return nil, newErrInvalidMessage(clientMsg.String())
 	}
 	serverRS, ok := server.serverFirstMsg.RandomSequence()
 	if !ok {
@@ -250,7 +250,7 @@ func (server *Server) FinalMessageFrom(clienttMsg *Message) (*Message, error) {
 	//                server-first-message + "," +
 	//                client-final-message-without-proof
 
-	authMsg := AuthMessage(server.clientFirstMsg.String(), server.serverFirstMsg.String(), clienttMsg.StringWithoutProof())
+	authMsg := AuthMessage(server.clientFirstMsg.StringWithoutHeader(), server.serverFirstMsg.String(), clientMsg.StringWithoutProof())
 	server.SetValue(AuthMessageID, authMsg)
 
 	// ClientSignature := HMAC(StoredKey, AuthMessage)
@@ -260,14 +260,14 @@ func (server *Server) FinalMessageFrom(clienttMsg *Message) (*Message, error) {
 
 	// ClientProof
 
-	clientProof, ok := clienttMsg.ClientProof()
+	clientProof, ok := clientMsg.ClientProof()
 	if !ok {
-		return nil, newErrInvalidMessage(clienttMsg.String())
+		return nil, newErrInvalidMessage(clientMsg.String())
 	}
 
 	hashSize := server.hashFunc().Size()
 	if len(clientProof) != hashSize {
-		return nil, newErrInvalidMessage(clienttMsg.String())
+		return nil, newErrInvalidMessage(clientMsg.String())
 	}
 
 	server.SetValue(ClientProofID, clientProof)
