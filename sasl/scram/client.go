@@ -371,7 +371,7 @@ func (client *Client) ValidateServerFinalMessage(serverFinalMsg *Message) error 
 	//                server-first-message + "," +
 	//                client-final-message-without-proof
 
-	authMsg := AuthMessage(client.clientFirstMsg.String(), client.serverFirstMsg.String(), client.clientFinalMsg.StringWithoutProof())
+	authMsg := AuthMessage(client.clientFirstMsg.StringWithoutHeader(), client.serverFirstMsg.String(), client.clientFinalMsg.StringWithoutProof())
 	client.SetValue(AuthMessageID, authMsg)
 
 	// ServerKey := HMAC(SaltedPassword, "Server Key")
