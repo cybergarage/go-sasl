@@ -180,9 +180,14 @@ func (msg *Message) Equals(other *Message) bool {
 // String returns the string representation of the message.
 func (msg *Message) String() string {
 	if !msg.HasHeader() {
-		return msg.AttributeMap.String()
+		return msg.StringWithoutHeader()
 	}
 	return msg.Header.String() + msg.AttributeMap.String()
+}
+
+// StringWithoutHeader returns the string representation of the message without the header.
+func (msg *Message) StringWithoutHeader() string {
+	return msg.AttributeMap.String()
 }
 
 // StringWithoutProof returns the string representation of the message without the proof.
