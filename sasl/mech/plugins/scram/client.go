@@ -18,13 +18,11 @@ import (
 	"fmt"
 
 	"github.com/cybergarage/go-sasl/sasl/mech"
-	"github.com/cybergarage/go-sasl/sasl/mech/plugins"
 	"github.com/cybergarage/go-sasl/sasl/scram"
 )
 
 // ClientContext represents a SCRAM client context.
 type ClientContext struct {
-	*plugins.Context
 	step int
 	*scram.Client
 }
@@ -36,10 +34,19 @@ func NewClientContext(opts ...scram.ClientOption) (*ClientContext, error) {
 		return nil, err
 	}
 	return &ClientContext{
-		Context: plugins.NewContext(),
-		step:    0,
-		Client:  client,
+		step:   0,
+		Client: client,
 	}, nil
+}
+
+// SetValue sets a value to the context.
+func (ctx *ClientContext) SetValue(key string, value any) {
+	ctx.Client.SetValue(key, value)
+}
+
+// Value returns a value from the context.
+func (ctx *ClientContext) Value(key string) (any, bool) {
+	return ctx.Client.Value(key)
 }
 
 // Done returns true if the context is completed.

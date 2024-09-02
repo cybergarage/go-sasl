@@ -18,13 +18,11 @@ import (
 	"fmt"
 
 	"github.com/cybergarage/go-sasl/sasl/mech"
-	"github.com/cybergarage/go-sasl/sasl/mech/plugins"
 	"github.com/cybergarage/go-sasl/sasl/scram"
 )
 
 // ServerContext represents a SCRAM server context.
 type ServerContext struct {
-	*plugins.Context
 	step int
 	*scram.Server
 }
@@ -36,10 +34,19 @@ func NewServerContext(opts ...scram.ServerOption) (*ServerContext, error) {
 		return nil, err
 	}
 	return &ServerContext{
-		Context: plugins.NewContext(),
-		step:    0,
-		Server:  server,
+		step:   0,
+		Server: server,
 	}, nil
+}
+
+// SetValue sets a value to the context.
+func (ctx *ServerContext) SetValue(key string, value any) {
+	ctx.Server.SetValue(key, value)
+}
+
+// Value returns a value from the context.
+func (ctx *ServerContext) Value(key string) (any, bool) {
+	return ctx.Server.Value(key)
 }
 
 // Done returns true if the context is completed.
