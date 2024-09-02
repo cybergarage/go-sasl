@@ -107,28 +107,28 @@ func TestSCRAMExchange(t *testing.T) {
 						t.Error(err)
 						return
 					}
-					t.Logf("c1 = %s", firstClientMsg.String())
+					t.Logf("[c1] %s", firstClientMsg.String())
 
 					firstServerMsg, err := server.FirstMessageFrom(firstClientMsg)
 					if err != nil {
 						t.Error(err)
 						return
 					}
-					t.Logf("s1 = %s", firstServerMsg.String())
+					t.Logf("[s1] %s", firstServerMsg.String())
 
 					finalClientMsg, err := client.FinalMessageFrom(firstServerMsg)
 					if err != nil {
 						t.Error(err)
 						return
 					}
-					t.Logf("c2 = %s", finalClientMsg.String())
+					t.Logf("[c2] %s", finalClientMsg.String())
 
 					finalServerMsg, err := server.FinalMessageFrom(finalClientMsg)
 					if err != nil {
 						t.Error(err)
 						return
 					}
-					t.Logf("s2 = %s", finalServerMsg.String())
+					t.Logf("[s2] %s", finalServerMsg.String())
 
 					err = client.ValidateServerFinalMessage(finalServerMsg)
 					if err != nil {
