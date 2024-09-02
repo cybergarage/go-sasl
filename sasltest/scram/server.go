@@ -20,6 +20,11 @@ import (
 	"github.com/cybergarage/go-sasl/sasltest"
 )
 
+const (
+	Username = sasltest.Username
+	Password = sasltest.Password
+)
+
 type Server struct {
 	*scram.Server
 }
@@ -40,7 +45,7 @@ func NewServer() (*Server, error) {
 func (server *Server) HasCredential(username string) (*cred.Credential, bool) {
 	cred := cred.NewCredential(
 		cred.WithUsername(username),
-		cred.WithPassword(sasltest.Password),
+		cred.WithPassword(Password),
 	)
 	return cred, true
 }
