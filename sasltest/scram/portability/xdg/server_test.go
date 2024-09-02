@@ -74,6 +74,8 @@ func TestServerWithXdg(t *testing.T) {
 					return
 				}
 
+				t.Logf("[c1] %s", clientMsg)
+
 				// Server first message
 
 				msg, err := scram.NewMessageFromWithHeader(clientMsg)
@@ -88,6 +90,8 @@ func TestServerWithXdg(t *testing.T) {
 					return
 				}
 
+				t.Logf("[s1] %s", serverMsg.String())
+
 				// Client final message
 
 				clientMsg, err = conv.Step(serverMsg.String())
@@ -95,6 +99,8 @@ func TestServerWithXdg(t *testing.T) {
 					t.Error(err)
 					return
 				}
+
+				t.Logf("[c2] %s", clientMsg)
 
 				// Server final message
 
@@ -109,6 +115,8 @@ func TestServerWithXdg(t *testing.T) {
 					t.Error(err)
 					return
 				}
+
+				t.Logf("[s2] %s", serverMsg.String())
 
 				// Client validation
 
