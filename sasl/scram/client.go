@@ -27,6 +27,7 @@ import (
 
 // Client is a SCRAM client.
 type Client struct {
+	mech.Store
 	authzID        string
 	username       string
 	password       string
@@ -44,6 +45,7 @@ type ClientOption func(*Client) error
 // NewClient returns a new SCRAM client with options.
 func NewClient(opts ...ClientOption) (*Client, error) {
 	client := &Client{
+		Store:          mech.NewStore(),
 		authzID:        "",
 		username:       "",
 		password:       "",
@@ -215,11 +217,13 @@ func (client *Client) FirstMessage() (*Message, error) {
 
 	if 0 < len(client.username) {
 		msg.SetUsername(util.EncodeName(client.username))
+		client.SetValue(UsernameID, client.username)
 	}
 
 	// r: random sequence
 
 	msg.SetRandomSequence(client.randomSequence)
+	client.SetValue(RandomSequenceID, client.randomSequence)
 
 	client.clientFirstMsg = msg
 
@@ -287,29 +291,35 @@ func (client *Client) FinalMessageFrom(serverFirstMsg *Message) (*Message, error
 	if err != nil {
 		return nil, err
 	}
+	client.SetValue(SaltedPasswordID, saltedPassword)
 
 	// ClientKey := HMAC(SaltedPassword, "Client Key")
 
 	clientKey := ClientKey(client.hashFunc, saltedPassword)
+	client.SetValue(ClientKeyID, clientKey)
 
 	//  StoredKey := H(ClientKey)
 
 	storedKey := H(client.hashFunc, clientKey)
+	client.SetValue(StoredKeyID, storedKey)
 
 	// AuthMessage := client-first-message-bare + "," +
 	//                server-first-message + "," +
 	//                client-final-message-without-proof
 
 	authMsg := AuthMessage(client.clientFirstMsg.String(), serverFirstMsg.String(), msg.StringWithoutProof())
+	client.SetValue(AuthMessageID, authMsg)
 
 	// ClientSignature := HMAC(StoredKey, AuthMessage)
 
 	clientSignature := HMAC(client.hashFunc, storedKey, []byte(authMsg))
+	client.SetValue(ClientSignatureID, clientSignature)
 
 	// ClientProof := ClientKey XOR ClientSignature
 
 	clientProof := XOR(clientKey, clientSignature)
 	msg.SetClientProof(clientProof)
+	client.SetValue(ClientProofID, clientProof)
 
 	client.clientFinalMsg = msg
 
@@ -355,18 +365,23 @@ func (client *Client) ValidateServerFinalMessage(serverFinalMsg *Message) error 
 	if err != nil {
 		return err
 	}
+	client.SetValue(SaltedPasswordID, saltedPassword)
 
 	// AuthMessage := client-first-message-bare + "," +
 	//                server-first-message + "," +
 	//                client-final-message-without-proof
 
 	authMsg := AuthMessage(client.clientFirstMsg.String(), client.serverFirstMsg.String(), client.clientFinalMsg.StringWithoutProof())
+	client.SetValue(AuthMessageID, authMsg)
 
 	// ServerKey := HMAC(SaltedPassword, "Server Key")
+
 	serverKey := HMAC(client.hashFunc, saltedPassword, []byte("Server Key"))
+	client.SetValue(ServerKeyID, serverKey)
 
 	// ServerSignature := HMAC(ServerKey, AuthMessage)
 	serverSignature := HMAC(client.hashFunc, serverKey, []byte(authMsg))
+	client.SetValue(ServerSignatureID, serverSignature)
 
 	if !bytes.Equal(serverSignature, receivedServerSignature) {
 		return newErrInvalidMessage(serverFinalMsg.String())

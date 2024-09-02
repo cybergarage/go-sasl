@@ -19,11 +19,13 @@ import (
 	"encoding/base64"
 
 	"github.com/cybergarage/go-sasl/sasl/cred"
+	"github.com/cybergarage/go-sasl/sasl/mech"
 	"github.com/cybergarage/go-sasl/sasl/util/rand"
 )
 
 // Server represents a SCRAM server.
 type Server struct {
+	mech.Store
 	*cred.CredentialStore
 	challenge      string
 	authzID        string
@@ -41,6 +43,7 @@ type ServerOption func(*Server) error
 // NewServer returns a new SCRAM server.
 func NewServer(opts ...ServerOption) (*Server, error) {
 	srv := &Server{
+		Store:           mech.NewStore(),
 		CredentialStore: cred.NewCredentialStore(),
 		challenge:       "",
 		authzID:         "",
@@ -155,6 +158,7 @@ func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
 	if len(server.authzID) == 0 {
 		return nil, ErrAuthorization
 	}
+	server.SetValue(UsernameID, authzID)
 
 	_, err := server.HasCredential(server.authzID)
 	if err != nil {
@@ -169,6 +173,7 @@ func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
 	}
 	sr := string(cr) + string(server.randomSequence)
 	msg.SetRandomSequence(sr)
+	server.SetValue(RandomSequenceID, sr)
 
 	// s: salt
 
@@ -180,10 +185,12 @@ func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
 		server.salt = salt
 	}
 	msg.SetSaltBytes(server.salt)
+	server.SetValue(SaltID, server.salt)
 
 	// i: iteration count
 
 	msg.SetIterationCount(server.iterationCount)
+	server.SetValue(IterationCountID, server.iterationCount)
 
 	server.clientFirstMsg = clientMsg
 	server.serverFirstMsg = msg
@@ -227,24 +234,29 @@ func (server *Server) FinalMessageFrom(clienttMsg *Message) (*Message, error) {
 	if err != nil {
 		return nil, err
 	}
+	server.SetValue(SaltedPasswordID, saltedPassword)
 
 	// ClientKey := HMAC(SaltedPassword, "Client Key")
 
 	clientKey := ClientKey(server.hashFunc, saltedPassword)
+	server.SetValue(ClientKeyID, clientKey)
 
 	//  StoredKey := H(ClientKey)
 
 	storedKey := H(server.hashFunc, clientKey)
+	server.SetValue(StoredKeyID, storedKey)
 
 	// AuthMessage := client-first-message-bare + "," +
 	//                server-first-message + "," +
 	//                client-final-message-without-proof
 
 	authMsg := AuthMessage(server.clientFirstMsg.String(), server.serverFirstMsg.String(), clienttMsg.StringWithoutProof())
+	server.SetValue(AuthMessageID, authMsg)
 
 	// ClientSignature := HMAC(StoredKey, AuthMessage)
 
 	clientSignature := HMAC(server.hashFunc, storedKey, []byte(authMsg))
+	server.SetValue(ClientSignatureID, clientSignature)
 
 	// ClientProof
 
@@ -257,6 +269,8 @@ func (server *Server) FinalMessageFrom(clienttMsg *Message) (*Message, error) {
 	if len(clientProof) != hashSize {
 		return nil, newErrInvalidMessage(clienttMsg.String())
 	}
+
+	server.SetValue(ClientProofID, clientProof)
 
 	// ClientProof := ClientKey XOR ClientSignature
 	// ClientKey := ClientProof XOR ClientSignature
@@ -273,9 +287,11 @@ func (server *Server) FinalMessageFrom(clienttMsg *Message) (*Message, error) {
 
 	// ServerKey := HMAC(SaltedPassword, "Server Key")
 	serverKey := HMAC(server.hashFunc, saltedPassword, []byte("Server Key"))
+	server.SetValue(ServerKeyID, serverKey)
 
 	// ServerSignature := HMAC(ServerKey, AuthMessage)
 	serverSignature := HMAC(server.hashFunc, serverKey, []byte(authMsg))
+	server.SetValue(ServerSignatureID, serverSignature)
 
 	msg := NewMessage()
 	msg.SetServerSignature(serverSignature)
