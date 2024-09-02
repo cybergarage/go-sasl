@@ -18,20 +18,19 @@ import (
 	"fmt"
 
 	"github.com/cybergarage/go-sasl/sasl/mech"
-	"github.com/cybergarage/go-sasl/sasl/mech/plugins"
 )
 
 // ServerContext represents a PLAIN server context.
 type ServerContext struct {
-	*plugins.Context
+	mech.Store
 	step int
 }
 
 // NewServerContext returns a new PLAIN server context.
 func NewServerContext(opts ...mech.Option) (*ServerContext, error) {
 	ctx := &ServerContext{
-		Context: plugins.NewContext(),
-		step:    0,
+		Store: mech.NewStore(),
+		step:  0,
 	}
 	return ctx, nil
 }
