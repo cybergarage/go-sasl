@@ -6,7 +6,7 @@
   - SCRAM-SHA-256-PLUS
   - SCRAM-SHA-512-PLUS
 
-## v1.1.3 (2024-09-02)
+## v1.2.0 (2024-09-02)
 - Updated SCRAM plugins to handle more startop options
 - Fixed AuthMessage() to use bare client first message
 
