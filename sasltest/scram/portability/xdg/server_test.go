@@ -63,7 +63,7 @@ func TestServerWithXdg(t *testing.T) {
 				serverOpts := []scram.ServerOption{
 					scram.WithServerHashFunc(test.HashFunc),
 				}
-				server.SetOption(serverOpts...)
+				server.SetOptions(serverOpts...)
 
 				// Client first message
 

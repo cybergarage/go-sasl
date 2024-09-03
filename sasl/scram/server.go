@@ -60,7 +60,7 @@ func NewServer(opts ...ServerOption) (*Server, error) {
 	}
 	srv.randomSequence = string(rs)
 
-	err = srv.SetOption(opts...)
+	err = srv.SetOptions(opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -117,8 +117,8 @@ func (server *Server) HashFunc() HashFunc {
 	return server.hashFunc
 }
 
-// SetOption sets the specified options.
-func (server *Server) SetOption(opts ...ServerOption) error {
+// SetOptions sets the specified options.
+func (server *Server) SetOptions(opts ...ServerOption) error {
 	for _, opt := range opts {
 		err := opt(server)
 		if err != nil {
