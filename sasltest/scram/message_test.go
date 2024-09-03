@@ -98,7 +98,7 @@ func TestSCRAMExchange(t *testing.T) {
 					if 0 < test.ic {
 						serverOpts = append(serverOpts, scram.WithServerIterationCount(test.ic))
 					}
-					server.SetOption(serverOpts...)
+					server.SetOptions(serverOpts...)
 
 					// Exchange messages
 
