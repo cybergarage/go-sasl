@@ -41,18 +41,18 @@ func TestServerWithXdg(t *testing.T) {
 		scram.HashFunc
 	}{
 		{
-			name:     "xdg-go-scram-SHA1",
+			name:     "SCRAM-SHA1",
 			client:   sha1Client,
 			HashFunc: scram.HashSHA1(),
 		},
 		{
-			name:     "xdg-go-scram-SHA256",
+			name:     "SCRAM-SHA256",
 			client:   sha256Client,
 			HashFunc: scram.HashSHA256(),
 		},
 	}
 
-	t.Run("xdg-go/", func(t *testing.T) {
+	t.Run("xdg-go", func(t *testing.T) {
 		for _, test := range tests {
 			t.Run(test.name, func(t *testing.T) {
 				server, err := scramtest.NewServer()
