@@ -117,6 +117,8 @@ func TestClientWithXdg(t *testing.T) {
 					return
 				}
 
+				t.Logf("[c1] %s", clientMsg.String())
+
 				// Server first message
 
 				conv := test.server.NewConversation()
@@ -125,6 +127,8 @@ func TestClientWithXdg(t *testing.T) {
 					t.Error(err)
 					return
 				}
+
+				t.Logf("[s1] %s", serverMsg)
 
 				// Client final message
 
@@ -140,6 +144,8 @@ func TestClientWithXdg(t *testing.T) {
 					return
 				}
 
+				t.Logf("[c1] %s", clientMsg.String())
+
 				// Server final message
 
 				serverMsg, err = conv.Step(clientMsg.String())
@@ -147,6 +153,8 @@ func TestClientWithXdg(t *testing.T) {
 					t.Error(err)
 					return
 				}
+
+				t.Logf("[s2] %s", serverMsg)
 
 				// Client validation
 
