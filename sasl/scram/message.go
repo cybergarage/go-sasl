@@ -144,7 +144,7 @@ func (msg *Message) ParseString(str string) error {
 func (msg *Message) ParseStrings(props []string) error {
 	for _, scramProp := range props {
 		if len(scramProp) < 2 || scramProp[1] != '=' {
-			return newErrInvalidAttribute(scramProp)
+			return ErrOtherError
 		}
 		attrName := scramProp[:1]
 		attrValue := scramProp[2:]
@@ -160,7 +160,7 @@ func (msg *Message) ParseStrings(props []string) error {
 			ErrorAttr:
 			msg.SetAttribute(attrName, attrValue)
 		default:
-			return newErrInvalidAttribute(scramProp)
+			return ErrOtherError
 		}
 	}
 	return nil

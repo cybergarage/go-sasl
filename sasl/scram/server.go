@@ -131,7 +131,7 @@ func (server *Server) SetOptions(opts ...ServerOption) error {
 // FirstMessageFrom returns a new server first message from the specified client message.
 func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
 	if clientMsg == nil {
-		return nil, newErrInvalidMessage("Client message is nil")
+		return nil, ErrNoResources
 	}
 
 	msg := NewMessage()
@@ -156,20 +156,20 @@ func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
 	// the client SHOULD abort the authentication exchange
 
 	if len(server.authzID) == 0 {
-		return nil, ErrAuthorization
+		return nil, ErrUnknownUser
 	}
 	server.SetValue(UsernameID, authzID)
 
 	_, err := server.HasCredential(server.authzID)
 	if err != nil {
-		return nil, ErrAuthorization
+		return nil, ErrUnknownUser
 	}
 
 	// r: random sequence
 
 	cr, ok := clientMsg.RandomSequence()
 	if !ok {
-		return nil, newErrInvalidMessage(clientMsg.String())
+		return nil, ErrNoResources
 	}
 	sr := string(cr) + string(server.randomSequence)
 	msg.SetRandomSequence(sr)
@@ -201,11 +201,11 @@ func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
 // FinalMessageFrom returns a new server final message from the specified client final message.
 func (server *Server) FinalMessageFrom(clientMsg *Message) (*Message, error) {
 	if clientMsg == nil {
-		return nil, newErrInvalidMessage("Client message is nil")
+		return nil, ErrNoResources
 	}
 
 	if server.clientFirstMsg == nil || server.serverFirstMsg == nil {
-		return nil, newErrInvalidMessage("First message is not set")
+		return nil, ErrNoResources
 	}
 
 	// The server MUST verify that the nonce sent by the client in the second message is
@@ -213,21 +213,21 @@ func (server *Server) FinalMessageFrom(clientMsg *Message) (*Message, error) {
 
 	clientRS, ok := clientMsg.RandomSequence()
 	if !ok {
-		return nil, newErrInvalidMessage(clientMsg.String())
+		return nil, ErrNoResources
 	}
 	serverRS, ok := server.serverFirstMsg.RandomSequence()
 	if !ok {
-		return nil, newErrInvalidMessage(server.serverFirstMsg.String())
+		return nil, ErrOtherError
 	}
 	if clientRS != serverRS {
-		return nil, newErrInvalidMessage(server.serverFirstMsg.String())
+		return nil, ErrOtherError
 	}
 
 	// SaltedPassword := Hi(Normalize(password), salt, i)
 
 	storedCred, err := server.HasCredential(server.authzID)
 	if err != nil {
-		return nil, ErrAuthorization
+		return nil, ErrUnknownUser
 	}
 
 	saltedPassword, err := SaltedPassword(server.hashFunc, storedCred.Password(), server.salt, server.iterationCount)
@@ -262,12 +262,12 @@ func (server *Server) FinalMessageFrom(clientMsg *Message) (*Message, error) {
 
 	clientProof, ok := clientMsg.ClientProof()
 	if !ok {
-		return nil, newErrInvalidMessage(clientMsg.String())
+		return nil, ErrInvalidProof
 	}
 
 	hashSize := server.hashFunc().Size()
 	if len(clientProof) != hashSize {
-		return nil, newErrInvalidMessage(clientMsg.String())
+		return nil, ErrInvalidProof
 	}
 
 	server.SetValue(ClientProofID, clientProof)
@@ -282,7 +282,7 @@ func (server *Server) FinalMessageFrom(clientMsg *Message) (*Message, error) {
 	receivedStoredKey := H(server.hashFunc, receivedClientKey)
 
 	if !hmac.Equal(storedKey, receivedStoredKey) {
-		return nil, ErrAuthorization
+		return nil, ErrOtherError
 	}
 
 	// ServerKey := HMAC(SaltedPassword, "Server Key")
