@@ -22,14 +22,14 @@ import (
 	xgoscram "github.com/xdg-go/scram"
 )
 
-func TestWithClient(t *testing.T) {
-	sha1Client, err := xgoscram.SHA1.NewClientUnprepped(scramtest.Username, scramtest.Password, "")
+func TestServerWithXdg(t *testing.T) {
+	sha1Client, err := xgoscram.SHA1.NewClient(scramtest.Username, scramtest.Password, "")
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
-	sha256Client, err := xgoscram.SHA256.NewClientUnprepped(scramtest.Username, scramtest.Password, "")
+	sha256Client, err := xgoscram.SHA256.NewClient(scramtest.Username, scramtest.Password, "")
 	if err != nil {
 		t.Error(err)
 		return
