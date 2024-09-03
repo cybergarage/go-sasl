@@ -140,7 +140,7 @@ func newClientOptionsFromMessage(msg *Message) ([]ClientOption, error) {
 	// 5. SCRAM Authentication Exchange
 	cbFlag := msg.CBFlag()
 	if !cbFlag.IsValid() {
-		return opts, newErrInvalidMessage(msg.String())
+		return opts, ErrServerDoesSupportChannelBinding
 	}
 
 	// 5.1. SCRAM Attributes
@@ -233,11 +233,11 @@ func (client *Client) FirstMessage() (*Message, error) {
 // FinalMessageFrom returns the final message from the specified server first message.
 func (client *Client) FinalMessageFrom(serverFirstMsg *Message) (*Message, error) {
 	if serverFirstMsg == nil {
-		return nil, newErrInvalidMessage("Server first message is not set")
+		return nil, ErrNoResources
 	}
 
 	if client.clientFirstMsg == nil {
-		return nil, newErrInvalidMessage("First message is not set")
+		return nil, ErrNoResources
 	}
 
 	client.serverFirstMsg = serverFirstMsg
@@ -257,14 +257,14 @@ func (client *Client) FinalMessageFrom(serverFirstMsg *Message) (*Message, error
 
 	clientRS, ok := client.clientFirstMsg.RandomSequence()
 	if !ok {
-		return nil, newErrInvalidMessage(client.clientFirstMsg.String())
+		return nil, ErrNoResources
 	}
 	serverRS, ok := serverFirstMsg.RandomSequence()
 	if !ok {
-		return nil, newErrInvalidMessage(serverFirstMsg.String())
+		return nil, ErrNoResources
 	}
 	if !strings.HasPrefix(serverRS, clientRS) {
-		return nil, newErrInvalidMessage(client.clientFirstMsg.String())
+		return nil, ErrOtherError
 	}
 	msg.SetRandomSequence(serverRS)
 
@@ -273,18 +273,18 @@ func (client *Client) FinalMessageFrom(serverFirstMsg *Message) (*Message, error
 
 	ic, ok := serverFirstMsg.IterationCount()
 	if !ok {
-		return nil, newErrInvalidMessage(serverFirstMsg.String())
+		return nil, ErrNoResources
 	}
 
 	if ic < minimumIterationCount {
-		return nil, newErrInvalidMessage(serverFirstMsg.String())
+		return nil, ErrOtherError
 	}
 
 	// SaltedPassword := Hi(Normalize(password), salt, i)
 
 	salt, ok := serverFirstMsg.Salt()
 	if !ok {
-		return nil, newErrInvalidMessage(serverFirstMsg.String())
+		return nil, ErrNoResources
 	}
 
 	saltedPassword, err := SaltedPassword(client.hashFunc, client.password, salt, ic)
@@ -329,36 +329,36 @@ func (client *Client) FinalMessageFrom(serverFirstMsg *Message) (*Message, error
 // ValidateServerFinalMessage validates the final message from the specified server final message.
 func (client *Client) ValidateServerFinalMessage(serverFinalMsg *Message) error {
 	if serverFinalMsg == nil {
-		return newErrInvalidMessage("server final message is not set")
+		return ErrNoResources
 	}
 
 	if client.clientFirstMsg == nil {
-		return newErrInvalidMessage("client first message is not set")
+		return ErrNoResources
 	}
 
 	if client.clientFirstMsg == nil {
-		return newErrInvalidMessage("client final message is not set")
+		return ErrNoResources
 	}
 
 	if client.serverFirstMsg == nil {
-		return newErrInvalidMessage("server first message is not set")
+		return ErrNoResources
 	}
 
 	receivedServerSignature, ok := serverFinalMsg.ServerSignature()
 	if !ok {
-		return newErrInvalidMessage(serverFinalMsg.String())
+		return ErrNoResources
 	}
 
 	// SaltedPassword := Hi(Normalize(password), salt, i)
 
 	ic, ok := client.serverFirstMsg.IterationCount()
 	if !ok {
-		return newErrInvalidMessage(client.serverFirstMsg.String())
+		return ErrNoResources
 	}
 
 	salt, ok := client.serverFirstMsg.Salt()
 	if !ok {
-		return newErrInvalidMessage(client.serverFirstMsg.String())
+		return ErrNoResources
 	}
 
 	saltedPassword, err := SaltedPassword(client.hashFunc, client.password, salt, ic)
@@ -384,7 +384,7 @@ func (client *Client) ValidateServerFinalMessage(serverFinalMsg *Message) error 
 	client.SetValue(ServerSignatureID, serverSignature)
 
 	if !bytes.Equal(serverSignature, receivedServerSignature) {
-		return newErrInvalidMessage(serverFinalMsg.String())
+		return ErrOtherError
 	}
 
 	return nil
