@@ -16,26 +16,37 @@ package scram
 
 import (
 	"errors"
-	"fmt"
 )
 
-// ErrInvalidMessage is returned when the message is invalid.
-var ErrInvalidAttribute = errors.New("invalid attribute")
+// ErrInvalidEncoding is returned when the encoding is invalid.
+var ErrInvalidEncoding = errors.New("invalid-encoding")
 
-// ErrInvalidMessage is returned when the message is invalid.
-var ErrInvalidMessage = errors.New("invalid message")
+// ErrExtensionsNotSupported is returned when the extensions are not supported.
+var ErrExtensionsNotSupported = errors.New("extensions-not-supported")
 
-// ErrAuthorization is returned when the authorization is invalid.
-var ErrAuthorization = errors.New("authorization error")
+// ErrInvalidProof is returned when the proof is invalid.
+var ErrInvalidProof = errors.New("invalid-proof")
 
-func newErrInvalidAttribute(attr string) error {
-	return fmt.Errorf("%w : %s", ErrInvalidAttribute, attr)
-}
+// ErrChannelBindingsDontMatch is returned when the channel bindings don't match.
+var ErrChannelBindingsDontMatch = errors.New("channel-bindings-dont-match")
 
-func newErrInvalidMessage(msg string) error {
-	return fmt.Errorf("%w : %s", ErrInvalidMessage, msg)
-}
+// ErrServerDoesSupportChannelBinding is returned when the server does not support channel binding.
+var ErrServerDoesSupportChannelBinding = errors.New("server-does-not-support-channel-binding")
 
-func newErrAuthorization(msg string) error {
-	return fmt.Errorf("%w : %s", ErrAuthorization, msg)
-}
+// ErrChannelBindingNotSupported is returned when the channel binding is not supported.
+var ErrChannelBindingNotSupported = errors.New("channel-binding-not-supported")
+
+// ErrUnsupportedChannelBindingType is returned when the channel binding type is unsupported.
+var ErrUnsupportedChannelBindingType = errors.New("unsupported-channel-binding-type")
+
+// ErrUnknownUser is returned when the user is unknown.
+var ErrUnknownUser = errors.New("unknown-user")
+
+// ErrInvalidUsernameEncoding is returned when the username encoding is invalid.
+var ErrInvalidUsernameEncoding = errors.New("invalid-username-encoding")
+
+// ErrNoResources is returned when there are no resources.
+var ErrNoResources = errors.New("no-resources")
+
+// ErrOtherError is returned when there is another error.
+var ErrOtherError = errors.New("other-error")
