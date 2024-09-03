@@ -23,19 +23,31 @@ import (
 )
 
 func TestClientWithXdg(t *testing.T) {
+	kf := xgoscram.KeyFactors{
+		Salt:  "salt",
+		Iters: 4096,
+	}
+
+	saltedPassword, err := scram.SaltedPassword(scram.HashSHA1(), scramtest.Password, []byte(kf.Salt), kf.Iters)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	clientKey := scram.ClientKey(scram.HashSHA1(), saltedPassword)
+	storedKey := scram.StoredKey(scram.HashSHA1(), clientKey)
+	serverKey := scram.ServerKey(scram.HashSHA1(), string(saltedPassword))
 
 	credLookup := func(string) (xgoscram.StoredCredentials, error) {
 		return xgoscram.StoredCredentials{
-			KeyFactors: xgoscram.KeyFactors{
-				Salt:  "salt",
-				Iters: 4096,
-			},
-			StoredKey: []byte("storedkey"),
-			ServerKey: []byte("serverkey"),
+			KeyFactors: kf,
+
+			StoredKey: storedKey,
+			ServerKey: serverKey,
 		}, nil
 	}
 
-	_, err := xgoscram.SHA1.NewServer(credLookup)
+	_, err = xgoscram.SHA1.NewServer(credLookup)
 	if err != nil {
 		t.Error(err)
 		return
