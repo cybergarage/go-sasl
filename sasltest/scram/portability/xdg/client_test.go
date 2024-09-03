@@ -28,77 +28,90 @@ func TestClientWithXdg(t *testing.T) {
 		Iters: 4096,
 	}
 
-	saltedPassword, err := scram.SaltedPassword(scram.HashSHA1(), scramtest.Password, []byte(kf.Salt), kf.Iters)
-	if err != nil {
-		t.Error(err)
-		return
+	calculateServerKeys := func(hf scram.HashFunc, password []byte, salt []byte, ic int) ([]byte, []byte, error) {
+		saltedPassword, err := scram.SaltedPassword(hf, string(password), salt, ic)
+		if err != nil {
+			return nil, nil, err
+		}
+		clientKey := scram.ClientKey(hf, saltedPassword)
+		storedKey := scram.StoredKey(hf, clientKey)
+		serverKey := scram.ServerKey(hf, saltedPassword)
+		return storedKey, serverKey, nil
 	}
 
-	clientKey := scram.ClientKey(scram.HashSHA1(), saltedPassword)
-	storedKey := scram.StoredKey(scram.HashSHA1(), clientKey)
-	serverKey := scram.ServerKey(scram.HashSHA1(), string(saltedPassword))
+	// SCRAM-SHA1 Server
 
-	credLookup := func(string) (xgoscram.StoredCredentials, error) {
+	credLookupSHA1 := func(string) (xgoscram.StoredCredentials, error) {
+		storedKey, serverKey, err := calculateServerKeys(scram.HashSHA1(), []byte(scramtest.Password), []byte(kf.Salt), kf.Iters)
+		if err != nil {
+			return xgoscram.StoredCredentials{}, err
+		}
 		return xgoscram.StoredCredentials{
 			KeyFactors: kf,
-
-			StoredKey: storedKey,
-			ServerKey: serverKey,
+			StoredKey:  storedKey,
+			ServerKey:  serverKey,
 		}, nil
 	}
-
-	_, err = xgoscram.SHA1.NewServer(credLookup)
+	sha1Server, err := xgoscram.SHA1.NewServer(credLookupSHA1)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
-	sha1Client, err := xgoscram.SHA1.NewClientUnprepped(scramtest.Username, scramtest.Password, "")
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	// SCRAM-SHA256 Server
 
-	sha256Client, err := xgoscram.SHA256.NewClientUnprepped(scramtest.Username, scramtest.Password, "")
+	credLookupSHA256 := func(string) (xgoscram.StoredCredentials, error) {
+		storedKey, serverKey, err := calculateServerKeys(scram.HashSHA256(), []byte(scramtest.Password), []byte(kf.Salt), kf.Iters)
+		if err != nil {
+			return xgoscram.StoredCredentials{}, err
+		}
+		return xgoscram.StoredCredentials{
+			KeyFactors: kf,
+			StoredKey:  storedKey,
+			ServerKey:  serverKey,
+		}, nil
+	}
+	sha256Server, err := xgoscram.SHA256.NewServer(credLookupSHA256)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
 	tests := []struct {
-		name   string
-		client *xgoscram.Client
+		name string
 		scram.HashFunc
+		server *xgoscram.Server
 	}{
 		{
-			name:     "xdg-go-scram-SHA1",
-			client:   sha1Client,
+			name:     "SCRAM-SHA1",
 			HashFunc: scram.HashSHA1(),
+			server:   sha1Server,
 		},
 		{
-			name:     "xdg-go-scram-SHA256",
-			client:   sha256Client,
+			name:     "SCRAM-SHA256",
 			HashFunc: scram.HashSHA256(),
+			server:   sha256Server,
 		},
 	}
 
-	t.Run("xdg-go/", func(t *testing.T) {
+	t.Run("xdg-go", func(t *testing.T) {
 		for _, test := range tests {
 			t.Run(test.name, func(t *testing.T) {
-				server, err := scramtest.NewServer()
+				client, err := scram.NewClient()
 				if err != nil {
 					t.Error(err)
 					return
 				}
-				serverOpts := []scram.ServerOption{
-					scram.WithServerHashFunc(test.HashFunc),
+				clientOpts := []scram.ClientOption{
+					scram.WithClientUsername(scramtest.Username),
+					scram.WithClientPassword(scramtest.Password),
+					scram.WithClientHashFunc(test.HashFunc),
 				}
-				server.SetOption(serverOpts...)
+				client.SetOptions(clientOpts...)
 
 				// Client first message
 
-				conv := test.client.NewConversation()
-				clientMsg, err := conv.Step("")
+				clientMsg, err := client.FirstMessage()
 				if err != nil {
 					t.Error(err)
 					return
@@ -106,13 +119,8 @@ func TestClientWithXdg(t *testing.T) {
 
 				// Server first message
 
-				msg, err := scram.NewMessageFromWithHeader(clientMsg)
-				if err != nil {
-					t.Error(err)
-					return
-				}
-
-				serverMsg, err := server.FirstMessageFrom(msg)
+				conv := test.server.NewConversation()
+				serverMsg, err := conv.Step(clientMsg.String())
 				if err != nil {
 					t.Error(err)
 					return
@@ -120,7 +128,13 @@ func TestClientWithXdg(t *testing.T) {
 
 				// Client final message
 
-				clientMsg, err = conv.Step(serverMsg.String())
+				msg, err := scram.NewMessageFrom(serverMsg)
+				if err != nil {
+					t.Error(err)
+					return
+				}
+
+				clientMsg, err = client.FinalMessageFrom(msg)
 				if err != nil {
 					t.Error(err)
 					return
@@ -128,13 +142,7 @@ func TestClientWithXdg(t *testing.T) {
 
 				// Server final message
 
-				msg, err = scram.NewMessageFrom(clientMsg)
-				if err != nil {
-					t.Error(err)
-					return
-				}
-
-				serverMsg, err = server.FinalMessageFrom(msg)
+				serverMsg, err = conv.Step(clientMsg.String())
 				if err != nil {
 					t.Error(err)
 					return
@@ -142,7 +150,13 @@ func TestClientWithXdg(t *testing.T) {
 
 				// Client validation
 
-				_, err = conv.Step(serverMsg.String())
+				msg, err = scram.NewMessageFrom(serverMsg)
+				if err != nil {
+					t.Error(err)
+					return
+				}
+
+				err = client.ValidateServerFinalMessage(msg)
 				if err != nil {
 					t.Error(err)
 					return
