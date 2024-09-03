@@ -120,8 +120,8 @@ func ClientProof(clientKey, clientSignature string) []byte {
 }
 
 // ServerKey       := HMAC(SaltedPassword, "Server Key").
-func ServerKey(h HashFunc, saltedPassword string) []byte {
-	return HMAC(h, []byte(saltedPassword), []byte("Server Key"))
+func ServerKey(h HashFunc, saltedPassword []byte) []byte {
+	return HMAC(h, saltedPassword, []byte("Server Key"))
 }
 
 // ServerSignature := HMAC(ServerKey, AuthMessage).
