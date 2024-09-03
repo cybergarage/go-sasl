@@ -12,47 +12,45 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package scram
+package xdggo
 
 import (
 	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
 	"testing"
+
+	"github.com/cybergarage/go-sasl/sasl/scram"
+	"github.com/xdg-go/pbkdf2"
 )
 
 func TestSaltedPassword(t *testing.T) {
+	saltedPassword := func(h scram.HashFunc, passwd string, salt string, iters int) []byte {
+		return pbkdf2.Key([]byte(passwd), []byte(salt), iters, h().Size(), h)
+	}
+
 	tests := []struct {
-		hashfn         HashFunc
+		hashfn         scram.HashFunc
 		password       string
 		salt           string
 		iterationCount int
-		expected       string
 	}{
 		{
 			sha256.New,
 			"pencil",
 			"ATHENA.MIT.EDUraeburn",
 			4096,
-			"93ce7dfda354911328861af885b907feb5aece70953c43cbe697ed2b1e368f95"},
+		},
 	}
 
 	for _, tt := range tests {
-		actual, err := SaltedPassword(tt.hashfn, tt.password, []byte(tt.salt), tt.iterationCount)
+		actual, err := scram.SaltedPassword(tt.hashfn, tt.password, []byte(tt.salt), tt.iterationCount)
 		if err != nil {
 			t.Error(err)
 		}
-		expected, err := hex.DecodeString(tt.expected)
-		if err != nil {
-			t.Error(err)
-			continue
-		}
-		// saltedPassword := func(h HashFunc, passwd string, salt string, iters int) []byte {
-		// 	return pbkdf2.Key([]byte(passwd), []byte(salt), iters, h().Size(), h)
-		// }
-		// saltedPassword(tt.hashfn, tt.password, tt.salt, tt.iterationCount)
+		expected := saltedPassword(tt.hashfn, tt.password, tt.salt, tt.iterationCount)
 		if !bytes.Equal(actual, expected) {
-			t.Errorf("actual=%s, expected=%s", hex.EncodeToString(actual), tt.expected)
+			t.Errorf("actual=%s, expected=%s", hex.EncodeToString(actual), expected)
 		}
 	}
 }
