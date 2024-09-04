@@ -33,6 +33,7 @@ TEST_PKG_DIR=${TEST_PKG_NAME}
 TEST_PKG=${MODULE_ROOT}/${TEST_PKG_DIR}
 
 .PHONY: format vet lint clean
+.IGNORE: lint
 
 all: test
 
