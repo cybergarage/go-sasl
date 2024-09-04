@@ -23,6 +23,8 @@ import (
 )
 
 func ClientTestWithXdg(t *testing.T) {
+	t.Helper()
+
 	kf := xgoscram.KeyFactors{
 		Salt:  "salt",
 		Iters: 4096,
