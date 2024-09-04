@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package xdggo
+package xdg
 
 import (
 	"testing"
@@ -22,7 +22,9 @@ import (
 	xgoscram "github.com/xdg-go/scram"
 )
 
-func TestServerWithXdg(t *testing.T) {
+func ServerTestWithXdg(t *testing.T) {
+	t.Helper()
+
 	sha1Client, err := xgoscram.SHA1.NewClient(scramtest.Username, scramtest.Password, "")
 	if err != nil {
 		t.Error(err)
@@ -52,80 +54,78 @@ func TestServerWithXdg(t *testing.T) {
 		},
 	}
 
-	t.Run("xdg-go", func(t *testing.T) {
-		for _, test := range tests {
-			t.Run(test.name, func(t *testing.T) {
-				server, err := scramtest.NewServer()
-				if err != nil {
-					t.Error(err)
-					return
-				}
-				serverOpts := []scram.ServerOption{
-					scram.WithServerHashFunc(test.HashFunc),
-				}
-				server.SetOptions(serverOpts...)
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			server, err := scramtest.NewServer()
+			if err != nil {
+				t.Error(err)
+				return
+			}
+			serverOpts := []scram.ServerOption{
+				scram.WithServerHashFunc(test.HashFunc),
+			}
+			server.SetOptions(serverOpts...)
 
-				// Client first message
+			// Client first message
 
-				conv := test.client.NewConversation()
-				clientMsg, err := conv.Step("")
-				if err != nil {
-					t.Error(err)
-					return
-				}
+			conv := test.client.NewConversation()
+			clientMsg, err := conv.Step("")
+			if err != nil {
+				t.Error(err)
+				return
+			}
 
-				t.Logf("[c1] %s", clientMsg)
+			t.Logf("[c1] %s", clientMsg)
 
-				// Server first message
+			// Server first message
 
-				msg, err := scram.NewMessageFromWithHeader(clientMsg)
-				if err != nil {
-					t.Error(err)
-					return
-				}
+			msg, err := scram.NewMessageFromWithHeader(clientMsg)
+			if err != nil {
+				t.Error(err)
+				return
+			}
 
-				serverMsg, err := server.FirstMessageFrom(msg)
-				if err != nil {
-					t.Error(err)
-					return
-				}
+			serverMsg, err := server.FirstMessageFrom(msg)
+			if err != nil {
+				t.Error(err)
+				return
+			}
 
-				t.Logf("[s1] %s", serverMsg.String())
+			t.Logf("[s1] %s", serverMsg.String())
 
-				// Client final message
+			// Client final message
 
-				clientMsg, err = conv.Step(serverMsg.String())
-				if err != nil {
-					t.Error(err)
-					return
-				}
+			clientMsg, err = conv.Step(serverMsg.String())
+			if err != nil {
+				t.Error(err)
+				return
+			}
 
-				t.Logf("[c2] %s", clientMsg)
+			t.Logf("[c2] %s", clientMsg)
 
-				// Server final message
+			// Server final message
 
-				msg, err = scram.NewMessageFrom(clientMsg)
-				if err != nil {
-					t.Error(err)
-					return
-				}
+			msg, err = scram.NewMessageFrom(clientMsg)
+			if err != nil {
+				t.Error(err)
+				return
+			}
 
-				serverMsg, err = server.FinalMessageFrom(msg)
-				if err != nil {
-					t.Error(err)
-					return
-				}
+			serverMsg, err = server.FinalMessageFrom(msg)
+			if err != nil {
+				t.Error(err)
+				return
+			}
 
-				t.Logf("[s2] %s", serverMsg.String())
+			t.Logf("[s2] %s", serverMsg.String())
 
-				// Client validation
+			// Client validation
 
-				_, err = conv.Step(serverMsg.String())
-				if err != nil {
-					t.Error(err)
-					return
-				}
-			})
-		}
-	})
+			_, err = conv.Step(serverMsg.String())
+			if err != nil {
+				t.Error(err)
+				return
+			}
+		})
+	}
 }
