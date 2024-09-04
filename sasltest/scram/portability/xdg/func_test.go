@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package xdggo
+package xdg
 
 import (
 	"bytes"
@@ -24,7 +24,9 @@ import (
 	"github.com/xdg-go/pbkdf2"
 )
 
-func TestSaltedPassword(t *testing.T) {
+func SaltedPasswordTest(t *testing.T) {
+	t.Helper()
+
 	saltedPassword := func(h scram.HashFunc, passwd string, salt string, iters int) []byte {
 		return pbkdf2.Key([]byte(passwd), []byte(salt), iters, h().Size(), h)
 	}
