@@ -39,16 +39,6 @@ func NewServerContext(opts ...scram.ServerOption) (*ServerContext, error) {
 	}, nil
 }
 
-// SetValue sets a value to the context.
-func (ctx *ServerContext) SetValue(key string, value any) {
-	ctx.Server.SetValue(key, value)
-}
-
-// Value returns a value from the context.
-func (ctx *ServerContext) Value(key string) (any, bool) {
-	return ctx.Server.Value(key)
-}
-
 // Done returns true if the context is completed.
 func (ctx *ServerContext) Done() bool {
 	return ctx.step == 2
@@ -73,7 +63,7 @@ func (ctx *ServerContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 		}
 		res, err := ctx.Server.FirstMessageFrom(msg)
 		if err != nil {
-			return nil, err
+			return scram.NewMessageWithError(err), nil
 		}
 		ctx.step++
 		return res, nil
@@ -84,7 +74,7 @@ func (ctx *ServerContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 		}
 		res, err := ctx.Server.FinalMessageFrom(msg)
 		if err != nil {
-			return nil, err
+			return scram.NewMessageWithError(err), nil
 		}
 		ctx.step++
 		return res, nil
