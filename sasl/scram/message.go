@@ -31,7 +31,7 @@ type Message struct {
 // MessageOption represents a message option.
 type MessageOption func(*Message)
 
-// NewMessage returns a new Message.
+// NewMessage returns a new message.
 func NewMessage(opts ...MessageOption) *Message {
 	msg := &Message{
 		Header:       nil,
@@ -43,8 +43,8 @@ func NewMessage(opts ...MessageOption) *Message {
 	return msg
 }
 
-// NewMessageFromError returns a new Message from the specified error.
-func NewMessageFromError(err error) *Message {
+// NewMessageWithError returns a new message from the specified error.
+func NewMessageWithError(err error) *Message {
 	msg := NewMessage()
 	msg.SetError(err.Error())
 	return msg
@@ -63,7 +63,7 @@ func WithAttribute(name, value string) MessageOption {
 	}
 }
 
-// NewMessageFrom returns a new Message from the specified value.
+// NewMessageFrom returns a new message from the specified value.
 func NewMessageFrom(v any) (*Message, error) {
 	switch v := v.(type) {
 	case *Message:
@@ -80,7 +80,7 @@ func NewMessageFrom(v any) (*Message, error) {
 	return nil, fmt.Errorf("invalid message type")
 }
 
-// NewMessageFromWithHeader returns a new Message from the specified value with the GS2 header.
+// NewMessageFromWithHeader returns a new message from the specified value with the GS2 header.
 func NewMessageFromWithHeader(v any) (*Message, error) {
 	switch v := v.(type) {
 	case *Message:
@@ -97,14 +97,14 @@ func NewMessageFromWithHeader(v any) (*Message, error) {
 	return nil, fmt.Errorf("invalid message type")
 }
 
-// NewMessageFromString returns a new Message from the specified string.
+// NewMessageFromString returns a new message from the specified string.
 func NewMessageFromString(msg string) (*Message, error) {
 	scramMsg := NewMessage()
 	err := scramMsg.ParseString(msg)
 	return scramMsg, err
 }
 
-// NewMessageFromStringWithHeader returns a new Message from the specified string with the GS2 header.
+// NewMessageFromStringWithHeader returns a new message from the specified string with the GS2 header.
 func NewMessageFromStringWithHeader(msg string) (*Message, error) {
 	scramMsg := NewMessage()
 	err := scramMsg.ParseStringWithHeader(msg)
