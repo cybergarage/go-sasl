@@ -15,8 +15,13 @@
 package mech
 
 import (
+	"errors"
+
 	"github.com/cybergarage/go-safecast/safecast"
 )
+
+// ErrNotFound represents a not found error.
+var ErrNotFound = errors.New("not found")
 
 type store struct {
 	values map[string]any
@@ -38,6 +43,15 @@ func (ctx *store) SetValue(key string, value any) {
 func (ctx *store) Value(key string) (any, bool) {
 	value, hasValue := ctx.values[key]
 	return value, hasValue
+}
+
+// ValueTo returns the context value as a specific type.
+func (ctx *store) ValueTo(key string, v any) bool {
+	value, hasValue := ctx.values[key]
+	if !hasValue {
+		return false
+	}
+	return safecast.To(value, v) == nil
 }
 
 // StringValue returns the context value as a string.

@@ -31,6 +31,8 @@ type Store interface {
 	SetValue(key string, value any)
 	// Value returns the context value.
 	Value(key string) (any, bool)
+	// ValueTo returns the context value as a specific type.
+	ValueTo(key string, v any) bool
 	// StringValue returns the context value as a string.
 	StringValue(key string) (string, bool)
 	// BytesValue returns the context value as a byte slice.
