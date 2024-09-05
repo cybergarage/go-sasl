@@ -39,16 +39,6 @@ func NewClientContext(opts ...scram.ClientOption) (*ClientContext, error) {
 	}, nil
 }
 
-// SetValue sets a value to the context.
-func (ctx *ClientContext) SetValue(key string, value any) {
-	ctx.Client.SetValue(key, value)
-}
-
-// Value returns a value from the context.
-func (ctx *ClientContext) Value(key string) (any, bool) {
-	return ctx.Client.Value(key)
-}
-
 // Done returns true if the context is completed.
 func (ctx *ClientContext) Done() bool {
 	return ctx.step == 3
@@ -95,7 +85,7 @@ func (ctx *ClientContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 		}
 		res, err := ctx.Client.FirstMessage()
 		if err != nil {
-			return nil, err
+			return scram.NewMessageWithError(err), nil
 		}
 		ctx.step++
 		return res, nil
@@ -109,7 +99,7 @@ func (ctx *ClientContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 		}
 		res, err := ctx.Client.FinalMessageFrom(msg)
 		if err != nil {
-			return nil, err
+			return scram.NewMessageWithError(err), nil
 		}
 		ctx.step++
 		return res, nil
@@ -123,7 +113,7 @@ func (ctx *ClientContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 		}
 		err = ctx.Client.ValidateServerFinalMessage(msg)
 		if err != nil {
-			return nil, err
+			return scram.NewMessageWithError(err), nil
 		}
 		ctx.step++
 		return nil, nil
