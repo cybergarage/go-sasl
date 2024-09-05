@@ -15,39 +15,39 @@
 package safecast
 
 // To casts an interface to an interface type.
-func To(from any, to any) {
+func To(from any, to any) error {
 	switch to := to.(type) {
 	case *int:
-		ToInt(from, to)
+		return ToInt(from, to)
 	case *int8:
-		ToInt8(from, to)
+		return ToInt8(from, to)
 	case *int16:
-		ToInt16(from, to)
+		return ToInt16(from, to)
 	case *int32:
-		ToInt32(from, to)
+		return ToInt32(from, to)
 	case *int64:
-		ToInt64(from, to)
+		return ToInt64(from, to)
 	case *uint:
-		ToUint(from, to)
+		return ToUint(from, to)
 	case *uint8:
-		ToUint8(from, to)
+		return ToUint8(from, to)
 	case *uint16:
-		ToUint16(from, to)
+		return ToUint16(from, to)
 	case *uint32:
-		ToUint32(from, to)
+		return ToUint32(from, to)
 	case *uint64:
-		ToUint64(from, to)
+		return ToUint64(from, to)
 	case *float32:
-		ToFloat32(from, to)
+		return ToFloat32(from, to)
 	case *float64:
-		ToFloat64(from, to)
+		return ToFloat64(from, to)
 	case *string:
-		ToString(from, to)
+		return ToString(from, to)
 	case *bool:
-		ToBool(from, to)
+		return ToBool(from, to)
 	case *[]byte:
-		ToBytes(from, to)
+		return ToBytes(from, to)
 	default:
-		newErrorCast(from, to)
+		return newErrorCast(from, to)
 	}
 }
