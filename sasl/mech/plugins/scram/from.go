@@ -15,39 +15,39 @@
 package safecast
 
 // From casts an interface to an interface type.
-func From(from any, to any) {
+func From(from any, to any) error {
 	switch from := from.(type) {
 	case int:
-		FromInt(from, to)
+		return FromInt(from, to)
 	case int8:
-		FromInt8(from, to)
+		return FromInt8(from, to)
 	case int16:
-		FromInt16(from, to)
+		return FromInt16(from, to)
 	case int32:
-		FromInt32(from, to)
+		return FromInt32(from, to)
 	case int64:
-		FromInt64(from, to)
+		return FromInt64(from, to)
 	case uint:
-		FromUint(from, to)
+		return FromUint(from, to)
 	case uint8:
-		FromUint8(from, to)
+		return FromUint8(from, to)
 	case uint16:
-		FromUint16(from, to)
+		return FromUint16(from, to)
 	case uint32:
-		FromUint32(from, to)
+		return FromUint32(from, to)
 	case uint64:
-		FromUint64(from, to)
+		return FromUint64(from, to)
 	case float32:
-		FromFloat32(from, to)
+		return FromFloat32(from, to)
 	case float64:
-		FromFloat64(from, to)
+		return FromFloat64(from, to)
 	case string:
-		FromString(from, to)
+		return FromString(from, to)
 	case bool:
-		FromBool(from, to)
+		return FromBool(from, to)
 	case []byte:
-		FromBytes(from, to)
+		return FromBytes(from, to)
 	default:
-		newErrorCast(from, to)
+		return newErrorCast(from, to)
 	}
 }
