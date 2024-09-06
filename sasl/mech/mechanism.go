@@ -33,14 +33,6 @@ type Store interface {
 	Value(key string) (any, bool)
 	// ValueTo returns the context value as a specific type.
 	ValueTo(key string, v any) bool
-	// StringValue returns the context value as a string.
-	StringValue(key string) (string, bool)
-	// BytesValue returns the context value as a byte slice.
-	BytesValue(key string) ([]byte, bool)
-	// IntValue returns the context value as an integer.
-	IntValue(key string) (int, bool)
-	// BoolValue returns the context value as a boolean.
-	BoolValue(key string) (bool, bool)
 }
 
 // Context represents a SASL mechanism context.
