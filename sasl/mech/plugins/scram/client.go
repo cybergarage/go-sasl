@@ -85,7 +85,7 @@ func (ctx *ClientContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 		}
 		res, err := ctx.Client.FirstMessage()
 		if err != nil {
-			return scram.NewMessageWithError(err), nil
+			return nil, err
 		}
 		ctx.step++
 		return res, nil
@@ -99,7 +99,7 @@ func (ctx *ClientContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 		}
 		res, err := ctx.Client.FinalMessageFrom(msg)
 		if err != nil {
-			return scram.NewMessageWithError(err), nil
+			return nil, err
 		}
 		ctx.step++
 		return res, nil
@@ -113,7 +113,7 @@ func (ctx *ClientContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 		}
 		err = ctx.Client.ValidateServerFinalMessage(msg)
 		if err != nil {
-			return scram.NewMessageWithError(err), nil
+			return nil, err
 		}
 		ctx.step++
 		return nil, nil
