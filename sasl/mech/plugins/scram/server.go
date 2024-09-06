@@ -63,7 +63,7 @@ func (ctx *ServerContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 		}
 		res, err := ctx.Server.FirstMessageFrom(msg)
 		if err != nil {
-			return scram.NewMessageWithError(err), nil
+			return nil, err
 		}
 		ctx.step++
 		return res, nil
@@ -74,7 +74,7 @@ func (ctx *ServerContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 		}
 		res, err := ctx.Server.FinalMessageFrom(msg)
 		if err != nil {
-			return scram.NewMessageWithError(err), nil
+			return nil, err
 		}
 		ctx.step++
 		return res, nil
