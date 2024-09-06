@@ -50,3 +50,22 @@ var ErrNoResources = errors.New("no-resources")
 
 // ErrOtherError is returned when there is another error.
 var ErrOtherError = errors.New("other-error")
+
+// IsStandardError returns true if the error is a standard error.
+func IsStandardError(err error) bool {
+	switch err {
+	case ErrInvalidEncoding,
+		ErrExtensionsNotSupported,
+		ErrInvalidProof,
+		ErrChannelBindingsDontMatch,
+		ErrServerDoesSupportChannelBinding,
+		ErrChannelBindingNotSupported,
+		ErrUnsupportedChannelBindingType,
+		ErrUnknownUser,
+		ErrInvalidUsernameEncoding,
+		ErrNoResources,
+		ErrOtherError:
+		return true
+	}
+	return false
+}
