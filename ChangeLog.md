@@ -1,23 +1,14 @@
 # Changelog
 
-<<<<<<< HEAD
-## v1.2.0 (2024-XX-XX)
+## v1.3.0 (2024-XX-XX)
 - Support for the following SASL mechanisms:
   - SCRAM-SHA-1-PLUS
   - SCRAM-SHA-256-PLUS
   - SCRAM-SHA-512-PLUS
-=======
-## v1.2.5 (2023-09-06)
-- Added
-  - To() and From()
 
-## v1.2.4 (2023-09-02)
-- Added
-  - ToBytes() and FromBytes()
->>>>>>> d016bc3 (Update ChangeLog.md)
-
-## v1.2.1 (2024-09-XX)
-- Update error messsages
+## v1.2.1 (2024-09-06)
+- Update mech.Context interface to set and get any values simply
+- Update error messsages using RFC standard error strings
 
 ## v1.2.0 (2024-09-03)
 - Updated SCRAM plugins to handle more startop options
