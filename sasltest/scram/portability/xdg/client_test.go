@@ -79,6 +79,25 @@ func ClientTestWithXdg(t *testing.T) {
 		return
 	}
 
+	// SCRAM-SHA256 Server
+
+	credLookupSHA512 := func(string) (xgoscram.StoredCredentials, error) {
+		storedKey, serverKey, err := calculateServerKeys(scram.HashSHA512(), []byte(scramtest.Password), []byte(kf.Salt), kf.Iters)
+		if err != nil {
+			return xgoscram.StoredCredentials{}, err
+		}
+		return xgoscram.StoredCredentials{
+			KeyFactors: kf,
+			StoredKey:  storedKey,
+			ServerKey:  serverKey,
+		}, nil
+	}
+	sha512Server, err := xgoscram.SHA512.NewServer(credLookupSHA512)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
 	tests := []struct {
 		name string
 		scram.HashFunc
@@ -93,6 +112,11 @@ func ClientTestWithXdg(t *testing.T) {
 			name:     "SCRAM-SHA256",
 			HashFunc: scram.HashSHA256(),
 			server:   sha256Server,
+		},
+		{
+			name:     "SCRAM-SHA512",
+			HashFunc: scram.HashSHA512(),
+			server:   sha512Server,
 		},
 	}
 
