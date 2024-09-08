@@ -53,18 +53,37 @@ var ErrOtherError = errors.New("other-error")
 
 // IsStandardError returns true if the error is a standard error.
 func IsStandardError(err error) bool {
-	switch err {
-	case ErrInvalidEncoding,
-		ErrExtensionsNotSupported,
-		ErrInvalidProof,
-		ErrChannelBindingsDontMatch,
-		ErrServerDoesSupportChannelBinding,
-		ErrChannelBindingNotSupported,
-		ErrUnsupportedChannelBindingType,
-		ErrUnknownUser,
-		ErrInvalidUsernameEncoding,
-		ErrNoResources,
-		ErrOtherError:
+	if errors.Is(err, ErrInvalidEncoding) {
+		return true
+	}
+	if errors.Is(err, ErrExtensionsNotSupported) {
+		return true
+	}
+	if errors.Is(err, ErrInvalidProof) {
+		return true
+	}
+	if errors.Is(err, ErrChannelBindingsDontMatch) {
+		return true
+	}
+	if errors.Is(err, ErrServerDoesSupportChannelBinding) {
+		return true
+	}
+	if errors.Is(err, ErrChannelBindingNotSupported) {
+		return true
+	}
+	if errors.Is(err, ErrUnsupportedChannelBindingType) {
+		return true
+	}
+	if errors.Is(err, ErrUnknownUser) {
+		return true
+	}
+	if errors.Is(err, ErrInvalidUsernameEncoding) {
+		return true
+	}
+	if errors.Is(err, ErrNoResources) {
+		return true
+	}
+	if errors.Is(err, ErrOtherError) {
 		return true
 	}
 	return false
