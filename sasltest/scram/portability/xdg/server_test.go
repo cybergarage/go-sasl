@@ -37,6 +37,12 @@ func ServerTestWithXdg(t *testing.T) {
 		return
 	}
 
+	sha512Client, err := xgoscram.SHA512.NewClient(scramtest.Username, scramtest.Password, "")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
 	tests := []struct {
 		name   string
 		client *xgoscram.Client
@@ -51,6 +57,11 @@ func ServerTestWithXdg(t *testing.T) {
 			name:     "SCRAM-SHA256",
 			client:   sha256Client,
 			HashFunc: scram.HashSHA256(),
+		},
+		{
+			name:     "SCRAM-SHA512",
+			client:   sha512Client,
+			HashFunc: scram.HashSHA512(),
 		},
 	}
 
