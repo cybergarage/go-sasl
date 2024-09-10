@@ -37,12 +37,12 @@ func NewRandomSequence(length int) (RandomSequence, error) {
 		return "", err
 	}
 
-	result := make([]byte, length)
+	nonce := make([]byte, length)
 	for i, b := range randomBytes {
-		result[i] = charset[b%byte(len(charset))]
+		nonce[i] = charset[b%byte(len(charset))]
 	}
 
-	return RandomSequence(result), nil
+	return RandomSequence(nonce), nil
 }
 
 // String returns the string of the random sequence.
