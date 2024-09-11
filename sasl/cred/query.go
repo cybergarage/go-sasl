@@ -14,50 +14,62 @@
 
 package cred
 
-// Query represents a qential.
+// Query represents a query.
 type Query struct {
 	group    string
 	username string
 	password string
+	opts     []any
 }
 
-// QueryOption represents an option for a qential.
-type QueryOption func(*Query)
+// QueryOptionFn represents an option function for a query.
+type QueryOptionFn func(*Query)
 
-// NewQuery returns a new qential with options.
-func NewQuery(opts ...QueryOption) *Query {
+// QueryOption represents an option for a query.
+type QueryOption any
+
+// NewQuery returns a new query with options.
+func NewQuery(opts ...QueryOptionFn) *Query {
 	q := &Query{
 		group:    "",
 		username: "",
 		password: "",
+		opts:     []any{},
 	}
 	q.SetOption(opts...)
 	return q
 }
 
-// WithGroup returns an option to set the group.
-func WithQueryGroup(group string) QueryOption {
+// WithQueryGroup returns an option to set the group.
+func WithQueryGroup(group string) QueryOptionFn {
 	return func(q *Query) {
 		q.group = group
 	}
 }
 
-// WithUsername returns an option to set the username.
-func WithQueryUsername(username string) QueryOption {
+// WithQueryUsername returns an option to set the username.
+func WithQueryUsername(username string) QueryOptionFn {
 	return func(q *Query) {
 		q.username = username
 	}
 }
 
-// WithPassword returns an option to set the password.
-func WithQueryPassword(password string) QueryOption {
+// WithQueryPassword returns an option to set the password.
+func WithQueryPassword(password string) QueryOptionFn {
 	return func(q *Query) {
 		q.password = password
 	}
 }
 
+// WithQueryOption returns an option to set the options.
+func WithQueryOption(opt any) QueryOptionFn {
+	return func(q *Query) {
+		q.opts = append(q.opts, opt)
+	}
+}
+
 // SetOption sets the options.
-func (q *Query) SetOption(opts ...QueryOption) {
+func (q *Query) SetOption(opts ...QueryOptionFn) {
 	for _, opt := range opts {
 		opt(q)
 	}
@@ -76,4 +88,9 @@ func (q *Query) Username() string {
 // Password returns the password.
 func (q *Query) Password() string {
 	return q.password
+}
+
+// Options returns the options.
+func (q *Query) Options() []any {
+	return q.opts
 }
