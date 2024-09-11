@@ -22,6 +22,15 @@ import (
 	"hash"
 )
 
+const (
+	// SHA1 is the SHA-1 hash function.
+	SHA1 = "SCRAM-SHA-1"
+	// SHA256 is the SHA-256 hash function.
+	SHA256 = "SCRAM-SHA-256"
+	// SHA512 is the SHA-512 hash function.
+	SHA512 = "SCRAM-SHA-512"
+)
+
 // HashFunc is a function that returns a hash.Hash.
 type HashFunc = func() hash.Hash
 
