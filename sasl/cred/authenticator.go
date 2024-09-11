@@ -14,13 +14,10 @@
 
 package cred
 
-// AuthenticatorOption represents an authenticator option.
-type AuthenticatorOption any
-
 // Authenticator represents an authenticator interface.
 type Authenticator interface {
 	// HasCredential returns true if the authenticator has the specified username.
-	HasCredential(q *Query, opts ...AuthenticatorOption) (*Credential, bool)
+	HasCredential(q *Query) (*Credential, bool)
 }
 
 // Authenticators represents a list of authenticators.
