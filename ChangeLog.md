@@ -7,8 +7,9 @@
   - SCRAM-SHA-512-PLUS
 
 ## v1.2.1 (2024-09-06)
-- Update mech.Context interface to set and get any values simply
-- Update error messsages using RFC standard error strings
+- Standardized error messages using RFC-compliant strings
+- Extended mech.Context interface to allow flexible setting and retrieval of arbitrary values
+- Extended crea.Authenticator interface to support customizable options
 
 ## v1.2.0 (2024-09-03)
 - Updated SCRAM plugins to handle more startop options
