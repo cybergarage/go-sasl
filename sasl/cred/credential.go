@@ -35,8 +35,8 @@ func NewCredential(opts ...CredentialOption) *Credential {
 	return cred
 }
 
-// WithGroup returns an option to set the group.
-func WithGroup(group string) CredentialOption {
+// WithCredentialGroup returns an option to set the group.
+func WithCredentialGroup(group string) CredentialOption {
 	return func(cred *Credential) {
 		cred.group = group
 	}
