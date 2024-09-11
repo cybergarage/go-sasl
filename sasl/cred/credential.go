@@ -42,8 +42,8 @@ func WithCredentialGroup(group string) CredentialOption {
 	}
 }
 
-// WithUsername returns an option to set the username.
-func WithUsername(username string) CredentialOption {
+// WithCredentialUsername returns an option to set the username.
+func WithCredentialUsername(username string) CredentialOption {
 	return func(cred *Credential) {
 		cred.username = username
 	}
