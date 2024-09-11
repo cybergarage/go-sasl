@@ -6,10 +6,10 @@
   - SCRAM-SHA-256-PLUS
   - SCRAM-SHA-512-PLUS
 
-## v1.2.1 (2024-09-06)
+## v1.2.1 (2024-09-12)
 - Standardized error messages using RFC-compliant strings
 - Extended mech.Context interface to allow flexible setting and retrieval of arbitrary values
-- Extended crea.Authenticator interface to support customizable options
+- Extended cred.Authenticator interface to support customizable options
 
 ## v1.2.0 (2024-09-03)
 - Updated SCRAM plugins to handle more startop options
