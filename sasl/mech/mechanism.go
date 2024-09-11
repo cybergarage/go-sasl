@@ -39,6 +39,8 @@ type Store interface {
 type Context interface {
 	// Store represents a SASL mechanism store.
 	Store
+	// Mechanism returns the mechanism.
+	Mechanism() Mechanism
 	// Next returns the next response.
 	Next(...Parameter) (Response, error)
 	// Step returns the current step number. The step number is incremented by one after each call to Next.

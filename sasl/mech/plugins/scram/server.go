@@ -23,20 +23,28 @@ import (
 
 // ServerContext represents a SCRAM server context.
 type ServerContext struct {
+	mechanism mech.Mechanism
+
 	step int
 	*scram.Server
 }
 
 // NewServerContext returns a new SCRAM server context.
-func NewServerContext(opts ...scram.ServerOption) (*ServerContext, error) {
+func NewServerContext(m mech.Mechanism, opts ...scram.ServerOption) (*ServerContext, error) {
 	server, err := scram.NewServer(opts...)
 	if err != nil {
 		return nil, err
 	}
 	return &ServerContext{
-		step:   0,
-		Server: server,
+		mechanism: m,
+		step:      0,
+		Server:    server,
 	}, nil
+}
+
+// Mechanism returns the mechanism.
+func (ctx *ServerContext) Mechanism() mech.Mechanism {
+	return ctx.mechanism
 }
 
 // Done returns true if the context is completed.
@@ -142,5 +150,5 @@ func (server *Server) Start(opts ...mech.Option) (mech.Context, error) {
 		}
 	}
 
-	return NewServerContext(serverOpts...)
+	return NewServerContext(server, serverOpts...)
 }
