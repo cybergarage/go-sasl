@@ -22,6 +22,7 @@ import (
 
 // ClientContext represents a PLAIN client context.
 type ClientContext struct {
+	mechanism mech.Mechanism
 	mech.Store
 	group    string
 	username string
@@ -30,13 +31,14 @@ type ClientContext struct {
 }
 
 // NewClientContext returns a new PLAIN client context.
-func NewClientContext(opts ...mech.Option) (*ClientContext, error) {
+func NewClientContext(m mech.Mechanism, opts ...mech.Option) (*ClientContext, error) {
 	ctx := &ClientContext{
-		Store:    mech.NewStore(),
-		group:    "",
-		username: "",
-		password: "",
-		step:     0,
+		mechanism: m,
+		Store:     mech.NewStore(),
+		group:     "",
+		username:  "",
+		password:  "",
+		step:      0,
 	}
 
 	if err := ctx.setOptions(opts...); err != nil {
@@ -66,6 +68,11 @@ func (ctx *ClientContext) setOptions(opts ...any) error {
 		}
 	}
 	return nil
+}
+
+// Mechanism returns the mechanism.
+func (ctx *ClientContext) Mechanism() mech.Mechanism {
+	return ctx.mechanism
 }
 
 // Done returns true if the context is completed.
@@ -118,5 +125,5 @@ func (client *Client) Type() mech.Type {
 
 // Start returns the initial context.
 func (client *Client) Start(opts ...mech.Option) (mech.Context, error) {
-	return NewClientContext(opts...)
+	return NewClientContext(client, opts...)
 }
