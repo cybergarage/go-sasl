@@ -160,7 +160,8 @@ func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
 	}
 	server.SetValue(UsernameID, authzID)
 
-	_, err := server.HasCredential(server.authzID)
+	q := cred.NewQuery(cred.WithQueryUsername(server.authzID))
+	_, err := server.HasCredential(q)
 	if err != nil {
 		return nil, ErrUnknownUser
 	}
@@ -225,7 +226,8 @@ func (server *Server) FinalMessageFrom(clientMsg *Message) (*Message, error) {
 
 	// SaltedPassword := Hi(Normalize(password), salt, i)
 
-	storedCred, err := server.HasCredential(server.authzID)
+	q := cred.NewQuery(cred.WithQueryUsername(server.authzID))
+	storedCred, err := server.HasCredential(q)
 	if err != nil {
 		return nil, ErrUnknownUser
 	}

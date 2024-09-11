@@ -74,16 +74,16 @@ func (ctx *ServerContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 		if err != nil {
 			return nil, err
 		}
-		cred := cred.NewCredential(
-			cred.WithGroup(msg.Authzid()),
-			cred.WithUsername(msg.Authcid()),
-			cred.WithPassword(msg.Passwd()),
+		q := cred.NewQuery(
+			cred.WithQueryGroup(msg.Authzid()),
+			cred.WithQueryUsername(msg.Authcid()),
+			cred.WithQueryPassword(msg.Passwd()),
 		)
-		storeCred, err := ctx.HasCredential(cred.Username())
+		storeCred, err := ctx.HasCredential(q)
 		if err != nil {
 			return nil, fmt.Errorf("no credential")
 		}
-		if !storeCred.Authorize(cred) {
+		if !storeCred.Authorize(q) {
 			return nil, fmt.Errorf("no credential")
 		}
 		ctx.step++
