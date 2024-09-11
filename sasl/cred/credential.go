@@ -79,16 +79,16 @@ func (cred *Credential) Password() string {
 }
 
 // Authorize returns true if the credential is authorized.
-func (cred *Credential) Authorize(other *Credential) bool {
+func (cred *Credential) Authorize(q *Query) bool {
 	if 0 < len(cred.group) {
-		if cred.group != other.group {
+		if cred.group != q.Group() {
 			return false
 		}
 	}
-	if cred.username != other.username {
+	if cred.username != q.Username() {
 		return false
 	}
-	if cred.password != other.password {
+	if cred.password != q.Password() {
 		return false
 	}
 	return true
