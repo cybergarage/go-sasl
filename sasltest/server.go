@@ -34,7 +34,7 @@ func NewServer() *Server {
 func (server *Server) HasCredential(q *cred.Query, opts ...cred.AuthenticatorOption) (*cred.Credential, bool) {
 	cred := cred.NewCredential(
 		cred.WithCredentialUsername(q.Username()),
-		cred.WithPassword(Password),
+		cred.WithCredentialPassword(Password),
 	)
 	return cred, true
 }

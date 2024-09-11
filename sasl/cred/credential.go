@@ -49,8 +49,8 @@ func WithCredentialUsername(username string) CredentialOption {
 	}
 }
 
-// WithPassword returns an option to set the password.
-func WithPassword(password string) CredentialOption {
+// WithCredentialPassword returns an option to set the password.
+func WithCredentialPassword(password string) CredentialOption {
 	return func(cred *Credential) {
 		cred.password = password
 	}
