@@ -22,17 +22,24 @@ import (
 
 // ServerContext represents a PLAIN server context.
 type ServerContext struct {
+	mechanism mech.Mechanism
 	mech.Store
 	step int
 }
 
 // NewServerContext returns a new PLAIN server context.
-func NewServerContext(opts ...mech.Option) (*ServerContext, error) {
+func NewServerContext(m mech.Mechanism, opts ...mech.Option) (*ServerContext, error) {
 	ctx := &ServerContext{
-		Store: mech.NewStore(),
-		step:  0,
+		mechanism: m,
+		Store:     mech.NewStore(),
+		step:      0,
 	}
 	return ctx, nil
+}
+
+// Mechanism returns the mechanism.
+func (ctx *ServerContext) Mechanism() mech.Mechanism {
+	return ctx.mechanism
 }
 
 // Done returns true if the context is completed.
@@ -88,5 +95,5 @@ func (server *Server) Type() mech.Type {
 
 // Start returns the initial context.
 func (server *Server) Start(opts ...mech.Option) (mech.Context, error) {
-	return NewServerContext(opts...)
+	return NewServerContext(server, opts...)
 }

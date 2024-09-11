@@ -23,20 +23,28 @@ import (
 
 // ClientContext represents a SCRAM client context.
 type ClientContext struct {
+	mechanism mech.Mechanism
+
 	step int
 	*scram.Client
 }
 
 // NewClientContext returns a new SCRAM client context.
-func NewClientContext(opts ...scram.ClientOption) (*ClientContext, error) {
+func NewClientContext(m mech.Mechanism, opts ...scram.ClientOption) (*ClientContext, error) {
 	client, err := scram.NewClient(opts...)
 	if err != nil {
 		return nil, err
 	}
 	return &ClientContext{
-		step:   0,
-		Client: client,
+		mechanism: m,
+		step:      0,
+		Client:    client,
 	}, nil
+}
+
+// Mechanism returns the mechanism.
+func (ctx *ClientContext) Mechanism() mech.Mechanism {
+	return ctx.mechanism
 }
 
 // Done returns true if the context is completed.
@@ -158,13 +166,13 @@ func (client *Client) Start(opts ...mech.Option) (mech.Context, error) {
 	switch client.scramType {
 	case SHA1:
 		clientOpts = append(clientOpts, scram.WithClientHashFunc(scram.HashSHA1()))
-		return NewClientContext(clientOpts...)
+		return NewClientContext(client, clientOpts...)
 	case SHA256:
 		clientOpts = append(clientOpts, scram.WithClientHashFunc(scram.HashSHA256()))
-		return NewClientContext(clientOpts...)
+		return NewClientContext(client, clientOpts...)
 	case SHA512:
 		clientOpts = append(clientOpts, scram.WithClientHashFunc(scram.HashSHA512()))
-		return NewClientContext(clientOpts...)
+		return NewClientContext(client, clientOpts...)
 	}
 	return nil, fmt.Errorf("unknown SCRAM type : %d", client.scramType)
 }
