@@ -19,6 +19,7 @@ type Query struct {
 	group    string
 	username string
 	password string
+	mech     string
 	opts     []any
 }
 
@@ -34,6 +35,7 @@ func NewQuery(opts ...QueryOptionFn) *Query {
 		group:    "",
 		username: "",
 		password: "",
+		mech:     "",
 		opts:     []any{},
 	}
 	q.SetOption(opts...)
@@ -58,6 +60,13 @@ func WithQueryUsername(username string) QueryOptionFn {
 func WithQueryPassword(password string) QueryOptionFn {
 	return func(q *Query) {
 		q.password = password
+	}
+}
+
+// WithQueryMechanism returns an option to set the mechanism.
+func WithQueryMechanism(mech string) QueryOptionFn {
+	return func(q *Query) {
+		q.mech = mech
 	}
 }
 
@@ -88,6 +97,11 @@ func (q *Query) Username() string {
 // Password returns the password.
 func (q *Query) Password() string {
 	return q.password
+}
+
+// Mechanism returns the mechanism.
+func (q *Query) Mechanism() string {
+	return q.mech
 }
 
 // Options returns the options.
