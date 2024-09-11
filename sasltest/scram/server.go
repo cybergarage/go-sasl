@@ -42,9 +42,9 @@ func NewServer() (*Server, error) {
 	return server, nil
 }
 
-func (server *Server) HasCredential(username string, opts ...cred.AuthenticatorOption) (*cred.Credential, bool) {
+func (server *Server) HasCredential(q *cred.Query, opts ...cred.AuthenticatorOption) (*cred.Credential, bool) {
 	cred := cred.NewCredential(
-		cred.WithUsername(username),
+		cred.WithUsername(q.Username()),
 		cred.WithPassword(Password),
 	)
 	return cred, true

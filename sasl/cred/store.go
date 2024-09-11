@@ -54,9 +54,9 @@ func (mgr *CredentialStore) Authenticators() Authenticators {
 }
 
 // HasCredential returns true if the username has a credential.
-func (mgr *CredentialStore) HasCredential(username string) (*Credential, error) {
+func (mgr *CredentialStore) HasCredential(q *Query) (*Credential, error) {
 	for _, authenticator := range mgr.authenticators {
-		if cred, ok := authenticator.HasCredential(username); ok {
+		if cred, ok := authenticator.HasCredential(q); ok {
 			return cred, nil
 		}
 	}
