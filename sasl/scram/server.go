@@ -27,6 +27,7 @@ import (
 type Server struct {
 	mech.Store
 	*cred.CredentialStore
+	mechanism      string
 	challenge      string
 	authzID        string
 	randomSequence string
@@ -45,10 +46,11 @@ func NewServer(opts ...ServerOption) (*Server, error) {
 	srv := &Server{
 		Store:           mech.NewStore(),
 		CredentialStore: cred.NewCredentialStore(),
+		mechanism:       "",
+		hashFunc:        nil,
 		challenge:       "",
 		authzID:         "",
 		randomSequence:  "",
-		hashFunc:        HashSHA256(),
 		iterationCount:  defaultIterationCount,
 		salt:            nil,
 		clientFirstMsg:  nil,
@@ -80,6 +82,14 @@ func WithServerIterationCount(iterationCount int) ServerOption {
 func WithServerRandomSequence(randomSequence string) ServerOption {
 	return func(server *Server) error {
 		server.randomSequence = randomSequence
+		return nil
+	}
+}
+
+// WithServeMechanism returns a server option to set the mechanism.
+func WithServeMechanism(mechanism string) ServerOption {
+	return func(server *Server) error {
+		server.mechanism = mechanism
 		return nil
 	}
 }

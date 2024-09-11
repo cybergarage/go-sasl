@@ -21,6 +21,7 @@ import (
 // NewServer returns a new SCRAM-SHA-256 client.
 func NewServer() (*scram.Server, error) {
 	return scram.NewServer(
+		scram.WithServeMechanism(scram.SHA512),
 		scram.WithServerHashFunc(scram.HashSHA512()),
 	)
 }
