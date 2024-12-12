@@ -14,47 +14,47 @@
 
 package auth
 
-// CredentialStore represent an credential store.
-type CredentialStore struct {
+// Manager represent an credential store.
+type Manager struct {
 	authenticators []Authenticator
 }
 
-// NewCredentialStore returns a new credential store.
-func NewCredentialStore() *CredentialStore {
-	manager := &CredentialStore{
+// NewManager returns a new Manager.
+func NewManager() *Manager {
+	mgr := &Manager{
 		authenticators: make([]Authenticator, 0),
 	}
-	return manager
+	return mgr
 }
 
 // AddAuthenticator adds a new authenticator.
-func (mgr *CredentialStore) AddAuthenticator(authenticator Authenticator) {
+func (mgr *Manager) AddAuthenticator(authenticator Authenticator) {
 	mgr.authenticators = append(mgr.authenticators, authenticator)
 }
 
 // AddAuthenticators adds the specified authenticators.
-func (mgr *CredentialStore) AddAuthenticators(authenticators Authenticators) {
+func (mgr *Manager) AddAuthenticators(authenticators Authenticators) {
 	mgr.authenticators = append(mgr.authenticators, authenticators...)
 }
 
 // SetAuthenticators sets the specified authenticators.
-func (mgr *CredentialStore) SetAuthenticators(authenticators Authenticators) {
+func (mgr *Manager) SetAuthenticators(authenticators Authenticators) {
 	mgr.authenticators = make([]Authenticator, len(authenticators))
 	copy(mgr.authenticators, authenticators)
 }
 
 // ClearAuthenticators clears all authenticators.
-func (mgr *CredentialStore) ClearAuthenticators() {
+func (mgr *Manager) ClearAuthenticators() {
 	mgr.authenticators = make([]Authenticator, 0)
 }
 
 // Authenticators returns the authenticators.
-func (mgr *CredentialStore) Authenticators() Authenticators {
+func (mgr *Manager) Authenticators() Authenticators {
 	return mgr.authenticators
 }
 
 // HasCredential returns true if the username has a credential.
-func (mgr *CredentialStore) HasCredential(q Query) (Credential, error) {
+func (mgr *Manager) HasCredential(q Query) (Credential, error) {
 	for _, authenticator := range mgr.authenticators {
 		if cred, ok := authenticator.HasCredential(q); ok {
 			return cred, nil
