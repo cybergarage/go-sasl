@@ -53,10 +53,10 @@ func (mgr *Manager) Authenticators() Authenticators {
 	return mgr.authenticators
 }
 
-// HasCredential returns true if the username has a credential.
-func (mgr *Manager) HasCredential(q Query) (Credential, error) {
+// LookupCredential returns a credential and true if the query is found.
+func (mgr *Manager) LookupCredential(q Query) (Credential, error) {
 	for _, authenticator := range mgr.authenticators {
-		if cred, ok := authenticator.HasCredential(q); ok {
+		if cred, ok := authenticator.LookupCredential(q); ok {
 			return cred, nil
 		}
 	}

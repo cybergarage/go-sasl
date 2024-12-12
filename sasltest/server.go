@@ -31,7 +31,7 @@ func NewServer() *Server {
 	return server
 }
 
-func (server *Server) HasCredential(q auth.Query) (auth.Credential, bool) {
+func (server *Server) LookupCredential(q auth.Query) (auth.Credential, bool) {
 	cred := auth.NewCredential(
 		auth.WithCredentialUsername(q.Username()),
 		auth.WithCredentialPassword(Password),

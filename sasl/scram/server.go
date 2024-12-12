@@ -174,7 +174,7 @@ func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
 		auth.WithQueryMechanism(server.mechanism),
 		auth.WithQueryUsername(server.authzID),
 	)
-	_, err := server.HasCredential(q)
+	_, err := server.LookupCredential(q)
 	if err != nil {
 		return nil, ErrUnknownUser
 	}
@@ -243,7 +243,7 @@ func (server *Server) FinalMessageFrom(clientMsg *Message) (*Message, error) {
 		auth.WithQueryMechanism(server.mechanism),
 		auth.WithQueryUsername(server.authzID),
 	)
-	storedCred, err := server.HasCredential(q)
+	storedCred, err := server.LookupCredential(q)
 	if err != nil {
 		return nil, ErrUnknownUser
 	}
