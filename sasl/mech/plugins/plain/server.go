@@ -79,7 +79,7 @@ func (ctx *ServerContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 			auth.WithQueryUsername(msg.Authcid()),
 			auth.WithQueryPassword(msg.Passwd()),
 		)
-		storeCred, err := ctx.HasCredential(q)
+		storeCred, err := ctx.LookupCredential(q)
 		if err != nil {
 			return nil, fmt.Errorf("no credential")
 		}

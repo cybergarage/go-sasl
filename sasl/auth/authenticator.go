@@ -16,8 +16,8 @@ package auth
 
 // Authenticator represents an authenticator interface.
 type Authenticator interface {
-	// HasCredential returns true if the authenticator has the specified username.
-	HasCredential(q Query) (Credential, bool)
+	// LookupCredential returns a credential and true if the query is found.
+	LookupCredential(q Query) (Credential, bool)
 }
 
 // Authenticators represents a list of authenticators.
