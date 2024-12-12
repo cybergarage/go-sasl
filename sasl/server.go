@@ -24,14 +24,14 @@ import (
 // Server represents a SASL server.
 type Server struct {
 	*Provider
-	*auth.CredentialStore
+	*auth.Manager
 }
 
 // NewServer returns a new SASL server.
 func NewServer() *Server {
 	server := &Server{
-		Provider:        NewProvider(),
-		CredentialStore: auth.NewCredentialStore(),
+		Provider: NewProvider(),
+		Manager:  auth.NewManager(),
 	}
 	server.loadDefaultPlugins()
 	return server

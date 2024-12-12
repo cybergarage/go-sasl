@@ -26,16 +26,16 @@ type ServerContext struct {
 	mechanism mech.Mechanism
 	mech.Store
 	step int
-	*auth.CredentialStore
+	*auth.Manager
 }
 
 // NewServerContext returns a new PLAIN server context.
 func NewServerContext(m mech.Mechanism, opts ...mech.Option) (*ServerContext, error) {
 	ctx := &ServerContext{
-		mechanism:       m,
-		Store:           mech.NewStore(),
-		step:            0,
-		CredentialStore: auth.NewCredentialStore(),
+		mechanism: m,
+		Store:     mech.NewStore(),
+		step:      0,
+		Manager:   auth.NewManager(),
 	}
 
 	for _, opt := range opts {
