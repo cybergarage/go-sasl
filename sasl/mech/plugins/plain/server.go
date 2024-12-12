@@ -17,7 +17,7 @@ package plain
 import (
 	"fmt"
 
-	"github.com/cybergarage/go-sasl/sasl/cred"
+	"github.com/cybergarage/go-sasl/sasl/auth"
 	"github.com/cybergarage/go-sasl/sasl/mech"
 )
 
@@ -26,7 +26,7 @@ type ServerContext struct {
 	mechanism mech.Mechanism
 	mech.Store
 	step int
-	*cred.CredentialStore
+	*auth.CredentialStore
 }
 
 // NewServerContext returns a new PLAIN server context.
@@ -35,7 +35,7 @@ func NewServerContext(m mech.Mechanism, opts ...mech.Option) (*ServerContext, er
 		mechanism:       m,
 		Store:           mech.NewStore(),
 		step:            0,
-		CredentialStore: cred.NewCredentialStore(),
+		CredentialStore: auth.NewCredentialStore(),
 	}
 
 	for _, opt := range opts {
@@ -74,10 +74,10 @@ func (ctx *ServerContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 		if err != nil {
 			return nil, err
 		}
-		q := cred.NewQuery(
-			cred.WithQueryGroup(msg.Authzid()),
-			cred.WithQueryUsername(msg.Authcid()),
-			cred.WithQueryPassword(msg.Passwd()),
+		q := auth.NewQuery(
+			auth.WithQueryGroup(msg.Authzid()),
+			auth.WithQueryUsername(msg.Authcid()),
+			auth.WithQueryPassword(msg.Passwd()),
 		)
 		storeCred, err := ctx.HasCredential(q)
 		if err != nil {

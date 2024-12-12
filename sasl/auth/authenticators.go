@@ -18,12 +18,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"net"
-
-	"github.com/cybergarage/go-sasl/sasl/cred"
 )
-
-// Credential represents a credential interface.
-type Credential = cred.Credential
 
 // TLSAuthenticator is the interface for authenticating a client using TLS.
 type TLSAuthenticator interface {

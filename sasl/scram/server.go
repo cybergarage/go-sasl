@@ -18,7 +18,7 @@ import (
 	"crypto/hmac"
 	"encoding/base64"
 
-	"github.com/cybergarage/go-sasl/sasl/cred"
+	"github.com/cybergarage/go-sasl/sasl/auth"
 	"github.com/cybergarage/go-sasl/sasl/mech"
 	"github.com/cybergarage/go-sasl/sasl/util/rand"
 )
@@ -26,7 +26,7 @@ import (
 // Server represents a SCRAM server.
 type Server struct {
 	mech.Store
-	*cred.CredentialStore
+	*auth.CredentialStore
 	mechanism      string
 	challenge      string
 	authzID        string
@@ -45,7 +45,7 @@ type ServerOption func(*Server) error
 func NewServer(opts ...ServerOption) (*Server, error) {
 	srv := &Server{
 		Store:           mech.NewStore(),
-		CredentialStore: cred.NewCredentialStore(),
+		CredentialStore: auth.NewCredentialStore(),
 		mechanism:       "",
 		hashFunc:        nil,
 		challenge:       "",
@@ -115,7 +115,7 @@ func WithServerSaltString(salt string) ServerOption {
 }
 
 // WithServerAuthenticators returns a server option to set the authenticators.
-func WithServerAuthenticators(authenticators cred.Authenticators) ServerOption {
+func WithServerAuthenticators(authenticators auth.Authenticators) ServerOption {
 	return func(server *Server) error {
 		server.SetAuthenticators(authenticators)
 		return nil
@@ -170,9 +170,9 @@ func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
 	}
 	server.SetValue(UsernameID, authzID)
 
-	q := cred.NewQuery(
-		cred.WithQueryMechanism(server.mechanism),
-		cred.WithQueryUsername(server.authzID),
+	q := auth.NewQuery(
+		auth.WithQueryMechanism(server.mechanism),
+		auth.WithQueryUsername(server.authzID),
 	)
 	_, err := server.HasCredential(q)
 	if err != nil {
@@ -239,9 +239,9 @@ func (server *Server) FinalMessageFrom(clientMsg *Message) (*Message, error) {
 
 	// SaltedPassword := Hi(Normalize(password), salt, i)
 
-	q := cred.NewQuery(
-		cred.WithQueryMechanism(server.mechanism),
-		cred.WithQueryUsername(server.authzID),
+	q := auth.NewQuery(
+		auth.WithQueryMechanism(server.mechanism),
+		auth.WithQueryUsername(server.authzID),
 	)
 	storedCred, err := server.HasCredential(q)
 	if err != nil {

@@ -15,7 +15,7 @@
 package sasl
 
 import (
-	"github.com/cybergarage/go-sasl/sasl/cred"
+	"github.com/cybergarage/go-sasl/sasl/auth"
 	"github.com/cybergarage/go-sasl/sasl/mech/plugins/anonymous"
 	"github.com/cybergarage/go-sasl/sasl/mech/plugins/plain"
 	"github.com/cybergarage/go-sasl/sasl/mech/plugins/scram"
@@ -24,14 +24,14 @@ import (
 // Server represents a SASL server.
 type Server struct {
 	*Provider
-	*cred.CredentialStore
+	*auth.CredentialStore
 }
 
 // NewServer returns a new SASL server.
 func NewServer() *Server {
 	server := &Server{
 		Provider:        NewProvider(),
-		CredentialStore: cred.NewCredentialStore(),
+		CredentialStore: auth.NewCredentialStore(),
 	}
 	server.loadDefaultPlugins()
 	return server
