@@ -17,7 +17,7 @@ package mech
 import (
 	"hash"
 
-	"github.com/cybergarage/go-sasl/sasl/cred"
+	"github.com/cybergarage/go-sasl/sasl/auth"
 )
 
 // Option represents a SASL mechanism option.
@@ -45,7 +45,7 @@ type Email string
 type Payload []byte
 
 // Authenticators represents a list of credential authenticators.
-type Authenticators = cred.Authenticators
+type Authenticators = auth.Authenticators
 
 // HashFunc represents a hash function.
 type RandomSequence string

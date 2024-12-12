@@ -12,15 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package cred
+package auth
 
-// Credential represents a credential interface.
-type Credential interface {
+// Query represents a query interface.
+type Query interface {
+	// Group returns the group.
 	Group() string
 	// Username returns the username.
 	Username() string
 	// Password returns the password.
 	Password() string
-	// Authorize returns true if the credential is authorized.
-	Authorize(q Query) bool
+	// Mechanism returns the mechanism.
+	Mechanism() string
+
+	// Options returns the options.
+	Options() []any
 }
