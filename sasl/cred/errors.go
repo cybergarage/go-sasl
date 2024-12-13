@@ -1,4 +1,4 @@
-// Copyright (C) 2019 The go-sasl Authors. All rights reserved.
+// Copyright (C) 2024 The go-sasl Authors. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,15 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package auth
+package cred
 
-// Credential represents a credential interface.
-type Credential interface {
-	Group() string
-	// Username returns the username.
-	Username() string
-	// Password returns the password.
-	Password() string
-	// Authorize returns true if the credential is authorized.
-	Authorize(q Query) bool
-}
+import (
+	"errors"
+)
+
+var ErrNoCredential = errors.New("no credential")

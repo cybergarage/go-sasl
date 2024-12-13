@@ -12,19 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package auth
+package cred
 
-// Query represents a query interface.
-type Query interface {
-	// Group returns the group.
-	Group() string
-	// Username returns the username.
-	Username() string
-	// Password returns the password.
-	Password() string
-	// Mechanism returns the mechanism.
-	Mechanism() string
-
-	// Options returns the options.
-	Options() []any
+// Store represents a credential store.
+type Store interface {
+	// LookupCredential looks up a credential by the query.
+	LookupCredential(q Query) (Credential, error)
 }

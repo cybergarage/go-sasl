@@ -19,6 +19,7 @@ import (
 	"encoding/base64"
 
 	"github.com/cybergarage/go-sasl/sasl/auth"
+	"github.com/cybergarage/go-sasl/sasl/cred"
 	"github.com/cybergarage/go-sasl/sasl/mech"
 	"github.com/cybergarage/go-sasl/sasl/util/rand"
 )
@@ -27,6 +28,7 @@ import (
 type Server struct {
 	mech.Store
 	*auth.Manager
+	credStore      cred.Store
 	mechanism      string
 	challenge      string
 	authzID        string
@@ -46,6 +48,7 @@ func NewServer(opts ...ServerOption) (*Server, error) {
 	srv := &Server{
 		Store:          mech.NewStore(),
 		Manager:        auth.NewManager(),
+		credStore:      nil,
 		mechanism:      "",
 		hashFunc:       nil,
 		challenge:      "",
@@ -122,6 +125,14 @@ func WithServerAuthenticators(authenticators auth.Authenticators) ServerOption {
 	}
 }
 
+// WithServerCredentialStore returns a server option to set the credential store.
+func WithServerCredentialStore(store cred.Store) ServerOption {
+	return func(server *Server) error {
+		server.credStore = store
+		return nil
+	}
+}
+
 // HashFunc returns the hash function.
 func (server *Server) HashFunc() HashFunc {
 	return server.hashFunc
@@ -136,6 +147,14 @@ func (server *Server) SetOptions(opts ...ServerOption) error {
 		}
 	}
 	return nil
+}
+
+// LookupCredential looks up a credential by the query.
+func (server *Server) LookupCredential(q cred.Query) (cred.Credential, error) {
+	if server.credStore == nil {
+		return nil, cred.ErrNoCredential
+	}
+	return server.credStore.LookupCredential(q)
 }
 
 // FirstMessageFrom returns a new server first message from the specified client message.
@@ -170,9 +189,9 @@ func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
 	}
 	server.SetValue(UsernameID, authzID)
 
-	q := auth.NewQuery(
-		auth.WithQueryMechanism(server.mechanism),
-		auth.WithQueryUsername(server.authzID),
+	q := cred.NewQuery(
+		cred.WithQueryMechanism(server.mechanism),
+		cred.WithQueryUsername(server.authzID),
 	)
 	_, err := server.LookupCredential(q)
 	if err != nil {
@@ -239,9 +258,9 @@ func (server *Server) FinalMessageFrom(clientMsg *Message) (*Message, error) {
 
 	// SaltedPassword := Hi(Normalize(password), salt, i)
 
-	q := auth.NewQuery(
-		auth.WithQueryMechanism(server.mechanism),
-		auth.WithQueryUsername(server.authzID),
+	q := cred.NewQuery(
+		cred.WithQueryMechanism(server.mechanism),
+		cred.WithQueryUsername(server.authzID),
 	)
 	storedCred, err := server.LookupCredential(q)
 	if err != nil {

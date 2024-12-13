@@ -18,6 +18,8 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"net"
+
+	"github.com/cybergarage/go-sasl/sasl/cred"
 )
 
 // TLSAuthenticator is the interface for authenticating a client using TLS.
@@ -29,5 +31,5 @@ type TLSAuthenticator interface {
 // CredentialAuthenticator is the interface for authenticating a client using credential.
 type CredentialAuthenticator interface {
 	// VerifyCredential verifies the client credential.
-	VerifyCredential(conn net.Conn, cred Credential) error
+	VerifyCredential(conn net.Conn, cred cred.Credential) error
 }
