@@ -52,13 +52,3 @@ func (mgr *Manager) ClearAuthenticators() {
 func (mgr *Manager) Authenticators() Authenticators {
 	return mgr.authenticators
 }
-
-// LookupCredential returns a credential and true if the query is found.
-func (mgr *Manager) LookupCredential(q Query) (Credential, error) {
-	for _, authenticator := range mgr.authenticators {
-		if cred, ok := authenticator.LookupCredential(q); ok {
-			return cred, nil
-		}
-	}
-	return nil, ErrNoCredential
-}
