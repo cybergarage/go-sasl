@@ -17,6 +17,7 @@ package sasltest
 import (
 	"github.com/cybergarage/go-sasl/sasl"
 	"github.com/cybergarage/go-sasl/sasl/auth"
+	"github.com/cybergarage/go-sasl/sasl/cred"
 )
 
 type Server struct {
@@ -27,14 +28,15 @@ func NewServer() *Server {
 	server := &Server{
 		Server: sasl.NewServer(),
 	}
-	server.AddAuthenticator(server)
 	return server
 }
 
-func (server *Server) LookupCredential(q auth.Query) (auth.Credential, bool) {
-	cred := auth.NewCredential(
-		auth.WithCredentialUsername(q.Username()),
-		auth.WithCredentialPassword(Password),
-	)
-	return cred, true
+func (server *Server) LookupCredential(q auth.Query) (cred.Credential, bool) {
+	if q.Username() != Username {
+		return nil, false
+	}
+	return cred.NewCredential(
+		cred.WithCredentialUsername(q.Username()),
+		cred.WithCredentialPassword(Password),
+	), true
 }
