@@ -33,6 +33,7 @@ type manager struct {
 func NewManager() Manager {
 	mgr := &manager{
 		credStore:         nil,
+		tlsAuthenticator:  NewDefaultCertificateAuthenticator(),
 		credAuthenticator: NewDefaultCredentialAuthenticator(),
 	}
 	return mgr
