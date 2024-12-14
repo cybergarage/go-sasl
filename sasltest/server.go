@@ -28,15 +28,16 @@ func NewServer() *Server {
 	server := &Server{
 		Server: sasl.NewServer(),
 	}
+	server.SetCredentialStore(server)
 	return server
 }
 
-func (server *Server) LookupCredential(q auth.Query) (cred.Credential, bool) {
+func (server *Server) LookupCredential(q auth.Query) (cred.Credential, error) {
 	if q.Username() != Username {
-		return nil, false
+		return nil, cred.ErrNoCredential
 	}
 	return cred.NewCredential(
 		cred.WithCredentialUsername(q.Username()),
 		cred.WithCredentialPassword(Password),
-	), true
+	), nil
 }
