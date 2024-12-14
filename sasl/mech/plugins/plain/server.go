@@ -27,7 +27,7 @@ type ServerContext struct {
 	mechanism mech.Mechanism
 	mech.Store
 	step int
-	*auth.Manager
+	auth.Manager
 }
 
 // NewServerContext returns a new PLAIN server context.
@@ -41,8 +41,8 @@ func NewServerContext(m mech.Mechanism, opts ...mech.Option) (*ServerContext, er
 
 	for _, opt := range opts {
 		switch v := opt.(type) {
-		case mech.Authenticators:
-			ctx.SetAuthenticators(v)
+		case auth.Manager:
+			ctx.Manager = v
 		}
 	}
 
@@ -80,12 +80,9 @@ func (ctx *ServerContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 			cred.WithQueryUsername(msg.Authcid()),
 			cred.WithQueryPassword(msg.Passwd()),
 		)
-		storeCred, err := ctx.LookupCredential(q)
-		if err != nil {
-			return nil, fmt.Errorf("no credential")
-		}
-		if !storeCred.Authorize(q) {
-			return nil, fmt.Errorf("no credential")
+		ok, err := ctx.VerifyCredential(nil, q)
+		if !ok {
+			return nil, err
 		}
 		ctx.step++
 		return nil, nil

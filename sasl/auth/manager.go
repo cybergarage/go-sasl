@@ -14,41 +14,28 @@
 
 package auth
 
-// Manager represent an credential store.
-type Manager struct {
-	authenticators []Authenticator
-}
+import (
+	"crypto/tls"
+	"crypto/x509"
+	"net"
 
-// NewManager returns a new Manager.
-func NewManager() *Manager {
-	mgr := &Manager{
-		authenticators: make([]Authenticator, 0),
-	}
-	return mgr
-}
+	"github.com/cybergarage/go-sasl/sasl/cred"
+)
 
-// AddAuthenticator adds a new authenticator.
-func (mgr *Manager) AddAuthenticator(authenticator Authenticator) {
-	mgr.authenticators = append(mgr.authenticators, authenticator)
-}
-
-// AddAuthenticators adds the specified authenticators.
-func (mgr *Manager) AddAuthenticators(authenticators Authenticators) {
-	mgr.authenticators = append(mgr.authenticators, authenticators...)
-}
-
-// SetAuthenticators sets the specified authenticators.
-func (mgr *Manager) SetAuthenticators(authenticators Authenticators) {
-	mgr.authenticators = make([]Authenticator, len(authenticators))
-	copy(mgr.authenticators, authenticators)
-}
-
-// ClearAuthenticators clears all authenticators.
-func (mgr *Manager) ClearAuthenticators() {
-	mgr.authenticators = make([]Authenticator, 0)
-}
-
-// Authenticators returns the authenticators.
-func (mgr *Manager) Authenticators() Authenticators {
-	return mgr.authenticators
+// Manager represents a  auth manager interface.
+type Manager interface {
+	// AddAuthenticators adds the specified authenticators.
+	AddAuthenticators(authenticator ...Authenticator)
+	// SetAuthenticators sets the specified authenticators.
+	SetAuthenticators(authenticators ...Authenticator)
+	// ClearAuthenticators clears all authenticators.
+	ClearAuthenticators()
+	// Authenticators returns the registered authenticators.
+	Authenticators() []Authenticator
+	// SetCredentialStore sets the credential store.
+	SetCredentialStore(credStore cred.Store)
+	// VerifyCertificate verifies the client certificate.
+	VerifyCertificate(conn tls.Conn, certs []*x509.Certificate) (bool, error)
+	// VerifyCredential verifies the client credential.
+	VerifyCredential(conn net.Conn, q cred.Query) (bool, error)
 }

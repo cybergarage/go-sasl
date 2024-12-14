@@ -25,11 +25,11 @@ import (
 // TLSAuthenticator is the interface for authenticating a client using TLS.
 type TLSAuthenticator interface {
 	// VerifyCertificate verifies the client certificate.
-	VerifyCertificate(conn tls.Conn, certs []*x509.Certificate) error
+	VerifyCertificate(conn tls.Conn, certs []*x509.Certificate) (bool, error)
 }
 
 // CredentialAuthenticator is the interface for authenticating a client using credential.
 type CredentialAuthenticator interface {
 	// VerifyCredential verifies the client credential.
-	VerifyCredential(conn net.Conn, cred cred.Credential) error
+	VerifyCredential(conn net.Conn, q cred.Query, cred cred.Credential) (bool, error)
 }
