@@ -24,14 +24,10 @@ import (
 
 // Manager represents a  auth manager interface.
 type Manager interface {
-	// AddAuthenticators adds the specified authenticators.
-	AddAuthenticators(authenticator ...Authenticator)
-	// SetAuthenticators sets the specified authenticators.
-	SetAuthenticators(authenticators ...Authenticator)
-	// ClearAuthenticators clears all authenticators.
-	ClearAuthenticators()
-	// Authenticators returns the registered authenticators.
-	Authenticators() []Authenticator
+	// SetCredentialAuthenticator sets the credential authenticator.
+	SetCredentialAuthenticator(auth CredentialAuthenticator)
+	// SetTLSAuthenticator sets the TLS authenticator.
+	SetTLSAuthenticator(auth TLSAuthenticator)
 	// SetCredentialStore sets the credential store.
 	SetCredentialStore(credStore cred.Store)
 	// VerifyCertificate verifies the client certificate.
