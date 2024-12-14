@@ -16,6 +16,7 @@ package plain
 
 import (
 	"fmt"
+	"net"
 
 	"github.com/cybergarage/go-sasl/sasl/auth"
 	"github.com/cybergarage/go-sasl/sasl/cred"
@@ -28,6 +29,7 @@ type ServerContext struct {
 	mech.Store
 	step int
 	auth.Manager
+	net.Conn
 }
 
 // NewServerContext returns a new PLAIN server context.
@@ -37,12 +39,15 @@ func NewServerContext(m mech.Mechanism, opts ...mech.Option) (*ServerContext, er
 		Store:     mech.NewStore(),
 		step:      0,
 		Manager:   auth.NewManager(),
+		Conn:      nil,
 	}
 
 	for _, opt := range opts {
 		switch v := opt.(type) {
 		case auth.Manager:
 			ctx.Manager = v
+		case net.Conn:
+			ctx.Conn = v
 		}
 	}
 
@@ -80,7 +85,7 @@ func (ctx *ServerContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 			cred.WithQueryUsername(msg.Authcid()),
 			cred.WithQueryPassword(msg.Passwd()),
 		)
-		ok, err := ctx.VerifyCredential(nil, q)
+		ok, err := ctx.VerifyCredential(ctx.Conn, q)
 		if !ok {
 			return nil, err
 		}
