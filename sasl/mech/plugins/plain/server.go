@@ -19,7 +19,6 @@ import (
 	"net"
 
 	"github.com/cybergarage/go-sasl/sasl/auth"
-	"github.com/cybergarage/go-sasl/sasl/cred"
 	"github.com/cybergarage/go-sasl/sasl/mech"
 )
 
@@ -80,10 +79,10 @@ func (ctx *ServerContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 		if err != nil {
 			return nil, err
 		}
-		q := cred.NewQuery(
-			cred.WithQueryGroup(msg.Authzid()),
-			cred.WithQueryUsername(msg.Authcid()),
-			cred.WithQueryPassword(msg.Passwd()),
+		q := auth.NewQuery(
+			auth.WithQueryGroup(msg.Authzid()),
+			auth.WithQueryUsername(msg.Authcid()),
+			auth.WithQueryPassword(msg.Passwd()),
 		)
 		ok, err := ctx.VerifyCredential(ctx.Conn, q)
 		if !ok {

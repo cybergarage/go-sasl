@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package cred
+package auth
 
 // query represents a query.
 type query struct {
