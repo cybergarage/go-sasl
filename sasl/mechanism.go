@@ -52,9 +52,6 @@ type Email = mech.Email
 // Payload represents a payload.
 type Payload = mech.Payload
 
-// Authenticators represents a list of credential authenticators.
-type Authenticators = mech.Authenticators
-
 // RandomSequence represents a random sequence.
 type RandomSequence = mech.RandomSequence
 
