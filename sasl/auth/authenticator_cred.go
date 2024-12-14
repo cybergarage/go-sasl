@@ -13,3 +13,22 @@
 // limitations under the License.
 
 package auth
+
+import (
+	"net"
+
+	"github.com/cybergarage/go-sasl/sasl/cred"
+)
+
+type defaultCredAuthenticator struct {
+}
+
+// NewDefaultCredentialAuthenticator returns a new default credential authenticator.
+func NewDefaultCredentialAuthenticator() CredentialAuthenticator {
+	return &defaultCredAuthenticator{}
+}
+
+// VerifyCredential verifies the client credential.
+func (a *defaultCredAuthenticator) VerifyCredential(conn net.Conn, q cred.Query, cred cred.Credential) (bool, error) {
+	return true, nil
+}

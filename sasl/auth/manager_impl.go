@@ -32,7 +32,8 @@ type manager struct {
 // NewManager returns a new auth manager instance.
 func NewManager() Manager {
 	mgr := &manager{
-		credStore: nil,
+		credStore:         nil,
+		credAuthenticator: NewDefaultCredentialAuthenticator(),
 	}
 	return mgr
 }
