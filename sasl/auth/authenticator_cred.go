@@ -15,8 +15,6 @@
 package auth
 
 import (
-	"net"
-
 	"github.com/cybergarage/go-sasl/sasl/cred"
 )
 
@@ -29,6 +27,6 @@ func NewDefaultCredentialAuthenticator() CredentialAuthenticator {
 }
 
 // VerifyCredential verifies the client credential.
-func (a *defaultCredAuthenticator) VerifyCredential(conn net.Conn, q cred.Query, cred cred.Credential) (bool, error) {
+func (a *defaultCredAuthenticator) VerifyCredential(conn Conn, q cred.Query, cred cred.Credential) (bool, error) {
 	return true, nil
 }

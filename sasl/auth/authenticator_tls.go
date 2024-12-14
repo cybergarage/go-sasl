@@ -16,18 +16,17 @@ package auth
 
 import (
 	"crypto/tls"
-	"crypto/x509"
 )
 
 type defaultTLSAuthenticator struct {
 }
 
 // NewDefaultCertificateAuthenticator creates a new defaultTLSAuthenticator.
-func NewDefaultCertificateAuthenticator() TLSAuthenticator {
+func NewDefaultCertificateAuthenticator() CertificateAuthenticator {
 	return &defaultTLSAuthenticator{}
 }
 
 // VerifyTLSential verifies the client credential.
-func (a *defaultTLSAuthenticator) VerifyCertificate(conn tls.Conn, certs []*x509.Certificate) (bool, error) {
+func (a *defaultTLSAuthenticator) VerifyCertificate(conn Conn, state tls.ConnectionState) (bool, error) {
 	return true, nil
 }
