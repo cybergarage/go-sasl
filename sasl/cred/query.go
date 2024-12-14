@@ -24,7 +24,6 @@ type Query interface {
 	Password() string
 	// Mechanism returns the mechanism.
 	Mechanism() string
-
 	// Options returns the options.
 	Options() []any
 }
