@@ -27,7 +27,6 @@ import (
 // Server represents a SCRAM server.
 type Server struct {
 	mech.Store
-	auth.Manager
 	credStore      cred.Store
 	mechanism      string
 	challenge      string
@@ -47,7 +46,6 @@ type ServerOption func(*Server) error
 func NewServer(opts ...ServerOption) (*Server, error) {
 	srv := &Server{
 		Store:          mech.NewStore(),
-		Manager:        nil,
 		credStore:      nil,
 		mechanism:      "",
 		hashFunc:       nil,
@@ -113,14 +111,6 @@ func WithServerSaltString(salt string) ServerOption {
 			return err
 		}
 		server.salt = decordedSalt
-		return nil
-	}
-}
-
-// WithServerAuthManager returns a server option to set the auth manager.
-func WithServerAuthManager(manager auth.Manager) ServerOption {
-	return func(server *Server) error {
-		server.Manager = manager
 		return nil
 	}
 }

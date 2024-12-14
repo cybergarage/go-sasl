@@ -35,19 +35,21 @@ func NewServer() (*Server, error) {
 	server := &Server{
 		Server: nil,
 	}
-	server.Server, err = scram.NewServer()
+	server.Server, err = scram.NewServer(
+		scram.WithServerCredentialStore(server),
+	)
 	if err != nil {
 		return nil, err
 	}
 	return server, nil
 }
 
-func (server *Server) LookupCredential(q auth.Query) (cred.Credential, bool) {
+func (server *Server) LookupCredential(q auth.Query) (cred.Credential, error) {
 	if q.Username() != Username {
-		return nil, false
+		return nil, cred.ErrNoCredential
 	}
 	return cred.NewCredential(
 		cred.WithCredentialUsername(q.Username()),
 		cred.WithCredentialPassword(Password),
-	), true
+	), nil
 }
