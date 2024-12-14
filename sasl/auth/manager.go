@@ -16,8 +16,6 @@ package auth
 
 import (
 	"crypto/tls"
-	"crypto/x509"
-	"net"
 
 	"github.com/cybergarage/go-sasl/sasl/cred"
 )
@@ -27,11 +25,11 @@ type Manager interface {
 	// SetCredentialAuthenticator sets the credential authenticator.
 	SetCredentialAuthenticator(auth CredentialAuthenticator)
 	// SetTLSAuthenticator sets the TLS authenticator.
-	SetTLSAuthenticator(auth TLSAuthenticator)
+	SetTLSAuthenticator(auth CertificateAuthenticator)
 	// SetCredentialStore sets the credential store.
 	SetCredentialStore(credStore cred.Store)
 	// VerifyCertificate verifies the client certificate.
-	VerifyCertificate(conn tls.Conn, certs []*x509.Certificate) (bool, error)
+	VerifyCertificate(conn Conn, state tls.ConnectionState) (bool, error)
 	// VerifyCredential verifies the client credential.
-	VerifyCredential(conn net.Conn, q cred.Query) (bool, error)
+	VerifyCredential(conn Conn, q cred.Query) (bool, error)
 }
