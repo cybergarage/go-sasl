@@ -189,9 +189,9 @@ func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
 	}
 	server.SetValue(UsernameID, authzID)
 
-	q := cred.NewQuery(
-		cred.WithQueryMechanism(server.mechanism),
-		cred.WithQueryUsername(server.authzID),
+	q := auth.NewQuery(
+		auth.WithQueryMechanism(server.mechanism),
+		auth.WithQueryUsername(server.authzID),
 	)
 	_, err := server.LookupCredential(q)
 	if err != nil {
@@ -258,9 +258,9 @@ func (server *Server) FinalMessageFrom(clientMsg *Message) (*Message, error) {
 
 	// SaltedPassword := Hi(Normalize(password), salt, i)
 
-	q := cred.NewQuery(
-		cred.WithQueryMechanism(server.mechanism),
-		cred.WithQueryUsername(server.authzID),
+	q := auth.NewQuery(
+		auth.WithQueryMechanism(server.mechanism),
+		auth.WithQueryUsername(server.authzID),
 	)
 	storedCred, err := server.LookupCredential(q)
 	if err != nil {
