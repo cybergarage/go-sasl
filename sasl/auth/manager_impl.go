@@ -24,38 +24,27 @@ import (
 )
 
 type manager struct {
-	authenticators []Authenticator
-	credStore      cred.Store
+	tlsAuthenticator  TLSAuthenticator
+	credAuthenticator CredentialAuthenticator
+	credStore         cred.Store
 }
 
 // NewManager returns a new auth manager instance.
 func NewManager() Manager {
 	mgr := &manager{
-		authenticators: make([]Authenticator, 0),
-		credStore:      nil,
+		credStore: nil,
 	}
 	return mgr
 }
 
-// AddAuthenticators adds the specified authenticators.
-func (mgr *manager) AddAuthenticators(authenticators ...Authenticator) {
-	mgr.authenticators = append(mgr.authenticators, authenticators...)
+// SetCredentialAuthenticator sets the credential authenticator.
+func (mgr *manager) SetCredentialAuthenticator(auth CredentialAuthenticator) {
+	mgr.credAuthenticator = auth
 }
 
-// SetAuthenticators sets the specified authenticators.
-func (mgr *manager) SetAuthenticators(authenticators ...Authenticator) {
-	mgr.authenticators = make([]Authenticator, len(authenticators))
-	copy(mgr.authenticators, authenticators)
-}
-
-// ClearAuthenticators clears all authenticators.
-func (mgr *manager) ClearAuthenticators() {
-	mgr.authenticators = make([]Authenticator, 0)
-}
-
-// Authenticators returns the registered authenticators.
-func (mgr *manager) Authenticators() []Authenticator {
-	return mgr.authenticators
+// SetTLSAuthenticator sets the TLS authenticator.
+func (mgr *manager) SetTLSAuthenticator(auth TLSAuthenticator) {
+	mgr.tlsAuthenticator = auth
 }
 
 // SetCredentialStore sets the credential store.
@@ -70,37 +59,20 @@ func (mgr *manager) CredentialStore() cred.Store {
 
 // VerifyCertificate verifies the client certificate.
 func (mgr *manager) VerifyCertificate(conn tls.Conn, certs []*x509.Certificate) (bool, error) {
-	var errs error
-	for _, authenticator := range mgr.authenticators {
-		if v, ok := authenticator.(TLSAuthenticator); ok {
-			ok, err := v.VerifyCertificate(conn, certs)
-			if ok {
-				return true, nil
-			}
-			errs = errors.Join(errs, err)
-		}
+	if mgr.tlsAuthenticator == nil {
+		return false, errors.New("no TLS authenticator")
 	}
-	return false, errs
+	return mgr.tlsAuthenticator.VerifyCertificate(conn, certs)
 }
 
 // VerifyCredential verifies the client credential.
 func (mgr *manager) VerifyCredential(conn net.Conn, q cred.Query) (bool, error) {
-	if mgr.credStore == nil {
+	if mgr.credStore == nil || mgr.credAuthenticator == nil {
 		return false, cred.ErrNoCredential
 	}
 	cred, err := mgr.credStore.LookupCredential(q)
 	if err != nil {
 		return false, err
 	}
-	var errs error
-	for _, authenticator := range mgr.authenticators {
-		if v, ok := authenticator.(CredentialAuthenticator); ok {
-			ok, err := v.VerifyCredential(conn, q, cred)
-			if ok {
-				return true, nil
-			}
-			errs = errors.Join(errs, err)
-		}
-	}
-	return false, errs
+	return mgr.credAuthenticator.VerifyCredential(conn, q, cred)
 }
