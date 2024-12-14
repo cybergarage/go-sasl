@@ -42,8 +42,8 @@ func (mgr *manager) SetCredentialAuthenticator(auth CredentialAuthenticator) {
 	mgr.credAuthenticator = auth
 }
 
-// SetTLSAuthenticator sets the TLS authenticator.
-func (mgr *manager) SetTLSAuthenticator(auth CertificateAuthenticator) {
+// SetCertificateAuthenticator sets the certificate authenticator.
+func (mgr *manager) SetCertificateAuthenticator(auth CertificateAuthenticator) {
 	mgr.tlsAuthenticator = auth
 }
 
