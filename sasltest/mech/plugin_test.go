@@ -32,7 +32,9 @@ func TestMechanism(t *testing.T) {
 		mech.Token(sasltest.Username),
 	}
 
-	serverOpts := []mech.Option{}
+	serverOpts := []mech.Option{
+		server.CredentialStore(),
+	}
 
 	for _, clientMech := range client.Mechanisms() {
 		t.Run(clientMech.Name(), func(t *testing.T) {
