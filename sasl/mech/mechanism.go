@@ -57,6 +57,8 @@ type Mechanism interface {
 	Name() string
 	// Type returns the mechanism type.
 	Type() Type
+	// SetOptions sets the mechanism options before starting.
+	SetOptions(...Option) error
 	// Start returns the initial context.
 	Start(...Option) (Context, error)
 }

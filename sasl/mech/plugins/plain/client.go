@@ -106,11 +106,14 @@ func (ctx *ClientContext) Dispose() error {
 
 // Client represents a PLAIN mech.
 type Client struct {
+	opts []mech.Option
 }
 
 // NewClient returns a new PLAIN client.
 func NewClient() *Client {
-	return &Client{}
+	return &Client{
+		opts: []mech.Option{},
+	}
 }
 
 // Name returns the mechanism name.
@@ -123,7 +126,14 @@ func (client *Client) Type() mech.Type {
 	return mech.Client
 }
 
+// SetOptions sets the mechanism options before starting.
+func (client *Client) SetOptions(opts ...mech.Option) error {
+	client.opts = opts
+	return nil
+}
+
 // Start returns the initial context.
 func (client *Client) Start(opts ...mech.Option) (mech.Context, error) {
-	return NewClientContext(client, opts...)
+	ctxOpts := append(client.opts, opts...)
+	return NewClientContext(client, ctxOpts...)
 }

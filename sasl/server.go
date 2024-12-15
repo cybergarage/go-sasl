@@ -42,6 +42,15 @@ func (server *Server) SASLProvider() *Provider {
 	return server.Provider
 }
 
+// Mechanism returns a mechanism by name.
+func (server *Server) Mechanism(name string) (Mechanism, error) {
+	mech, err := server.Provider.Mechanism(name)
+	if err != nil {
+		return nil, err
+	}
+	return mech, nil
+}
+
 func (server *Server) loadDefaultPlugins() {
 	server.AddMechanism(anonymous.NewServer())
 	server.AddMechanism(plain.NewServer())
