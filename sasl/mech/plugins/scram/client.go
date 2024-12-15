@@ -138,12 +138,14 @@ func (ctx *ClientContext) Dispose() error {
 // Client represents a SCRAM mech.
 type Client struct {
 	scramType Type
+	opts      []mech.Option
 }
 
 // NewSCRAM returns a new SCRAM mech.
 func NewClientWithType(t Type) mech.Mechanism {
 	return &Client{
 		scramType: t,
+		opts:      []mech.Option{},
 	}
 }
 
@@ -157,9 +159,16 @@ func (client *Client) Type() mech.Type {
 	return mech.Client
 }
 
+// SetOptions sets the mechanism options before starting.
+func (client *Client) SetOptions(opts ...mech.Option) error {
+	client.opts = opts
+	return nil
+}
+
 // Start returns the initial context.
 func (client *Client) Start(opts ...mech.Option) (mech.Context, error) {
-	clientOpts, err := newClientOptions(opts...)
+	startOpts := append(client.opts, opts...)
+	clientOpts, err := newClientOptions(startOpts...)
 	if err != nil {
 		return nil, err
 	}

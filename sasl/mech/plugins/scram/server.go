@@ -100,12 +100,14 @@ func (ctx *ServerContext) Dispose() error {
 // Server represents a SCRAM mech.
 type Server struct {
 	scramType Type
+	opts      []mech.Option
 }
 
 // NewSCRAM returns a new SCRAM mech.
 func NewServerWithType(t Type) mech.Mechanism {
 	return &Server{
 		scramType: t,
+		opts:      []mech.Option{},
 	}
 }
 
@@ -117,6 +119,12 @@ func (server *Server) Name() string {
 // Type returns the mechanism type.
 func (server *Server) Type() mech.Type {
 	return mech.Server
+}
+
+// SetOptions sets the mechanism options before starting.
+func (server *Server) SetOptions(opts ...mech.Option) error {
+	server.opts = opts
+	return nil
 }
 
 // Start returns the initial context.
@@ -134,7 +142,7 @@ func (server *Server) Start(opts ...mech.Option) (mech.Context, error) {
 		return nil, fmt.Errorf("unknown SCRAM type : %d", server.scramType)
 	}
 
-	for _, opt := range opts {
+	for _, opt := range append(server.opts, opts...) {
 		switch v := opt.(type) {
 		case cred.Store:
 			serverOpts = append(serverOpts, scram.WithServerCredentialStore(v))

@@ -77,10 +77,13 @@ func (ctx *ServerContext) Dispose() error {
 
 // Server represents a PLAIN mech.
 type Server struct {
+	opts []mech.Option
 }
 
 func NewServer() mech.Mechanism {
-	return &Server{}
+	return &Server{
+		opts: []mech.Option{},
+	}
 }
 
 // Name returns the mechanism name.
@@ -93,7 +96,14 @@ func (server *Server) Type() mech.Type {
 	return mech.Server
 }
 
+// SetOptions sets the mechanism options before starting.
+func (server *Server) SetOptions(opts ...mech.Option) error {
+	server.opts = append(server.opts, opts...)
+	return nil
+}
+
 // Start returns the initial context.
 func (server *Server) Start(opts ...mech.Option) (mech.Context, error) {
-	return NewServerContext(server, opts...)
+	ctxOpts := append(server.opts, opts...)
+	return NewServerContext(server, ctxOpts...)
 }
