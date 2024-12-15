@@ -16,6 +16,7 @@ package sasl
 
 import (
 	"github.com/cybergarage/go-sasl/sasl/auth"
+	"github.com/cybergarage/go-sasl/sasl/mech"
 	"github.com/cybergarage/go-sasl/sasl/mech/plugins/anonymous"
 	"github.com/cybergarage/go-sasl/sasl/mech/plugins/plain"
 	"github.com/cybergarage/go-sasl/sasl/mech/plugins/scram"
@@ -44,11 +45,17 @@ func (server *Server) SASLProvider() *Provider {
 
 // Mechanism returns a mechanism by name.
 func (server *Server) Mechanism(name string) (Mechanism, error) {
-	mech, err := server.Provider.Mechanism(name)
+	m, err := server.Provider.Mechanism(name)
 	if err != nil {
 		return nil, err
 	}
-	return mech, nil
+
+	opts := []mech.Option{
+		server.CredentialStore(),
+	}
+	m.SetOptions(opts...)
+
+	return m, nil
 }
 
 func (server *Server) loadDefaultPlugins() {
