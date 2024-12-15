@@ -28,5 +28,11 @@ func NewDefaultCredentialAuthenticator() CredentialAuthenticator {
 
 // VerifyCredential verifies the client credential.
 func (a *defaultCredAuthenticator) VerifyCredential(conn Conn, q cred.Query, cred cred.Credential) (bool, error) {
+	if q.Username() != cred.Username() {
+		return false, nil
+	}
+	if q.Password() != cred.Password() {
+		return false, nil
+	}
 	return true, nil
 }
