@@ -37,7 +37,11 @@ TEST_PKG=${MODULE_ROOT}/${TEST_PKG_DIR}
 
 all: test
 
-format:
+version:
+	@pushd ${PKG_SRC_DIR} && ./version.gen > version.go && popd
+	-git commit ${PKG_SRC_DIR}/version.go -m "Update version"
+
+format: version
 	gofmt -s -w ${PKG_SRC_DIR} ${TEST_PKG_DIR}
 
 vet: format
