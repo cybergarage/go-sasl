@@ -22,7 +22,7 @@ import (
 
 // Client represents a SASL client.
 type Client struct {
-	*Provider
+	Provider
 }
 
 // NewClient returns a new client.
