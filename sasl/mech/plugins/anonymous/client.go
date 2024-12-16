@@ -16,6 +16,7 @@ package anonymous
 
 import (
 	"fmt"
+	"slices"
 
 	"github.com/cybergarage/go-sasl/sasl/mech"
 )
@@ -124,6 +125,5 @@ func (client *Client) SetOptions(opts ...mech.Option) error {
 
 // Start returns the initial context.
 func (client *Client) Start(opts ...mech.Option) (mech.Context, error) {
-	ctxOpts := append(client.opts, opts...)
-	return NewClientContext(client, ctxOpts...)
+	return NewClientContext(client, slices.Concat(client.opts, opts)...)
 }

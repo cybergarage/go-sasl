@@ -16,6 +16,7 @@ package scram
 
 import (
 	"fmt"
+	"slices"
 
 	"github.com/cybergarage/go-sasl/sasl/mech"
 	"github.com/cybergarage/go-sasl/sasl/scram"
@@ -167,8 +168,7 @@ func (client *Client) SetOptions(opts ...mech.Option) error {
 
 // Start returns the initial context.
 func (client *Client) Start(opts ...mech.Option) (mech.Context, error) {
-	startOpts := append(client.opts, opts...)
-	clientOpts, err := newClientOptions(startOpts...)
+	clientOpts, err := newClientOptions(slices.Concat(client.opts, opts)...)
 	if err != nil {
 		return nil, err
 	}
