@@ -15,14 +15,10 @@
 package auth
 
 import (
-	"crypto/tls"
-	"errors"
-
 	"github.com/cybergarage/go-sasl/sasl/cred"
 )
 
 type manager struct {
-	tlsAuthenticator  CertificateAuthenticator
 	credAuthenticator CredentialAuthenticator
 	credStore         cred.Store
 }
@@ -31,7 +27,6 @@ type manager struct {
 func NewManager() Manager {
 	mgr := &manager{
 		credStore:         nil,
-		tlsAuthenticator:  NewDefaultCertificateAuthenticator(),
 		credAuthenticator: NewDefaultCredentialAuthenticator(),
 	}
 	return mgr
@@ -42,11 +37,6 @@ func (mgr *manager) SetCredentialAuthenticator(auth CredentialAuthenticator) {
 	mgr.credAuthenticator = auth
 }
 
-// SetCertificateAuthenticator sets the certificate authenticator.
-func (mgr *manager) SetCertificateAuthenticator(auth CertificateAuthenticator) {
-	mgr.tlsAuthenticator = auth
-}
-
 // SetCredentialStore sets the credential store.
 func (mgr *manager) SetCredentialStore(credStore cred.Store) {
 	mgr.credStore = credStore
@@ -55,14 +45,6 @@ func (mgr *manager) SetCredentialStore(credStore cred.Store) {
 // CredentialStore returns the credential store.
 func (mgr *manager) CredentialStore() cred.Store {
 	return mgr.credStore
-}
-
-// VerifyCertificate verifies the client certificate.
-func (mgr *manager) VerifyCertificate(conn Conn, state tls.ConnectionState) (bool, error) {
-	if mgr.tlsAuthenticator == nil {
-		return false, errors.New("no TLS authenticator")
-	}
-	return mgr.tlsAuthenticator.VerifyCertificate(conn, state)
 }
 
 // VerifyCredential verifies the client credential query.
