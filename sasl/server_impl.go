@@ -24,7 +24,7 @@ import (
 
 // server represents a SASL server.
 type server struct {
-	*Provider
+	Provider
 	auth.Manager
 }
 
