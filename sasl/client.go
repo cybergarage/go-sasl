@@ -14,30 +14,12 @@
 
 package sasl
 
-import (
-	"github.com/cybergarage/go-sasl/sasl/mech/plugins/anonymous"
-	"github.com/cybergarage/go-sasl/sasl/mech/plugins/plain"
-	"github.com/cybergarage/go-sasl/sasl/mech/plugins/scram"
-)
-
-// Client represents a SASL client.
-type Client struct {
-	Provider
-}
-
-// NewClient returns a new client.
-func NewClient() *Client {
-	client := &Client{
-		Provider: NewProvider(),
-	}
-	client.loadDefaultPlugins()
-	return client
-}
-
-func (client *Client) loadDefaultPlugins() {
-	client.AddMechanism(anonymous.NewClient())
-	client.AddMechanism(plain.NewClient())
-	for _, t := range scram.SCRAMTypes() {
-		client.AddMechanism(scram.NewClientWithType(t))
-	}
+// Client represents a SASL client interface.
+type Client interface {
+	// Version returns the version.
+	Version() string
+	// Mechanisms returns the mechanisms.
+	Mechanisms() []Mechanism
+	// Mechanism returns a mechanism by name.
+	Mechanism(name string) (Mechanism, error)
 }
