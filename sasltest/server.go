@@ -21,7 +21,7 @@ import (
 )
 
 type Server struct {
-	*sasl.Server
+	sasl.Server
 }
 
 func NewServer() *Server {
