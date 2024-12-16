@@ -6,6 +6,9 @@
   - SCRAM-SHA-256-PLUS
   - SCRAM-SHA-512-PLUS
 
+## v1.2.2 (2024-12-XX)
+- Updated Server::Mechanism() to set the credential store as the default option for the mechanism
+
 ## v1.2.1 (2024-09-12)
 - Standardized error messages using RFC-compliant strings
 - Extended mech.Context interface to allow flexible setting and retrieval of arbitrary values
