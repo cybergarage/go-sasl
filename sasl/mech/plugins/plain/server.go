@@ -17,6 +17,7 @@ package plain
 import (
 	"fmt"
 	"net"
+	"slices"
 
 	"github.com/cybergarage/go-sasl/sasl/auth"
 	"github.com/cybergarage/go-sasl/sasl/mech"
@@ -127,6 +128,5 @@ func (server *Server) SetOptions(opts ...mech.Option) error {
 
 // Start returns the initial context.
 func (server *Server) Start(opts ...mech.Option) (mech.Context, error) {
-	ctxOpts := append(server.opts, opts...)
-	return NewServerContext(server, ctxOpts...)
+	return NewServerContext(server, slices.Concat(server.opts, opts)...)
 }
