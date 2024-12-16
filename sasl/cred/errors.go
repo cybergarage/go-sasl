@@ -18,4 +18,8 @@ import (
 	"errors"
 )
 
+// ErrNoCredentialStore is the error that is returned when no credential store is found.
+var ErrNoCredentialStore = errors.New("no credential store")
+
+// ErrNoCredential is the error that is returned when no credential is found.
 var ErrNoCredential = errors.New("no credential")

@@ -38,6 +38,11 @@ func NewServer() *Server {
 	return server
 }
 
+// Version returns the version.
+func (server *Server) Version() string {
+	return Version
+}
+
 // SASLProvider returns the SASL provider.
 func (server *Server) SASLProvider() *Provider {
 	return server.Provider

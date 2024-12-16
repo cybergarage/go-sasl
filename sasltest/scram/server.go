@@ -44,12 +44,12 @@ func NewServer() (*Server, error) {
 	return server, nil
 }
 
-func (server *Server) LookupCredential(q auth.Query) (cred.Credential, error) {
+func (server *Server) LookupCredential(q auth.Query) (cred.Credential, bool, error) {
 	if q.Username() != Username {
-		return nil, cred.ErrNoCredential
+		return nil, false, cred.ErrNoCredential
 	}
 	return cred.NewCredential(
 		cred.WithCredentialUsername(q.Username()),
 		cred.WithCredentialPassword(Password),
-	), nil
+	), true, nil
 }

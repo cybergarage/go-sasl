@@ -140,9 +140,9 @@ func (server *Server) SetOptions(opts ...ServerOption) error {
 }
 
 // LookupCredential looks up a credential by the query.
-func (server *Server) LookupCredential(q cred.Query) (cred.Credential, error) {
+func (server *Server) LookupCredential(q cred.Query) (cred.Credential, bool, error) {
 	if server.credStore == nil {
-		return nil, cred.ErrNoCredential
+		return nil, false, cred.ErrNoCredentialStore
 	}
 	return server.credStore.LookupCredential(q)
 }
@@ -183,8 +183,8 @@ func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
 		auth.WithQueryMechanism(server.mechanism),
 		auth.WithQueryUsername(server.authzID),
 	)
-	_, err := server.LookupCredential(q)
-	if err != nil {
+	_, ok, _ = server.LookupCredential(q)
+	if !ok {
 		return nil, ErrUnknownUser
 	}
 
@@ -252,8 +252,8 @@ func (server *Server) FinalMessageFrom(clientMsg *Message) (*Message, error) {
 		auth.WithQueryMechanism(server.mechanism),
 		auth.WithQueryUsername(server.authzID),
 	)
-	storedCred, err := server.LookupCredential(q)
-	if err != nil {
+	storedCred, ok, _ := server.LookupCredential(q)
+	if !ok {
 		return nil, ErrUnknownUser
 	}
 
