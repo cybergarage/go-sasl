@@ -16,6 +16,17 @@ package cred
 
 // Store represents a credential store.
 type Store interface {
-	// LookupCredential looks up a credential by the query.
-	LookupCredential(q Query) (Credential, error)
+	// LookupCredential looks up a credential by the given query.
+	//
+	// Parameters:
+	//   q - The query used to look up the credential.
+	//
+	// Returns:
+	//   Credential - The credential associated with the query.
+	//   bool - A boolean indicating whether the credential was found (true) or not (false).
+	//   error - An error if there was an issue during the lookup process, or nil if the lookup was successful.
+	//
+	// If the credential is not found, the function returns an empty Credential, false, and nil error.
+	// If an error occurs during the lookup process, the function returns an empty Credential, false, and the error.
+	LookupCredential(q Query) (Credential, bool, error)
 }

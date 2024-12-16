@@ -65,13 +65,15 @@ func (mgr *manager) VerifyCertificate(conn Conn, state tls.ConnectionState) (boo
 	return mgr.tlsAuthenticator.VerifyCertificate(conn, state)
 }
 
-// VerifyCredential verifies the client credential.
+// VerifyCredential verifies the client credential query.
+// If the query is valid, the function returns true and no error.
+// Otherwise, it returns false and an error if an error occurs during the verification process.
 func (mgr *manager) VerifyCredential(conn Conn, q cred.Query) (bool, error) {
 	if mgr.credStore == nil || mgr.credAuthenticator == nil {
 		return false, cred.ErrNoCredential
 	}
-	cred, err := mgr.credStore.LookupCredential(q)
-	if err != nil {
+	cred, ok, err := mgr.credStore.LookupCredential(q)
+	if !ok {
 		return false, err
 	}
 	return mgr.credAuthenticator.VerifyCredential(conn, q, cred)
