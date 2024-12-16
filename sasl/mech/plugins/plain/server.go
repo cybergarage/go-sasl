@@ -107,7 +107,9 @@ type Server struct {
 }
 
 func NewServer() mech.Mechanism {
-	return &Server{}
+	return &Server{
+		opts: []mech.Option{},
+	}
 }
 
 // Name returns the mechanism name.
