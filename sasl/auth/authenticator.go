@@ -15,16 +15,8 @@
 package auth
 
 import (
-	"crypto/tls"
-
 	"github.com/cybergarage/go-sasl/sasl/cred"
 )
-
-// CertificateAuthenticator is the interface for authenticating a client using TLS certificates.
-type CertificateAuthenticator interface {
-	// VerifyCertificate verifies the client certificate.
-	VerifyCertificate(conn Conn, state tls.ConnectionState) (bool, error)
-}
 
 // CredentialAuthenticator is the interface for authenticating a client using credential.
 type CredentialAuthenticator interface {
