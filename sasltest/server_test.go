@@ -20,8 +20,7 @@ import (
 
 func TestServer(t *testing.T) {
 	server := NewServer()
-	provier := server.SASLProvider()
-	mechs := provier.Mechanisms()
+	mechs := server.Mechanisms()
 	if len(mechs) == 0 {
 		t.Error("mechs is empty")
 	}
