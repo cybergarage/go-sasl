@@ -44,7 +44,7 @@ func NewServer() (*Server, error) {
 	return server, nil
 }
 
-func (server *Server) LookupCredential(q auth.Query) (cred.Credential, bool, error) {
+func (server *Server) LookupCredential(q auth.Query) (auth.Credential, bool, error) {
 	if q.Username() != Username {
 		return nil, false, cred.ErrNoCredential
 	}

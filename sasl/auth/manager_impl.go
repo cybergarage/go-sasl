@@ -38,19 +38,19 @@ func (mgr *manager) SetCredentialAuthenticator(auth CredentialAuthenticator) {
 }
 
 // SetCredentialStore sets the credential store.
-func (mgr *manager) SetCredentialStore(credStore cred.Store) {
+func (mgr *manager) SetCredentialStore(credStore CredentialStore) {
 	mgr.credStore = credStore
 }
 
 // CredentialStore returns the credential store.
-func (mgr *manager) CredentialStore() cred.Store {
+func (mgr *manager) CredentialStore() CredentialStore {
 	return mgr.credStore
 }
 
 // VerifyCredential verifies the client credential query.
 // If the query is valid, the function returns true and no error.
 // Otherwise, it returns false and an error if an error occurs during the verification process.
-func (mgr *manager) VerifyCredential(conn Conn, q cred.Query) (bool, error) {
+func (mgr *manager) VerifyCredential(conn Conn, q Query) (bool, error) {
 	if mgr.credStore == nil || mgr.credAuthenticator == nil {
 		return false, cred.ErrNoCredential
 	}

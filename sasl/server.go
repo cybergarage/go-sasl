@@ -16,7 +16,6 @@ package sasl
 
 import (
 	"github.com/cybergarage/go-sasl/sasl/auth"
-	"github.com/cybergarage/go-sasl/sasl/cred"
 )
 
 // Server represents a SASL server.
@@ -30,9 +29,9 @@ type Server interface {
 	// SetCredentialAuthenticator sets the credential authenticator.
 	SetCredentialAuthenticator(auth auth.CredentialAuthenticator)
 	// SetCredentialStore sets the credential store.
-	SetCredentialStore(credStore cred.Store)
+	SetCredentialStore(credStore auth.CredentialStore)
 	// CredentialStore returns the credential store.
-	CredentialStore() cred.Store
+	CredentialStore() auth.CredentialStore
 	// VerifyCredential verifies the client credential.
-	VerifyCredential(conn auth.Conn, q cred.Query) (bool, error)
+	VerifyCredential(conn auth.Conn, q auth.Query) (bool, error)
 }
