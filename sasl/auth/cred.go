@@ -12,10 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package cred
+package auth
 
-// Store represents a credential store.
-type Store interface {
+// Credential represents a credential interface.
+type Credential interface {
+	Group() string
+	// Username returns the username.
+	Username() string
+	// Password returns the password.
+	Password() string
+	// Authorize returns true if the credential is authorized.
+	Authorize(q Query) bool
+}
+
+// CredentialStore represents a credential store interface.
+type CredentialStore interface {
 	// LookupCredential looks up a credential by the given query.
 	//
 	// Parameters:

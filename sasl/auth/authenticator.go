@@ -14,13 +14,6 @@
 
 package auth
 
-import (
-	"github.com/cybergarage/go-sasl/sasl/cred"
-)
-
-// Credential represents a credential.
-type Credential = cred.Credential
-
 // CredentialAuthenticator is the interface for authenticating a client using credential.
 type CredentialAuthenticator interface {
 	// VerifyCredential verifies the client credential.

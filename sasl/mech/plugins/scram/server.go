@@ -17,7 +17,7 @@ package scram
 import (
 	"fmt"
 
-	"github.com/cybergarage/go-sasl/sasl/cred"
+	"github.com/cybergarage/go-sasl/sasl/auth"
 	"github.com/cybergarage/go-sasl/sasl/mech"
 	"github.com/cybergarage/go-sasl/sasl/scram"
 )
@@ -144,7 +144,7 @@ func (server *Server) Start(opts ...mech.Option) (mech.Context, error) {
 
 	for _, opt := range append(server.opts, opts...) {
 		switch v := opt.(type) {
-		case cred.Store:
+		case auth.CredentialStore:
 			serverOpts = append(serverOpts, scram.WithServerCredentialStore(v))
 		case mech.RandomSequence:
 			serverOpts = append(serverOpts, scram.WithServerRandomSequence(string(v)))

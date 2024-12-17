@@ -14,13 +14,6 @@
 
 package auth
 
-import (
-	"github.com/cybergarage/go-sasl/sasl/cred"
-)
-
-// CredentialStore represents a credential store.
-type CredentialStore = cred.Store
-
 // Manager represents a  auth manager interface.
 type Manager interface {
 	// SetCredentialAuthenticator sets the credential authenticator.

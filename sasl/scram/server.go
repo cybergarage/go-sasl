@@ -19,7 +19,6 @@ import (
 	"encoding/base64"
 
 	"github.com/cybergarage/go-sasl/sasl/auth"
-	"github.com/cybergarage/go-sasl/sasl/cred"
 	"github.com/cybergarage/go-sasl/sasl/mech"
 	"github.com/cybergarage/go-sasl/sasl/util/rand"
 )
@@ -142,7 +141,7 @@ func (server *Server) SetOptions(opts ...ServerOption) error {
 // LookupCredential looks up a credential by the query.
 func (server *Server) LookupCredential(q auth.Query) (auth.Credential, bool, error) {
 	if server.credStore == nil {
-		return nil, false, cred.ErrNoCredentialStore
+		return nil, false, auth.ErrNoCredentialStore
 	}
 	return server.credStore.LookupCredential(q)
 }
