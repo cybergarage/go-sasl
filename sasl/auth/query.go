@@ -14,9 +14,16 @@
 
 package auth
 
-import (
-	"github.com/cybergarage/go-sasl/sasl/cred"
-)
-
 // Query represents a query interface.
-type Query = cred.Query
+type Query interface {
+	// Group returns the group.
+	Group() string
+	// Username returns the username.
+	Username() string
+	// Password returns the password.
+	Password() string
+	// Mechanism returns the mechanism.
+	Mechanism() string
+	// Options returns the options.
+	Options() []any
+}

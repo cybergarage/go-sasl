@@ -14,13 +14,9 @@
 
 package auth
 
-import (
-	"github.com/cybergarage/go-sasl/sasl/cred"
-)
-
 type manager struct {
 	credAuthenticator CredentialAuthenticator
-	credStore         cred.Store
+	credStore         CredentialStore
 }
 
 // NewManager returns a new auth manager instance.
@@ -52,7 +48,7 @@ func (mgr *manager) CredentialStore() CredentialStore {
 // Otherwise, it returns false and an error if an error occurs during the verification process.
 func (mgr *manager) VerifyCredential(conn Conn, q Query) (bool, error) {
 	if mgr.credStore == nil || mgr.credAuthenticator == nil {
-		return false, cred.ErrNoCredential
+		return false, ErrNoCredential
 	}
 	cred, ok, err := mgr.credStore.LookupCredential(q)
 	if !ok {
