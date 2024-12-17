@@ -27,7 +27,7 @@ import (
 // Server represents a SCRAM server.
 type Server struct {
 	mech.Store
-	credStore      cred.Store
+	credStore      auth.CredentialStore
 	mechanism      string
 	challenge      string
 	authzID        string
@@ -116,7 +116,7 @@ func WithServerSaltString(salt string) ServerOption {
 }
 
 // WithServerCredentialStore returns a server option to set the credential store.
-func WithServerCredentialStore(store cred.Store) ServerOption {
+func WithServerCredentialStore(store auth.CredentialStore) ServerOption {
 	return func(server *Server) error {
 		server.credStore = store
 		return nil
@@ -140,7 +140,7 @@ func (server *Server) SetOptions(opts ...ServerOption) error {
 }
 
 // LookupCredential looks up a credential by the query.
-func (server *Server) LookupCredential(q cred.Query) (cred.Credential, bool, error) {
+func (server *Server) LookupCredential(q auth.Query) (auth.Credential, bool, error) {
 	if server.credStore == nil {
 		return nil, false, cred.ErrNoCredentialStore
 	}

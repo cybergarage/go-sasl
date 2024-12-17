@@ -18,14 +18,17 @@ import (
 	"github.com/cybergarage/go-sasl/sasl/cred"
 )
 
+// CredentialStore represents a credential store.
+type CredentialStore = cred.Store
+
 // Manager represents a  auth manager interface.
 type Manager interface {
 	// SetCredentialAuthenticator sets the credential authenticator.
 	SetCredentialAuthenticator(auth CredentialAuthenticator)
 	// SetCredentialStore sets the credential store.
-	SetCredentialStore(credStore cred.Store)
+	SetCredentialStore(credStore CredentialStore)
 	// CredentialStore returns the credential store.
-	CredentialStore() cred.Store
+	CredentialStore() CredentialStore
 	// VerifyCredential verifies the client credential.
-	VerifyCredential(conn Conn, q cred.Query) (bool, error)
+	VerifyCredential(conn Conn, q Query) (bool, error)
 }
