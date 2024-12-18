@@ -44,11 +44,12 @@ func (mgr *manager) CredentialStore() CredentialStore {
 }
 
 // VerifyCredential verifies the client credential query.
+// If the credential store is nil, the function returns true and no error.
 // If the query is valid, the function returns true and no error.
 // Otherwise, it returns false and an error if an error occurs during the verification process.
 func (mgr *manager) VerifyCredential(conn Conn, q Query) (bool, error) {
-	if mgr.credStore == nil || mgr.credAuthenticator == nil {
-		return false, ErrNoCredential
+	if mgr.credStore == nil {
+		return true, nil
 	}
 	cred, ok, err := mgr.credStore.LookupCredential(q)
 	if !ok {
