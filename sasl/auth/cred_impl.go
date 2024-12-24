@@ -21,11 +21,11 @@ type cred struct {
 	password string
 }
 
-// credOptionFn represents an option for a credential.
-type credOptionFn func(*cred)
+// CredentialOptionFn represents an option for a credential.
+type CredentialOptionFn func(*cred)
 
 // NewCredential returns a new credential with options.
-func NewCredential(opts ...credOptionFn) Credential {
+func NewCredential(opts ...CredentialOptionFn) Credential {
 	cred := &cred{
 		group:    "",
 		username: "",
@@ -36,28 +36,28 @@ func NewCredential(opts ...credOptionFn) Credential {
 }
 
 // WithCredentialGroup returns an option to set the group.
-func WithCredentialGroup(group string) credOptionFn {
+func WithCredentialGroup(group string) CredentialOptionFn {
 	return func(cred *cred) {
 		cred.group = group
 	}
 }
 
 // WithCredentialUsername returns an option to set the username.
-func WithCredentialUsername(username string) credOptionFn {
+func WithCredentialUsername(username string) CredentialOptionFn {
 	return func(cred *cred) {
 		cred.username = username
 	}
 }
 
 // WithCredentialPassword returns an option to set the password.
-func WithCredentialPassword(password string) credOptionFn {
+func WithCredentialPassword(password string) CredentialOptionFn {
 	return func(cred *cred) {
 		cred.password = password
 	}
 }
 
 // SetOption sets the options.
-func (cred *cred) SetOption(opts ...credOptionFn) {
+func (cred *cred) SetOption(opts ...CredentialOptionFn) {
 	for _, opt := range opts {
 		opt(cred)
 	}
