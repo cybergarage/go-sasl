@@ -6,7 +6,7 @@
   - SCRAM-SHA-256-PLUS
   - SCRAM-SHA-512-PLUS
 
-## v1.2.2 (2024-12-XX)
+## v1.2.2 (2024-12-28)
 - Updated Server::Mechanism() to set the credential store as the default option for the mechanism
 - Updated CredentialStore interface 
 
