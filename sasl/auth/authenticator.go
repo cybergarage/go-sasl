@@ -14,8 +14,14 @@
 
 package auth
 
+// CredentialStoreRegistrar
+type CredentialStoreRegistrar interface {
+	// SetCredentialStore sets the credential store.
+	SetCredentialStore(credStore CredentialStore)
+}
+
 // CredentialAuthenticator is the interface for authenticating a client using credential.
 type CredentialAuthenticator interface {
 	// VerifyCredential verifies the client credential.
-	VerifyCredential(conn Conn, q Query, cred Credential) (bool, error)
+	VerifyCredential(conn Conn, q Query) (bool, error)
 }
