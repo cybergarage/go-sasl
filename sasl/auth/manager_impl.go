@@ -36,6 +36,12 @@ func (mgr *manager) SetCredentialAuthenticator(auth CredentialAuthenticator) {
 // SetCredentialStore sets the credential store.
 func (mgr *manager) SetCredentialStore(credStore CredentialStore) {
 	mgr.credStore = credStore
+	if mgr.credAuthenticator != nil {
+		csReg, ok := mgr.credAuthenticator.(CredentialStoreRegistrar)
+		if ok {
+			csReg.SetCredentialStore(credStore)
+		}
+	}
 }
 
 // CredentialStore returns the credential store.
@@ -48,12 +54,5 @@ func (mgr *manager) CredentialStore() CredentialStore {
 // If the query is valid, the function returns true and no error.
 // Otherwise, it returns false and an error if an error occurs during the verification process.
 func (mgr *manager) VerifyCredential(conn Conn, q Query) (bool, error) {
-	if mgr.credStore == nil {
-		return true, nil
-	}
-	cred, ok, err := mgr.credStore.LookupCredential(q)
-	if !ok {
-		return false, err
-	}
-	return mgr.credAuthenticator.VerifyCredential(conn, q, cred)
+	return mgr.credAuthenticator.VerifyCredential(conn, q)
 }

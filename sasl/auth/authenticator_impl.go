@@ -15,15 +15,29 @@
 package auth
 
 type defaultCredAuthenticator struct {
+	credStore CredentialStore
 }
 
 // NewDefaultCredentialAuthenticator returns a new default credential authenticator.
 func NewDefaultCredentialAuthenticator() CredentialAuthenticator {
-	return &defaultCredAuthenticator{}
+	return &defaultCredAuthenticator{
+		credStore: nil,
+	}
+}
+
+func (ca *defaultCredAuthenticator) SetCredentialStore(credStore CredentialStore) {
+	ca.credStore = credStore
 }
 
 // VerifyCredential verifies the client credential.
-func (a *defaultCredAuthenticator) VerifyCredential(conn Conn, q Query, cred Credential) (bool, error) {
+func (ca *defaultCredAuthenticator) VerifyCredential(conn Conn, q Query) (bool, error) {
+	if ca.credStore == nil {
+		return true, nil
+	}
+	cred, ok, err := ca.credStore.LookupCredential(q)
+	if !ok {
+		return false, err
+	}
 	if q.Username() != cred.Username() {
 		return false, nil
 	}
