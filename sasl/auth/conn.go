@@ -18,6 +18,7 @@ import (
 	"net"
 )
 
+// Conn represents a connection interface.
 type Conn interface {
 	// RemoteAddr returns the remote network address, if known.
 	RemoteAddr() net.Addr
