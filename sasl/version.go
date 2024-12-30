@@ -15,5 +15,5 @@
 package sasl
 
 const (
-	Version = "v1.2.3"
+	Version = "v1.2.4"
 )
