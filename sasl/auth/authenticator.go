@@ -14,7 +14,7 @@
 
 package auth
 
-// CredentialStoreRegistrar
+// CredentialStore is the interface for storing credentials.
 type CredentialStoreRegistrar interface {
 	// SetCredentialStore sets the credential store.
 	SetCredentialStore(credStore CredentialStore)
