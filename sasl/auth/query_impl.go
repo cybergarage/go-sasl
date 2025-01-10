@@ -16,11 +16,12 @@ package auth
 
 // query represents a query.
 type query struct {
-	group    string
-	username string
-	password string
-	mech     string
-	opts     []any
+	group       string
+	username    string
+	password    string
+	mech        string
+	opts        []any
+	encryptFunc EncryptFunc
 }
 
 // QueryOptionFn represents an option function for a query.
@@ -32,11 +33,12 @@ type QueryOption any
 // NewQuery returns a new query with options.
 func NewQuery(opts ...QueryOptionFn) Query {
 	q := &query{
-		group:    "",
-		username: "",
-		password: "",
-		mech:     "",
-		opts:     []any{},
+		group:       "",
+		username:    "",
+		password:    "",
+		mech:        "",
+		opts:        []any{},
+		encryptFunc: nil,
 	}
 	q.SetOption(opts...)
 	return q
@@ -107,4 +109,9 @@ func (q *query) Mechanism() string {
 // Options returns the options.
 func (q *query) Options() []any {
 	return q.opts
+}
+
+// EncryptFunc returns the encrypt function.
+func (q *query) EncryptFunc() EncryptFunc {
+	return q.encryptFunc
 }
