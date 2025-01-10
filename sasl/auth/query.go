@@ -14,6 +14,9 @@
 
 package auth
 
+// EncryptFunc represents an encrypt function.
+type EncryptFunc func(query Query) ([]byte, error)
+
 // Query represents a query interface.
 type Query interface {
 	// Group returns the group.
@@ -26,4 +29,6 @@ type Query interface {
 	Mechanism() string
 	// Options returns the options.
 	Options() []any
+	// EncryptFunc returns the encrypt function.
+	EncryptFunc() EncryptFunc
 }
