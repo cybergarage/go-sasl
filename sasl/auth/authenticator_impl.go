@@ -14,6 +14,10 @@
 
 package auth
 
+import (
+	"strings"
+)
+
 type defaultCredAuthenticator struct {
 	credStore CredentialStore
 }
@@ -34,15 +38,20 @@ func (ca *defaultCredAuthenticator) VerifyCredential(conn Conn, q Query) (bool, 
 	if ca.credStore == nil {
 		return true, nil
 	}
+
 	cred, ok, err := ca.credStore.LookupCredential(q)
 	if !ok {
 		return false, err
 	}
-	if q.Username() != cred.Username() {
-		return false, nil
+
+	credPassword := cred.Password()
+	encrypncryptFunc := q.EncryptFunc()
+	if encrypncryptFunc != nil {
+		credPassword, err = encrypncryptFunc(q)
+		if err != nil {
+			return false, err
+		}
 	}
-	if q.Password() != cred.Password() {
-		return false, nil
-	}
-	return true, nil
+
+	return strings.Compare(q.Password(), credPassword) == 0, nil
 }
