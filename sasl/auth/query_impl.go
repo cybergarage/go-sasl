@@ -74,10 +74,10 @@ func WithQueryMechanism(mech string) QueryOptionFn {
 	}
 }
 
-// WithQueryOption returns an option to set the options.
-func WithQueryOption(opt any) QueryOptionFn {
+// WithQueryOptions returns an option to set the options.
+func WithQueryOptions(opt ...any) QueryOptionFn {
 	return func(q *query) {
-		q.opts = append(q.opts, opt)
+		q.opts = append(q.opts, opt...)
 	}
 }
 
