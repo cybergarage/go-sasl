@@ -31,4 +31,6 @@ type Query interface {
 	Options() []any
 	// EncryptFunc returns the encrypt function.
 	EncryptFunc() EncryptFunc
+	// Arguments returns the arguments for the encrypt function.
+	Arguments() []any
 }
