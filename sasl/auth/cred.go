@@ -21,8 +21,6 @@ type Credential interface {
 	Username() string
 	// Password returns the password.
 	Password() string
-	// Authorize returns true if the credential is authorized.
-	Authorize(q Query) bool
 }
 
 // CredentialStore represents a credential store interface.
