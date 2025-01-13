@@ -15,7 +15,7 @@
 package auth
 
 // EncryptFunc represents an encrypt function.
-type EncryptFunc func(query Query) (string, error)
+type EncryptFunc func(passwd string, args ...any) (string, error)
 
 // Query represents a query interface.
 type Query interface {

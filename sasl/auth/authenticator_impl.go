@@ -47,7 +47,7 @@ func (ca *defaultCredAuthenticator) VerifyCredential(conn Conn, q Query) (bool, 
 	credPassword := cred.Password()
 	encrypncryptFunc := q.EncryptFunc()
 	if encrypncryptFunc != nil {
-		credPassword, err = encrypncryptFunc(q)
+		credPassword, err = encrypncryptFunc(credPassword, q.Arguments()...)
 		if err != nil {
 			return false, err
 		}
