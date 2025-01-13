@@ -21,6 +21,7 @@ type query struct {
 	password    string
 	mech        string
 	opts        []any
+	args        []any
 	encryptFunc EncryptFunc
 }
 
@@ -38,6 +39,7 @@ func NewQuery(opts ...QueryOptionFn) Query {
 		password:    "",
 		mech:        "",
 		opts:        []any{},
+		args:        []any{},
 		encryptFunc: nil,
 	}
 	q.SetOption(opts...)
@@ -79,6 +81,13 @@ func WithQueryOption(opt any) QueryOptionFn {
 	}
 }
 
+// WithQueryArguments returns an option to set the arguments for the encrypt function.
+func WithQueryArguments(args ...any) QueryOptionFn {
+	return func(q *query) {
+		q.args = append(q.args, args...)
+	}
+}
+
 // SetOption sets the options.
 func (q *query) SetOption(opts ...QueryOptionFn) {
 	for _, opt := range opts {
@@ -114,4 +123,9 @@ func (q *query) Options() []any {
 // EncryptFunc returns the encrypt function.
 func (q *query) EncryptFunc() EncryptFunc {
 	return q.encryptFunc
+}
+
+// Arguments returns the arguments for the encrypt function.
+func (q *query) Arguments() []any {
+	return q.args
 }
