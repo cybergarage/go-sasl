@@ -14,23 +14,7 @@
 
 package auth
 
-// EncryptFunc represents an encrypt function.
-type EncryptFunc func(query Query) (string, error)
-
-// Query represents a query interface.
-type Query interface {
-	// Group returns the group.
-	Group() string
-	// Username returns the username.
-	Username() string
-	// Password returns the password.
-	Password() string
-	// Mechanism returns the mechanism.
-	Mechanism() string
-	// Options returns the options.
-	Options() []any
-	// EncryptFunc returns the encrypt function.
-	EncryptFunc() EncryptFunc
-	// Arguments returns the arguments for the encrypt function.
-	Arguments() []any
+// PlainEncrypt encrypts the query password.
+func PlainEncrypt(query Query) (string, error) {
+	return query.Password(), nil
 }

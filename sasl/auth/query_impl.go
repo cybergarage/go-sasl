@@ -40,7 +40,7 @@ func NewQuery(opts ...QueryOptionFn) Query {
 		mech:        "",
 		opts:        []any{},
 		args:        []any{},
-		encryptFunc: nil,
+		encryptFunc: PlainEncrypt,
 	}
 	q.SetOption(opts...)
 	return q
