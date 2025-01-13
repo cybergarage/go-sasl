@@ -15,6 +15,6 @@
 package auth
 
 // PlainEncrypt encrypts the query password.
-func PlainEncrypt(query Query) (string, error) {
-	return query.Password(), nil
+func PlainEncrypt(passwd string, args ...any) (string, error) {
+	return passwd, nil
 }
