@@ -81,6 +81,13 @@ func WithQueryOptions(opt ...any) QueryOptionFn {
 	}
 }
 
+// WithQueryEncryptFunc returns an option to set the encrypt function.
+func WithQueryEncryptFunc(encryptFunc EncryptFunc) QueryOptionFn {
+	return func(q *query) {
+		q.encryptFunc = encryptFunc
+	}
+}
+
 // WithQueryArguments returns an option to set the arguments for the encrypt function.
 func WithQueryArguments(args ...any) QueryOptionFn {
 	return func(q *query) {
