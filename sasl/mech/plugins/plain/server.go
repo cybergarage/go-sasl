@@ -80,11 +80,16 @@ func (ctx *ServerContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 		if err != nil {
 			return nil, err
 		}
-		q := auth.NewQuery(
+
+		q, err := auth.NewQuery(
 			auth.WithQueryGroup(msg.Authzid()),
 			auth.WithQueryUsername(msg.Authcid()),
 			auth.WithQueryPassword(msg.Passwd()),
 		)
+		if err != nil {
+			return nil, err
+		}
+
 		ok, err := ctx.VerifyCredential(ctx.Conn, q)
 		if !ok {
 			return nil, err

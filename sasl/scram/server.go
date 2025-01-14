@@ -178,10 +178,14 @@ func (server *Server) FirstMessageFrom(clientMsg *Message) (*Message, error) {
 	}
 	server.SetValue(UsernameID, authzID)
 
-	q := auth.NewQuery(
+	q, err := auth.NewQuery(
 		auth.WithQueryMechanism(server.mechanism),
 		auth.WithQueryUsername(server.authzID),
 	)
+	if err != nil {
+		return nil, err
+	}
+
 	_, ok, _ = server.LookupCredential(q)
 	if !ok {
 		return nil, ErrUnknownUser
@@ -247,10 +251,14 @@ func (server *Server) FinalMessageFrom(clientMsg *Message) (*Message, error) {
 
 	// SaltedPassword := Hi(Normalize(password), salt, i)
 
-	q := auth.NewQuery(
+	q, err := auth.NewQuery(
 		auth.WithQueryMechanism(server.mechanism),
 		auth.WithQueryUsername(server.authzID),
 	)
+	if err != nil {
+		return nil, err
+	}
+
 	storedCred, ok, _ := server.LookupCredential(q)
 	if !ok {
 		return nil, ErrUnknownUser

@@ -19,6 +19,20 @@ type EncryptFunc func(passwd string, args ...any) (string, error)
 
 // Query represents a query interface.
 type Query interface {
+	// SetGroup sets the group.
+	SetGroup(group string)
+	// SetUsername sets the username.
+	SetUsername(username string)
+	// SetPassword sets the password.
+	SetPassword(password string)
+	// SetMechanism sets the mechanism.
+	SetMechanism(mech string)
+	// SetOptions sets the options.
+	SetOptions(opts ...any)
+	// SetArguments sets the arguments.
+	SetArguments(args ...any)
+	// SetEncryptFunc sets the encrypt function.
+	SetEncryptFunc(encryptFunc EncryptFunc)
 	// Group returns the group.
 	Group() string
 	// Username returns the username.
