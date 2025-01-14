@@ -7,7 +7,9 @@
   - SCRAM-SHA-512-PLUS
 
 ## v1.2.4 (2025-01-XX)
-- Update Query interface to support the EncryptFunc() method
+- Updated Query interface
+  - Added setter methods for the query parameters
+  - Added the EncryptFunc() method
  
 ## v1.2.3 (2024-12-31)
 - Updated CredentialAuthenticator interface
