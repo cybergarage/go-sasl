@@ -14,6 +14,8 @@
 
 package auth
 
+import "errors"
+
 // query represents a query.
 type query struct {
 	group       string
@@ -26,13 +28,13 @@ type query struct {
 }
 
 // QueryOptionFn represents an option function for a query.
-type QueryOptionFn func(*query)
+type QueryOptionFn func(Query) error
 
 // QueryOption represents an option for a query.
 type QueryOption any
 
 // NewQuery returns a new query with options.
-func NewQuery(opts ...QueryOptionFn) Query {
+func NewQuery(opts ...QueryOptionFn) (Query, error) {
 	q := &query{
 		group:       "",
 		username:    "",
@@ -42,64 +44,110 @@ func NewQuery(opts ...QueryOptionFn) Query {
 		args:        []any{},
 		encryptFunc: PlainEncrypt,
 	}
-	q.SetOption(opts...)
-	return q
+	return q, q.SetOption(opts...)
 }
 
 // WithQueryGroup returns an option to set the group.
 func WithQueryGroup(group string) QueryOptionFn {
-	return func(q *query) {
-		q.group = group
+	return func(q Query) error {
+		q.SetGroup(group)
+		return nil
 	}
 }
 
 // WithQueryUsername returns an option to set the username.
 func WithQueryUsername(username string) QueryOptionFn {
-	return func(q *query) {
-		q.username = username
+	return func(q Query) error {
+		q.SetUsername(username)
+		return nil
 	}
 }
 
 // WithQueryPassword returns an option to set the password.
 func WithQueryPassword(password string) QueryOptionFn {
-	return func(q *query) {
-		q.password = password
+	return func(q Query) error {
+		q.SetPassword(password)
+		return nil
 	}
 }
 
 // WithQueryMechanism returns an option to set the mechanism.
 func WithQueryMechanism(mech string) QueryOptionFn {
-	return func(q *query) {
-		q.mech = mech
+	return func(q Query) error {
+		q.SetMechanism(mech)
+		return nil
 	}
 }
 
 // WithQueryOptions returns an option to set the options.
 func WithQueryOptions(opt ...any) QueryOptionFn {
-	return func(q *query) {
-		q.opts = append(q.opts, opt...)
+	return func(q Query) error {
+		q.SetOptions(opt...)
+		return nil
 	}
 }
 
 // WithQueryEncryptFunc returns an option to set the encrypt function.
 func WithQueryEncryptFunc(encryptFunc EncryptFunc) QueryOptionFn {
-	return func(q *query) {
-		q.encryptFunc = encryptFunc
+	return func(q Query) error {
+		q.SetEncryptFunc(encryptFunc)
+		return nil
 	}
 }
 
 // WithQueryArguments returns an option to set the arguments for the encrypt function.
 func WithQueryArguments(args ...any) QueryOptionFn {
-	return func(q *query) {
-		q.args = append(q.args, args...)
+	return func(q Query) error {
+		q.SetArguments(args...)
+		return nil
 	}
 }
 
 // SetOption sets the options.
-func (q *query) SetOption(opts ...QueryOptionFn) {
+func (q *query) SetOption(opts ...QueryOptionFn) error {
+	var errs error
 	for _, opt := range opts {
-		opt(q)
+		err := opt(q)
+		if err != nil {
+			errs = errors.Join(errs, err)
+		}
 	}
+	return errs
+}
+
+// SetGroup sets the group.
+func (q *query) SetGroup(group string) {
+	q.group = group
+}
+
+// SetUsername sets the username.
+func (q *query) SetUsername(username string) {
+	q.username = username
+}
+
+// SetPassword sets the password.
+func (q *query) SetPassword(password string) {
+	q.password = password
+}
+
+// SetMechanism sets the mechanism.
+func (q *query) SetMechanism(mech string) {
+	q.mech = mech
+}
+
+// SetOptions sets the options.
+func (q *query) SetOptions(opts ...any) {
+	q.opts = opts
+}
+
+// SetEncryptFunc sets the encrypt function.
+func (q *query) SetEncryptFunc(encryptFunc EncryptFunc) {
+	q.encryptFunc = encryptFunc
+}
+
+// SetArguments sets the arguments.
+func (q *query) SetArguments(args ...any) {
+	q.args = args
 }
 
 // Group returns the group.
