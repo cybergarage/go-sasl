@@ -7,10 +7,12 @@
   - SCRAM-SHA-512-PLUS
 
 ## v1.2.4 (2025-01-XX)
-- Updated Query interface
-  - Added setter methods for the query parameters
-  - Added the EncryptFunc() method
- 
+- Updated Query interface:
+  - Added setter methods for query parameters
+  - Added the EncryptFunc method
+- Updated default CredAuthenticator:
+  - Updated to compare credentials based on variable type
+
 ## v1.2.3 (2024-12-31)
 - Updated CredentialAuthenticator interface
 
