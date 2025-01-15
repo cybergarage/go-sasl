@@ -10,6 +10,8 @@
 - Updated Query interface:
   - Added setter methods for query parameters
   - Added the EncryptFunc method
+- Updated Credential interface:
+  - Updated password methods to accept any type
 - Updated default CredAuthenticator:
   - Updated to compare credentials based on variable type
 
