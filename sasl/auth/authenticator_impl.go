@@ -15,6 +15,7 @@
 package auth
 
 import (
+	"bytes"
 	"strings"
 )
 
@@ -53,5 +54,25 @@ func (ca *defaultCredAuthenticator) VerifyCredential(conn Conn, q Query) (bool, 
 		}
 	}
 
-	return strings.Compare(q.Password(), credPassword) == 0, nil
+	compareCredential := func(queryPassword any, credPassword any) bool {
+		switch qp := queryPassword.(type) {
+		case string:
+			switch cp := credPassword.(type) {
+			case string:
+				return strings.Compare(qp, cp) == 0
+			case []byte:
+				return strings.Compare(qp, string(cp)) == 0
+			}
+		case []byte:
+			switch cp := credPassword.(type) {
+			case string:
+				return bytes.Equal(qp, []byte(cp))
+			case []byte:
+				return bytes.Equal(qp, cp)
+			}
+		}
+		return false
+	}
+
+	return compareCredential(q.Password(), credPassword), nil
 }
