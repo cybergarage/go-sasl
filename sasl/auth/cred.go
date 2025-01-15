@@ -20,7 +20,7 @@ type Credential interface {
 	// Username returns the username.
 	Username() string
 	// Password returns the password.
-	Password() string
+	Password() any
 }
 
 // CredentialStore represents a credential store interface.

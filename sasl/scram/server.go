@@ -264,7 +264,17 @@ func (server *Server) FinalMessageFrom(clientMsg *Message) (*Message, error) {
 		return nil, ErrUnknownUser
 	}
 
-	saltedPassword, err := SaltedPassword(server.hashFunc, storedCred.Password(), server.salt, server.iterationCount)
+	var storedPassword string
+	switch passwd := storedCred.Password().(type) {
+	case string:
+		storedPassword = passwd
+	case []byte:
+		storedPassword = string(passwd)
+	default:
+		return nil, ErrUnknownUser
+	}
+
+	saltedPassword, err := SaltedPassword(server.hashFunc, storedPassword, server.salt, server.iterationCount)
 	if err != nil {
 		return nil, err
 	}
