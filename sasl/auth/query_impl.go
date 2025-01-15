@@ -20,7 +20,7 @@ import "errors"
 type query struct {
 	group       string
 	username    string
-	password    string
+	password    any
 	mech        string
 	opts        []any
 	args        []any
@@ -38,7 +38,7 @@ func NewQuery(opts ...QueryOptionFn) (Query, error) {
 	q := &query{
 		group:       "",
 		username:    "",
-		password:    "",
+		password:    nil,
 		mech:        "",
 		opts:        []any{},
 		args:        []any{},
@@ -64,7 +64,7 @@ func WithQueryUsername(username string) QueryOptionFn {
 }
 
 // WithQueryPassword returns an option to set the password.
-func WithQueryPassword(password string) QueryOptionFn {
+func WithQueryPassword(password any) QueryOptionFn {
 	return func(q Query) error {
 		q.SetPassword(password)
 		return nil
@@ -126,7 +126,7 @@ func (q *query) SetUsername(username string) {
 }
 
 // SetPassword sets the password.
-func (q *query) SetPassword(password string) {
+func (q *query) SetPassword(password any) {
 	q.password = password
 }
 
@@ -161,7 +161,7 @@ func (q *query) Username() string {
 }
 
 // Password returns the password.
-func (q *query) Password() string {
+func (q *query) Password() any {
 	return q.password
 }
 

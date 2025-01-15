@@ -15,7 +15,7 @@
 package auth
 
 // EncryptFunc represents an encrypt function.
-type EncryptFunc func(passwd string, args ...any) (string, error)
+type EncryptFunc func(passwd any, args ...any) (any, error)
 
 // Query represents a query interface.
 type Query interface {
@@ -24,7 +24,7 @@ type Query interface {
 	// SetUsername sets the username.
 	SetUsername(username string)
 	// SetPassword sets the password.
-	SetPassword(password string)
+	SetPassword(password any)
 	// SetMechanism sets the mechanism.
 	SetMechanism(mech string)
 	// SetOptions sets the options.
@@ -38,7 +38,7 @@ type Query interface {
 	// Username returns the username.
 	Username() string
 	// Password returns the password.
-	Password() string
+	Password() any
 	// Mechanism returns the mechanism.
 	Mechanism() string
 	// Options returns the options.
