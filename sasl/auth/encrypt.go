@@ -15,6 +15,6 @@
 package auth
 
 // PlainEncrypt encrypts the query password.
-func PlainEncrypt(passwd string, args ...any) (string, error) {
+func PlainEncrypt(passwd any, args ...any) (any, error) {
 	return passwd, nil
 }

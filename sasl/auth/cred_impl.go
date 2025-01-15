@@ -18,7 +18,7 @@ package auth
 type cred struct {
 	group    string
 	username string
-	password string
+	password any
 }
 
 // CredentialOptionFn represents an option for a credential.
@@ -50,7 +50,7 @@ func WithCredentialUsername(username string) CredentialOptionFn {
 }
 
 // WithCredentialPassword returns an option to set the password.
-func WithCredentialPassword(password string) CredentialOptionFn {
+func WithCredentialPassword(password any) CredentialOptionFn {
 	return func(cred *cred) {
 		cred.password = password
 	}
@@ -74,6 +74,6 @@ func (cred *cred) Username() string {
 }
 
 // Password returns the password.
-func (cred *cred) Password() string {
+func (cred *cred) Password() any {
 	return cred.password
 }
