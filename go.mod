@@ -1,6 +1,6 @@
 module github.com/cybergarage/go-sasl
 
-go 1.22
+go 1.23
 
 require (
 	github.com/cybergarage/go-safecast v1.2.5
