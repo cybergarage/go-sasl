@@ -6,7 +6,7 @@
   - SCRAM-SHA-256-PLUS
   - SCRAM-SHA-512-PLUS
 
-## v1.2.4 (2025-01-15)
+## v1.2.4 (2025-01-16)
 - Updated Query interface:
   - Added setter methods for query parameters
   - Added the EncryptFunc method
