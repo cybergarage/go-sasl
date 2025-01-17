@@ -7,7 +7,7 @@
   - SCRAM-SHA-512-PLUS
 
 ## v1.2.5 (2025-01-XX)
-- Add DefaultCredentialAuthenticator interface
+- Add a default credential authenticator interface
 
 ## v1.2.4 (2025-01-16)
 - Updated Query interface:
