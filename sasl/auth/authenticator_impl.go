@@ -16,6 +16,7 @@ package auth
 
 import (
 	"bytes"
+	"encoding/hex"
 	"strings"
 )
 
@@ -67,14 +68,26 @@ func (ca *defaultCredAuthenticator) VerifyCredential(conn Conn, q Query) (bool, 
 			case string:
 				return strings.Compare(qp, cp) == 0
 			case []byte:
-				return strings.Compare(qp, string(cp)) == 0
+				if strings.Compare(qp, string(cp)) == 0 {
+					return true
+				}
+				if strings.Compare(qp, hex.EncodeToString(cp)) == 0 {
+					return true
+				}
+				return false
 			}
 		case []byte:
 			switch cp := credPassword.(type) {
-			case string:
-				return bytes.Equal(qp, []byte(cp))
 			case []byte:
 				return bytes.Equal(qp, cp)
+			case string:
+				if bytes.Equal(qp, []byte(cp)) {
+					return true
+				}
+				if strings.Compare(hex.EncodeToString(qp), cp) == 0 {
+					return true
+				}
+				return false
 			}
 		}
 		return false
