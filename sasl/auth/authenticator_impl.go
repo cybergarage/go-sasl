@@ -19,12 +19,18 @@ import (
 	"strings"
 )
 
+// DefaultCredentialAuthenticator interface includes CredentialAuthenticator and CredentialStoreRegistrar interfaces.
+type DefaultCredentialAuthenticator interface {
+	CredentialAuthenticator
+	CredentialStoreRegistrar
+}
+
 type defaultCredAuthenticator struct {
 	credStore CredentialStore
 }
 
 // NewDefaultCredentialAuthenticator returns a new default credential authenticator.
-func NewDefaultCredentialAuthenticator() CredentialAuthenticator {
+func NewDefaultCredentialAuthenticator() DefaultCredentialAuthenticator {
 	return &defaultCredAuthenticator{
 		credStore: nil,
 	}
