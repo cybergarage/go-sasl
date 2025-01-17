@@ -6,7 +6,8 @@
   - SCRAM-SHA-256-PLUS
   - SCRAM-SHA-512-PLUS
 
-## v1.2.5 (2025-01-XX)
+## v1.2.5 (2025-01-18)
+- Updated default credential authenticator to compare credentials based on variable type
 - Add a default credential authenticator interface
 
 ## v1.2.4 (2025-01-16)
