@@ -46,7 +46,16 @@ func (mgr *manager) SetCredentialStore(credStore CredentialStore) {
 
 // CredentialStore returns the credential store.
 func (mgr *manager) CredentialStore() CredentialStore {
-	return mgr.credStore
+	if mgr.credStore != nil {
+		return mgr.credStore
+	}
+	if mgr.credAuthenticator != nil {
+		credStore, ok := mgr.credAuthenticator.(CredentialStore)
+		if ok {
+			return credStore
+		}
+	}
+	return nil
 }
 
 // VerifyCredential verifies the client credential query.
