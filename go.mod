@@ -9,6 +9,7 @@ require (
 )
 
 require (
+	github.com/cybergarage/go-logger v1.3.11 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect
 	golang.org/x/text v0.3.8 // indirect
 )
