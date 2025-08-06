@@ -26,6 +26,7 @@ import (
 // Server represents a SCRAM server.
 type Server struct {
 	mech.Store
+
 	credStore      auth.CredentialStore
 	mechanism      string
 	challenge      string

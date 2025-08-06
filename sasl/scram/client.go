@@ -28,6 +28,7 @@ import (
 // Client is a SCRAM client.
 type Client struct {
 	mech.Store
+
 	authzID        string
 	username       string
 	password       string
