@@ -76,7 +76,7 @@ func H(hf HashFunc, data []byte) []byte {
 func XOR(a, b []byte) []byte {
 	minLength := min(len(a), len(b))
 	result := make([]byte, minLength)
-	for n := range minLength {
+	for n := 0; n < minLength; n++ {
 		result[n] = a[n] ^ b[n]
 	}
 	return result
