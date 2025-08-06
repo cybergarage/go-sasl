@@ -6,6 +6,9 @@
   - SCRAM-SHA-256-PLUS
   - SCRAM-SHA-512-PLUS
 
+## v1.2.7 (2025-XX-XX)
+- Fix golangci-lint warnings
+
 ## v1.2.6 (2025-06-19)
 - Update credential verification to compare credentials bytes
 
