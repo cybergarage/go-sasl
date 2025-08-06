@@ -59,7 +59,7 @@ func WithHeader(header *gss.Header) MessageOption {
 
 func WithAttribute(name, value string) MessageOption {
 	return func(msg *Message) {
-		msg.AttributeMap.SetAttribute(name, value)
+		msg.SetAttribute(name, value)
 	}
 }
 
@@ -129,7 +129,7 @@ func (msg *Message) ParseStringsWithHeader(props []string) error {
 		return err
 	}
 	scramProps := props[gss.GS2PropertyMaxCount:]
-	if !msg.Header.HasStdFlag() {
+	if !msg.HasStdFlag() {
 		scramProps = props[(gss.GS2PropertyMaxCount - 1):]
 	}
 	return msg.ParseStrings(scramProps)

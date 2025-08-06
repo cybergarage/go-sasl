@@ -89,10 +89,10 @@ func (ctx *ClientContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 		if err != nil {
 			return nil, err
 		}
-		if err := ctx.Client.SetOptions(clientOpts...); err != nil {
+		if err := ctx.SetOptions(clientOpts...); err != nil {
 			return nil, err
 		}
-		res, err := ctx.Client.FirstMessage()
+		res, err := ctx.FirstMessage()
 		if err != nil {
 			return nil, err
 		}
@@ -106,7 +106,7 @@ func (ctx *ClientContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 		if err != nil {
 			return nil, err
 		}
-		res, err := ctx.Client.FinalMessageFrom(msg)
+		res, err := ctx.FinalMessageFrom(msg)
 		if err != nil {
 			return nil, err
 		}
@@ -120,7 +120,7 @@ func (ctx *ClientContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 		if err != nil {
 			return nil, err
 		}
-		err = ctx.Client.ValidateServerFinalMessage(msg)
+		err = ctx.ValidateServerFinalMessage(msg)
 		if err != nil {
 			return nil, err
 		}

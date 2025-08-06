@@ -70,7 +70,7 @@ func (ctx *ServerContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 		if err != nil {
 			return nil, err
 		}
-		res, err := ctx.Server.FirstMessageFrom(msg)
+		res, err := ctx.FirstMessageFrom(msg)
 		if err != nil {
 			return nil, err
 		}
@@ -81,7 +81,7 @@ func (ctx *ServerContext) Next(opts ...mech.Parameter) (mech.Response, error) {
 		if err != nil {
 			return nil, err
 		}
-		res, err := ctx.Server.FinalMessageFrom(msg)
+		res, err := ctx.FinalMessageFrom(msg)
 		if err != nil {
 			return nil, err
 		}
