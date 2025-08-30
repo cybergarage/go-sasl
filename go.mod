@@ -1,10 +1,6 @@
 module github.com/cybergarage/go-sasl
 
-<<<<<<< HEAD
-go 1.22
-=======
-go 1.22
->>>>>>> 2d881e0 (Update go.mod)
+go 1.24
 
 require (
 	github.com/cybergarage/go-safecast v1.3.3
