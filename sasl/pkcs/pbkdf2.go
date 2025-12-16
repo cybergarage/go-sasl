@@ -14,10 +14,15 @@
 
 package pkcs
 
+import (
+	"crypto/pbkdf2"
+	"hash"
+)
+
 // RFC 2898 - PKCS #5: Password-Based Cryptography Specification Version 2.0
 // https://datatracker.ietf.org/doc/html/rfc2898
 // 5.2 PBKDF2.
-func PBKDF2(p []byte, s []byte, c int, dkLen int) []byte {
+func PBKDF2(password string, salt []byte, iter int, keyLength int, hash func() hash.Hash) ([]byte, error) {
 	// 5.2 PBKDF2
 	// https://datatracker.ietf.org/doc/html/rfc2898#section-5.2
 	// PBKDF2 (P, S, c, dkLen)
@@ -28,6 +33,5 @@ func PBKDF2(p []byte, s []byte, c int, dkLen int) []byte {
 	//    a. Ti = F (P, S || INT (i)).
 	//    b. U1 = T1; U2 = F (P, U1); ...; Ul = F (P, Ul-1).
 	// 5. Output the first dkLen octets of T1 || T2 || ... || Tr.
-
-	return nil
+	return pbkdf2.Key(hash, password, salt, iter, keyLength)
 }
