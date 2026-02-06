@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Package scram provides hash functions for SCRAM authentication mechanisms.
+//
 // nolint: gosec
 package scram
 
