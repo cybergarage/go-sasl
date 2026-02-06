@@ -45,7 +45,6 @@ func HashSHA256() HashFunc {
 }
 
 // HashSHA1 returns a new SHA-1 hash function.
-// Deprecated: Use HashSHA256 instead.
 func HashSHA1() HashFunc {
 	return sha1.New
 }
