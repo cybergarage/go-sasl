@@ -22,6 +22,9 @@ import (
 // RFC 2898 - PKCS #5: Password-Based Cryptography Specification Version 2.0
 // https://datatracker.ietf.org/doc/html/rfc2898
 // 5.2 PBKDF2.
+// PBKDF2 applies a pseudorandom function to derive keys.
+
+// PBKDF2 derives a key from the password, salt, iteration count, key length, and hash function.
 func PBKDF2(password string, salt []byte, iter int, keyLength int, hash func() hash.Hash) ([]byte, error) {
 	// 5.2 PBKDF2
 	// https://datatracker.ietf.org/doc/html/rfc2898#section-5.2
