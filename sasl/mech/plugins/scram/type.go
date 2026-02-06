@@ -32,7 +32,7 @@ func SCRAMTypes() []Type {
 	}
 }
 
-// SCRAMType returns the SCRAM type.
+// String returns the string representation of the SCRAM type.
 func (t Type) String() string {
 	switch t {
 	case SHA1:

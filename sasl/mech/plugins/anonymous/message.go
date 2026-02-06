@@ -34,7 +34,7 @@ func NewMessageWith(identity string) *Message {
 	}
 }
 
-// NewMessage returns a new ANONYMOUS message.
+// NewMessageFrom creates a new ANONYMOUS message from the specified value.
 func NewMessageFrom(v any) (*Message, error) {
 	switch v := v.(type) {
 	case *Message:

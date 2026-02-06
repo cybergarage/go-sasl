@@ -135,12 +135,12 @@ func (msg *Message) ParseStringsWithHeader(props []string) error {
 	return msg.ParseStrings(scramProps)
 }
 
-// ParseStringWithHeader parses the specified string.
+// ParseString parses the specified string.
 func (msg *Message) ParseString(str string) error {
 	return msg.ParseStrings(strings.Split(str, ","))
 }
 
-// ParseStringsWithHeader parses the specified property strings.
+// ParseStrings parses the specified property strings.
 func (msg *Message) ParseStrings(props []string) error {
 	for _, scramProp := range props {
 		if len(scramProp) < 2 || scramProp[1] != '=' {

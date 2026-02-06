@@ -38,7 +38,7 @@ func NewHeaderFromString(str string) (*Header, error) {
 	return header, header.ParseString(str)
 }
 
-// NewHeaderFromString creates a new header from the property strings.
+// NewHeaderFromStrings creates a new header from the property strings.
 func NewHeaderFromStrings(props []string) (*Header, error) {
 	header := NewHeader()
 	return header, header.ParseStrings(props)

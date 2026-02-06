@@ -103,7 +103,7 @@ type Server struct {
 	opts      []mech.Option
 }
 
-// NewSCRAM returns a new SCRAM mech.
+// NewServerWithType returns a new SCRAM server mechanism with the specified type.
 func NewServerWithType(t Type) mech.Mechanism {
 	return &Server{
 		scramType: t,

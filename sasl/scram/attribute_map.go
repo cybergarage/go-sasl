@@ -73,7 +73,7 @@ func (m *AttributeMap) Username() (string, bool) {
 	return v, ok
 }
 
-// FutureExtensions returns the future extensibility attribute from the map.
+// FutureFutureExtensibility returns the future extensibility attribute from the map.
 func (m *AttributeMap) FutureFutureExtensibility() (string, bool) {
 	return m.Attribute(FutureExtensibilityAttr)
 }

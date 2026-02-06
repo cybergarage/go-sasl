@@ -27,19 +27,19 @@ type store struct {
 	values map[string]any
 }
 
-// NewContext returns a new Context.
+// NewStore returns a new mechanism store.
 func NewStore() Store {
 	return &store{
 		values: make(map[string]any),
 	}
 }
 
-// SetValue sets a value to the context.
+// SetValue sets a value to the store.
 func (ctx *store) SetValue(key string, value any) {
 	ctx.values[key] = value
 }
 
-// Value returns a value from the context.
+// Value returns a value from the store.
 func (ctx *store) Value(key string) (any, bool) {
 	value, hasValue := ctx.values[key]
 	return value, hasValue

@@ -142,7 +142,7 @@ type Client struct {
 	opts      []mech.Option
 }
 
-// NewSCRAM returns a new SCRAM mech.
+// NewClientWithType returns a new SCRAM client mechanism with the specified type.
 func NewClientWithType(t Type) mech.Mechanism {
 	return &Client{
 		scramType: t,
