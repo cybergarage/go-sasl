@@ -31,7 +31,7 @@ func Hi(h HashFunc, str string, salt []byte, i int) []byte {
 	}
 	// salt + INT(1)
 	// INT(g) is a 4-octet encoding of the integer g, most significant octet first.
-	saltInt1 := make([]byte, len(salt))
+	saltInt1 := make([]byte, len(salt), len(salt)+4)
 	copy(saltInt1, salt)
 	saltInt1 = append(saltInt1, 0x00, 0x00, 0x00, 0x01)
 	// U1   := HMAC(str, salt + INT(1))
