@@ -136,16 +136,16 @@ func (header *Header) Equals(other *Header) bool {
 
 // String returns the header properties.
 func (header *Header) String() string {
-	var str string
+	var str strings.Builder
 	for n, prop := range header.props {
 		switch n {
 		case 0:
 			if 0 < len(prop) {
-				str += prop + ","
+				str.WriteString(prop + ",")
 			}
 		default:
-			str += prop + ","
+			str.WriteString(prop + ",")
 		}
 	}
-	return str
+	return str.String()
 }

@@ -16,6 +16,7 @@ package scram
 
 import (
 	"encoding/base64"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -124,10 +125,8 @@ func (m *AttributeMap) Error() (string, bool) {
 func (m *AttributeMap) SetAttribute(name, value string) {
 	m.attrs[name] = NewAttribute(name, value)
 	// add name if it is not already in the list
-	for _, key := range m.keys {
-		if key == name {
-			return
-		}
+	if slices.Contains(m.keys, name) {
+		return
 	}
 	m.keys = append(m.keys, name)
 }
