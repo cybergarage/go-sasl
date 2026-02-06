@@ -40,7 +40,7 @@ func (provider *provider) AddMechanisms(mech ...Mechanism) {
 
 // Mechanisms returns all mechanisms.
 func (provider *provider) Mechanisms() []Mechanism {
-	mechs := make([]Mechanism, 0)
+	mechs := make([]Mechanism, 0, len(provider.mechanismMap))
 	for _, mech := range provider.mechanismMap {
 		mechs = append(mechs, mech)
 	}

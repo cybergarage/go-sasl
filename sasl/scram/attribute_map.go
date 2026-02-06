@@ -205,7 +205,7 @@ func (m *AttributeMap) Equals(other AttributeMap) bool {
 
 // String returns the string representation of the map.
 func (m *AttributeMap) String() string {
-	attrs := []string{}
+	attrs := make([]string, 0, len(m.attrs))
 	for _, key := range m.keys {
 		attr := m.attrs[key]
 		attrs = append(attrs, key+"="+attr.Value())
@@ -215,7 +215,7 @@ func (m *AttributeMap) String() string {
 
 // StringWithoutProof returns the string representation of the map without the proof.
 func (m *AttributeMap) StringWithoutProof() string {
-	attrs := []string{}
+	attrs := make([]string, 0, len(m.attrs))
 	for _, key := range m.keys {
 		if key == ClientProofAttr {
 			continue
